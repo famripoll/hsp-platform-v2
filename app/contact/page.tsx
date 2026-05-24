@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="pb-16">
-      <div className="flex flex-col md:flex-row gap-8 md:gap-12 min-h-[640px]">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12">
 
         {/* Left — Form */}
         <div className="flex-1 flex flex-col justify-center">
