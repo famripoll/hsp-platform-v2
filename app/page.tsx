@@ -2,22 +2,19 @@ import Image from "next/image";
 
 const steps = [
   {
-    number: "01",
     title: "Show Your Talent",
-    description:
-      "Build your recruiting profile with stats, highlights, and academic achievements that make coaches take notice.",
+    description: "Centralize your athletic journey in one professional link built for college scouts.",
+    image: "/step1.png",
   },
   {
-    number: "02",
     title: "Target Your Schools",
-    description:
-      "Browse and connect with college programs that match your athletic ability, academic goals, and personal preferences.",
+    description: "Discover programs that match your athletic goals and academic requirements perfectly.",
+    image: "/step2.png",
   },
   {
-    number: "03",
     title: "Get Recruited",
-    description:
-      "Receive interest from coaches, manage communications, and take control of your college recruiting journey.",
+    description: "Let verified coaches reach out to your parents directly to start the conversation.",
+    image: "/step3.png",
   },
 ];
 
@@ -63,18 +60,23 @@ export default function Home() {
 
       {/* How It Works */}
       <section className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 md:mb-12">
-          How it Works: 3 Simple Steps
+        <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 md:mb-12 text-center uppercase">
+          How it Works: <span className="text-hsp-red">3 Simple Steps</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((step) => (
             <div
-              key={step.number}
-              className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4"
+              key={step.title}
+              className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4 text-center"
             >
-              <span className="text-4xl font-bold text-hsp-red">
-                {step.number}
-              </span>
+              <div className="relative w-full h-[200px]">
+                <Image
+                  src={step.image}
+                  alt={step.title}
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <h3 className="text-xl font-bold text-hsp-dark">{step.title}</h3>
               <p className="text-hsp-gray leading-relaxed">{step.description}</p>
             </div>

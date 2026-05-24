@@ -19,7 +19,7 @@ export default function AboutPage() {
     <div className="max-w-[800px] mx-auto text-center">
 
       {/* Heading */}
-      <h1 className="text-4xl md:text-5xl font-bold text-hsp-dark mb-10 md:mb-14">
+      <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-10 md:mb-14">
         About <span className="text-hsp-red">Us</span>
       </h1>
 

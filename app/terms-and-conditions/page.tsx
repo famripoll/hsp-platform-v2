@@ -57,7 +57,7 @@ export default function TermsAndConditionsPage() {
 
       {/* Page header */}
       <div className="mb-10 md:mb-14">
-        <h1 className="text-4xl md:text-5xl font-bold text-hsp-dark mb-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-3">
           Terms and <span className="text-hsp-red">Conditions</span>
         </h1>
         <p className="text-hsp-gray text-sm">Last Updated: May 10, 2026</p>
