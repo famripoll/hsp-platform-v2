@@ -26,7 +26,7 @@ export default function PricingPage() {
 
       {/* Header */}
       <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-hsp-dark mb-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-3">
           Choose your <span className="text-hsp-red">plan</span>
         </h1>
         <p className="text-hsp-gray text-base md:text-lg">
@@ -38,7 +38,7 @@ export default function PricingPage() {
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
 
         {/* Silver Card */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           <h2 className="text-2xl font-bold text-hsp-dark mb-1">Silver</h2>
           <div className="mb-4">
             <span className="text-4xl font-bold text-hsp-dark">$30</span>
@@ -61,7 +61,7 @@ export default function PricingPage() {
         </div>
 
         {/* Gold Card */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red relative">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red relative transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           {/* Most popular badge */}
           <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-hsp-red text-white text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
             Most popular

@@ -24,7 +24,7 @@ export default function LearnMorePage() {
 
       {/* Header */}
       <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-3xl md:text-5xl font-bold text-hsp-dark uppercase mb-4 leading-tight">
+        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark uppercase mb-4 leading-tight">
           Social Media Gets Views.{" "}
           <span className="text-hsp-red">We Get You On The Lineup.</span>
         </h1>
@@ -37,7 +37,7 @@ export default function LearnMorePage() {
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
 
         {/* Card 1 — Traditional Social Media */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           <h2 className="text-xl font-bold text-hsp-dark">Traditional Social Media</h2>
           <p className="text-hsp-gray text-sm mb-8">(The Lottery)</p>
           <ul className="flex flex-col gap-4">
@@ -51,7 +51,7 @@ export default function LearnMorePage() {
         </div>
 
         {/* Card 2 — Our Specialized Platform */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           <h2 className="text-xl font-bold text-hsp-dark">Our Specialized Platform</h2>
           <p className="text-hsp-gray text-sm mb-8">(The Pipeline)</p>
           <ul className="flex flex-col gap-4">

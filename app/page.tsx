@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const steps = [
   {
@@ -38,9 +39,9 @@ export default function Home() {
               <button className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
                 Get Started
               </button>
-              <button className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors">
+              <Link href="/learn-more" className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors">
                 Learn More
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -67,7 +68,7 @@ export default function Home() {
           {steps.map((step) => (
             <div
               key={step.title}
-              className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4 text-center"
+              className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
             >
               <div className="relative w-full h-[200px]">
                 <Image
