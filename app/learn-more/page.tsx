@@ -24,7 +24,7 @@ export default function LearnMorePage() {
 
       {/* Header */}
       <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark uppercase mb-4 leading-tight">
+        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-4 leading-tight">
           Social Media Gets Views.{" "}
           <span className="text-hsp-red">We Get You On The Lineup.</span>
         </h1>

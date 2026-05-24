@@ -28,7 +28,7 @@ export default function Home() {
 
           {/* Left — content */}
           <div className="flex-1 bg-hsp-card px-8 py-12 md:px-12 md:py-16 flex flex-col justify-center gap-6">
-            <h1 className="text-3xl md:text-5xl font-bold text-hsp-dark leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight">
               Elevate Your Athletic Recruiting Journey
             </h1>
             <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md">
@@ -39,7 +39,7 @@ export default function Home() {
               <button className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
                 Get Started
               </button>
-              <Link href="/learn-more" className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors">
+              <Link href="/learn-more" className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors flex items-center justify-center text-center">
                 Learn More
               </Link>
             </div>
@@ -61,8 +61,8 @@ export default function Home() {
 
       {/* How It Works */}
       <section className="mb-16 md:mb-24">
-        <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 md:mb-12 text-center uppercase">
-          How it Works: <span className="text-hsp-red">3 Simple Steps</span>
+        <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 md:mb-12 text-center">
+          How It Works: <span className="text-hsp-red">3 Simple Steps</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((step) => (
@@ -78,7 +78,7 @@ export default function Home() {
                   className="object-contain"
                 />
               </div>
-              <h3 className="text-xl font-bold text-hsp-dark">{step.title}</h3>
+              <h3 className="text-xl font-black text-hsp-dark">{step.title}</h3>
               <p className="text-hsp-gray leading-relaxed">{step.description}</p>
             </div>
           ))}

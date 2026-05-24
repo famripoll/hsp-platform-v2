@@ -29,7 +29,7 @@ export default function Header() {
 
           {/* Row 1 (mobile) / Left side (desktop): Logo + hamburger */}
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none">
+            <Link href="/" className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200">
               <span className="text-hsp-red">High</span>
               <span className="text-hsp-dark">School</span>
               <span className="text-hsp-dark">Prospect</span>
@@ -65,7 +65,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-hsp-gray hover:text-hsp-dark transition-colors duration-150"
+                className="text-sm text-hsp-dark hover:text-hsp-red hover:scale-105 transition-all duration-200"
               >
                 {link.label}
               </Link>

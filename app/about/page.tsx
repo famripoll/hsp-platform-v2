@@ -33,11 +33,11 @@ export default function AboutPage() {
       </div>
 
       {/* Legal compliance box */}
-      <div className="bg-hsp-card rounded-xl px-8 py-8 md:px-12 md:py-10 text-left">
-        <h2 className="text-xl md:text-2xl font-bold text-hsp-dark mb-4">
+      <div className="bg-hsp-card rounded-xl px-8 py-8 md:px-12 md:py-10 text-center">
+        <h2 className="text-xs font-bold text-slate-400 mb-4 text-center">
           Legal Compliance
         </h2>
-        <p className="text-hsp-gray text-base leading-relaxed">
+        <p className="text-hsp-gray text-sm leading-relaxed text-center">
           High School Prospect is not a recruiting agency and does not guarantee
           scholarships. We maintain strict adherence to federal COPPA regulations
           for users under 13, as well as comprehensive state privacy laws designed
