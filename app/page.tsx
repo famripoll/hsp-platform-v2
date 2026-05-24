@@ -1,65 +1,86 @@
 import Image from "next/image";
 
+const steps = [
+  {
+    number: "01",
+    title: "Show Your Talent",
+    description:
+      "Build your recruiting profile with stats, highlights, and academic achievements that make coaches take notice.",
+  },
+  {
+    number: "02",
+    title: "Target Your Schools",
+    description:
+      "Browse and connect with college programs that match your athletic ability, academic goals, and personal preferences.",
+  },
+  {
+    number: "03",
+    title: "Get Recruited",
+    description:
+      "Receive interest from coaches, manage communications, and take control of your college recruiting journey.",
+  },
+];
+
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <>
+      {/* Hero */}
+      <section className="mb-16 md:mb-24">
+        <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
+
+          {/* Left — content */}
+          <div className="flex-1 bg-hsp-card px-8 py-12 md:px-12 md:py-16 flex flex-col justify-center gap-6">
+            <h1 className="text-3xl md:text-5xl font-bold text-hsp-dark leading-tight">
+              Elevate Your Athletic Recruiting Journey
+            </h1>
+            <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md">
+              Your future starts here. Join the fastest-growing network of
+              student-athletes turning their college sports dreams into reality.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                Get Started
+              </button>
+              <button className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors">
+                Learn More
+              </button>
+            </div>
+          </div>
+
+          {/* Right — image placeholder */}
+          <div className="relative flex-1 min-h-[300px] md:min-h-[500px] bg-hsp-dark">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/player-hero.webp"
+              alt="Baseball player in action"
+              fill
+              className="object-cover"
+              priority
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="mb-16 md:mb-24">
+        <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 md:mb-12">
+          How it Works: 3 Simple Steps
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {steps.map((step) => (
+            <div
+              key={step.number}
+              className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4"
+            >
+              <span className="text-4xl font-bold text-hsp-red">
+                {step.number}
+              </span>
+              <h3 className="text-xl font-bold text-hsp-dark">{step.title}</h3>
+              <p className="text-hsp-gray leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
