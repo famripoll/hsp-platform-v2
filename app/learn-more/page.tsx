@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Learn More | High School Prospect",
@@ -62,6 +64,124 @@ export default function LearnMorePage() {
               </li>
             ))}
           </ul>
+        </div>
+
+      </div>
+
+      {/* Recruiting Pipeline */}
+      <div className="mt-20">
+
+        {/* Section title with decorative lines */}
+        <div className="flex items-center gap-4 mb-12">
+          <div className="flex-1 h-[2px]" style={{ background: "#d93025" }} />
+          <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark whitespace-nowrap">
+            RECRUITING PIPELINE
+          </h2>
+          <div className="flex-1 h-[2px]" style={{ background: "#d93025" }} />
+        </div>
+
+        {/* Cards row */}
+        <div className="flex flex-col md:flex-row items-center md:items-stretch gap-0 relative">
+
+          {/* Gradient connector line — desktop, sits behind cards */}
+          <div
+            className="hidden md:block absolute left-0 right-0 h-[3px] top-[40%] z-0 pointer-events-none"
+            style={{ background: "linear-gradient(to right, #0f172a, #d93025)" }}
+          />
+
+          {/* Step 1 */}
+          <div className="relative z-10 flex flex-col items-center w-full md:flex-1 self-stretch">
+            <div
+              className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+              style={{ background: "#F2F3F3" }}
+            >
+              <div className="bg-transparent">
+                <Image src="/lm-step1.png" alt="The Data CV" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
+              </div>
+              <h3 className="font-bold text-hsp-dark text-base">THE DATA CV</h3>
+              <p className="text-sm" style={{ color: "#64748b" }}>
+                Your stats, academics, video, and profile. Verified. Organized. Recruit-ready.
+              </p>
+            </div>
+          </div>
+
+          {/* Arrow desktop → / mobile ↓ */}
+          <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+          </div>
+
+          {/* Step 2 */}
+          <div className="relative z-10 flex flex-col items-center w-full md:flex-1 self-stretch">
+            <div
+              className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+              style={{ background: "#F2F3F3" }}
+            >
+              <div className="bg-transparent">
+                <Image src="/lm-step2.png" alt="Target Radar" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
+              </div>
+              <h3 className="font-bold text-hsp-dark text-base">TARGET RADAR</h3>
+              <p className="text-sm" style={{ color: "#64748b" }}>
+                Discover programs that match your level, goals, location, and academic path.
+              </p>
+            </div>
+          </div>
+
+          {/* Arrow */}
+          <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+          </div>
+
+          {/* Step 3 */}
+          <div className="relative z-10 flex flex-col items-center w-full md:flex-1 self-stretch">
+            <div
+              className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+              style={{ background: "#F2F3F3" }}
+            >
+              <div className="bg-transparent">
+                <Image src="/lm-step3.png" alt="Controlled Strike" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
+              </div>
+              <h3 className="font-bold text-hsp-dark text-base">CONTROLLED STRIKE</h3>
+              <p className="text-sm" style={{ color: "#64748b" }}>
+                Reach coaches with targeted messages, not random posts or lost videos.
+              </p>
+            </div>
+          </div>
+
+          {/* Arrow */}
+          <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+          </div>
+
+          {/* Step 4 — dark card */}
+          <div className="relative z-10 flex flex-col items-center w-full md:flex-1 self-stretch">
+            <div
+              className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+              style={{ background: "#0f172a", borderColor: "#d93025" }}
+            >
+              <div className="bg-transparent">
+                <Image src="/lm-step4.png" alt="The Verified Dugout" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
+              </div>
+              <h3 className="font-bold text-white text-base">VERIFIED DUGOUT</h3>
+              <p className="text-sm" style={{ color: "#64748b" }}>
+                Where verified coaches and serious players connect with confidence.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* CTA button */}
+        <div className="flex justify-center mt-10">
+          <Link
+            href="/sign-up"
+            className="px-8 py-3 rounded-lg font-bold text-white text-sm uppercase tracking-wider transition-all duration-300 hover:opacity-90 hover:scale-105"
+            style={{ background: "#d93025" }}
+          >
+            START YOUR JOURNEY NOW
+          </Link>
         </div>
 
       </div>
