@@ -95,7 +95,7 @@ export default function LearnMorePage() {
               className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
               style={{ background: "#F2F3F3" }}
             >
-              <div className="bg-transparent">
+              <div>
                 <Image src="/lm-step1.png" alt="The Data CV" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">THE DATA CV</h3>
@@ -117,7 +117,7 @@ export default function LearnMorePage() {
               className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
               style={{ background: "#F2F3F3" }}
             >
-              <div className="bg-transparent">
+              <div>
                 <Image src="/lm-step2.png" alt="Target Radar" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">TARGET RADAR</h3>
@@ -139,7 +139,7 @@ export default function LearnMorePage() {
               className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
               style={{ background: "#F2F3F3" }}
             >
-              <div className="bg-transparent">
+              <div>
                 <Image src="/lm-step3.png" alt="Controlled Strike" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">CONTROLLED STRIKE</h3>
@@ -161,7 +161,7 @@ export default function LearnMorePage() {
               className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
               style={{ background: "#0f172a", borderColor: "#d93025" }}
             >
-              <div className="bg-transparent">
+              <div>
                 <Image src="/lm-step4.png" alt="The Verified Dugout" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-white text-base">VERIFIED DUGOUT</h3>
