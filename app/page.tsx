@@ -36,10 +36,10 @@ export default function Home() {
               student-athletes turning their college sports dreams into reality.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+              <Link href="/signup" className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center text-center">
                 Get Started
-              </button>
-              <Link href="/learn-more" className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors flex items-center justify-center text-center">
+              </Link>
+              <Link href="/learn-more" className="px-8 py-3 bg-white text-hsp-dark border border-hsp-dark font-semibold rounded-lg hover:bg-hsp-card transition-colors hover:scale-105 transition-transform duration-200 flex items-center justify-center text-center">
                 Learn More
               </Link>
             </div>

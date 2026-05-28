@@ -176,8 +176,8 @@ export default function LearnMorePage() {
         {/* CTA button */}
         <div className="flex justify-center mt-10">
           <Link
-            href="/sign-up"
-            className="px-8 py-3 rounded-lg font-bold text-white text-sm uppercase tracking-wider transition-all duration-300 hover:opacity-90 hover:scale-105"
+            href="/signup"
+            className="px-8 py-3 rounded-lg font-bold text-white text-sm uppercase tracking-wider hover:scale-105 transition-transform duration-200"
             style={{ background: "#d93025" }}
           >
             START YOUR JOURNEY NOW

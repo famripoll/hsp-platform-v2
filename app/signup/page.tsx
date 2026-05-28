@@ -98,11 +98,12 @@ export default function SignUpPage() {
   return (
     <div>
       {/* Hero — breaks out of layout padding to go full-width */}
-      <section className="bg-hsp-dark -mx-4 -mt-4 md:-mx-8 md:-mt-8 px-4 py-12 md:py-16 text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
-          Start Your Recruiting Journey
+      <section className="text-center mb-10 md:mb-14">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+          <span className="text-hsp-red">Start</span>{" "}
+          <span className="text-hsp-dark">Your Recruiting Journey</span>
         </h1>
-        <p className="text-hsp-gray text-base md:text-lg">
+        <p className="text-[#64748b] text-base md:text-lg">
           Free to join. Set up your profile in under 5 minutes!
         </p>
       </section>

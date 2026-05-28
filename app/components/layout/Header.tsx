@@ -53,7 +53,7 @@ export default function Header() {
             </Link>
             <Link
               href="/login"
-              className="bg-hsp-red text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity duration-150"
+              className="bg-hsp-red text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity duration-150 hover:scale-105 transition-transform duration-200"
             >
               Login
             </Link>
@@ -72,7 +72,7 @@ export default function Header() {
             ))}
             <Link
               href="/login"
-              className="bg-hsp-red text-white text-sm font-semibold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity duration-150"
+              className="bg-hsp-red text-white text-sm font-semibold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity duration-150 hover:scale-105 transition-transform duration-200"
             >
               Login
             </Link>
@@ -123,7 +123,7 @@ export default function Header() {
           <Link
             href="/login"
             onClick={close}
-            className="mt-2 text-center bg-hsp-red text-white text-sm font-semibold px-3 py-3 rounded-lg hover:opacity-90 transition-opacity duration-150"
+            className="mt-2 text-center bg-hsp-red text-white text-sm font-semibold px-3 py-3 rounded-lg hover:opacity-90 transition-opacity duration-150 hover:scale-105 transition-transform duration-200"
           >
             Login
           </Link>

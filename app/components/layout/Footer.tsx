@@ -12,10 +12,10 @@ export default function Footer() {
           <div>
             <h3 className="text-xs font-black text-hsp-gray uppercase tracking-widest mb-5">Company</h3>
             <ul className="list-none p-0 m-0">
-              <li className="mb-3"><Link href="/about" className="text-hsp-dark no-underline text-base font-medium">About Us</Link></li>
-              <li className="mb-3"><Link href="/pricing" className="text-hsp-dark no-underline text-base font-medium">Pricing</Link></li>
-              <li className="mb-3"><Link href="/learn-more" className="text-hsp-dark no-underline text-base font-medium">Learn More</Link></li>
-              <li><Link href="/contact" className="text-hsp-dark no-underline text-base font-medium">Contact Us</Link></li>
+              <li className="mb-3"><Link href="/about" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">About Us</Link></li>
+              <li className="mb-3"><Link href="/pricing" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">Pricing</Link></li>
+              <li className="mb-3"><Link href="/learn-more" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">Learn More</Link></li>
+              <li><Link href="/contact" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -23,8 +23,8 @@ export default function Footer() {
           <div>
             <h3 className="text-xs font-black text-hsp-gray uppercase tracking-widest mb-5">Account</h3>
             <ul className="list-none p-0 m-0">
-              <li className="mb-3"><a href="#" className="text-hsp-dark no-underline text-base font-medium">Login</a></li>
-              <li><a href="#" className="text-hsp-dark no-underline text-base font-medium">Sign Up</a></li>
+              <li className="mb-3"><Link href="/login" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">Login</Link></li>
+              <li><Link href="/signup" className="text-hsp-dark no-underline text-base font-medium hover:text-hsp-red hover:scale-105 transition-all duration-200 inline-block">Sign Up</Link></li>
             </ul>
           </div>
 
@@ -66,8 +66,8 @@ export default function Footer() {
             © 2026 Ripoll Services, LLC. All Rights Reserved.
           </p>
           <div className="flex gap-6 flex-wrap justify-center">
-            <Link href="/terms-and-conditions" className="text-hsp-gray no-underline text-xs whitespace-nowrap">Terms and Conditions</Link>
-            <Link href="/privacy-policy" className="text-hsp-gray no-underline text-xs whitespace-nowrap">Privacy Policy</Link>
+            <Link href="/terms-and-conditions" className="text-hsp-gray no-underline text-xs whitespace-nowrap hover:underline">Terms and Conditions</Link>
+            <Link href="/privacy-policy" className="text-hsp-gray no-underline text-xs whitespace-nowrap hover:underline">Privacy Policy</Link>
           </div>
         </div>
 
