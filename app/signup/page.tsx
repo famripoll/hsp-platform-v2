@@ -144,7 +144,7 @@ export default function SignUpPage() {
           <span className="text-hsp-dark">Your Recruiting Journey</span>
         </h1>
         <p className="text-[#64748b] text-base md:text-lg">
-          Free to join. Set up your profile in under 5 minutes!
+          Set up your profile in under 5 minutes!
         </p>
       </section>
 
@@ -450,6 +450,12 @@ export default function SignUpPage() {
                     label="Relationship"
                     options={RELATIONSHIPS}
                     required
+                  />
+                  <InputField
+                    label="Athlete's Registration Email *"
+                    type="email"
+                    required
+                    placeholder="Enter the email your athlete used to register"
                   />
                 </>
               )}

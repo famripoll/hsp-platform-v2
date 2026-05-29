@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
 
 const silverFeatures = [
   "Full athlete profile",
-  "NCAA program search",
-  "1 message/month to coaches",
+  "NCAA / NAIA / NJCAA program search",
+  "Direct messaging to college coaches",
   "Photo & video uploads",
 ];
 
@@ -55,9 +56,9 @@ export default function PricingPage() {
               </li>
             ))}
           </ul>
-          <button className="w-full py-3 rounded-xl font-semibold text-sm border-2 border-hsp-red text-hsp-red bg-white hover:bg-hsp-red hover:text-white transition-colors duration-200 cursor-pointer">
+          <Link href="/signup" className="w-full py-3 rounded-xl font-semibold text-sm border-2 border-hsp-red text-hsp-red bg-white hover:bg-hsp-red hover:text-white transition-colors duration-200 cursor-pointer text-center">
             Get Silver
-          </button>
+          </Link>
         </div>
 
         {/* Gold Card */}
@@ -82,9 +83,9 @@ export default function PricingPage() {
               </li>
             ))}
           </ul>
-          <button className="w-full py-3 rounded-xl font-semibold text-sm bg-hsp-red text-white hover:opacity-90 transition-opacity duration-200 cursor-pointer">
+          <Link href="/signup" className="w-full py-3 rounded-xl font-semibold text-sm border-2 border-hsp-red bg-hsp-red text-white hover:bg-white hover:text-hsp-red transition-colors duration-200 cursor-pointer text-center">
             Get Gold
-          </button>
+          </Link>
         </div>
 
       </div>
