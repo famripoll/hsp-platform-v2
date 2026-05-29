@@ -29,7 +29,7 @@ export default function Home() {
           {/* Left — content */}
           <div className="flex-1 bg-hsp-card px-8 py-12 md:px-12 md:py-16 flex flex-col justify-center gap-6">
             <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight">
-              Elevate Your Athletic Recruiting Journey
+              Elevate Your Baseball Recruiting Journey
             </h1>
             <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md">
               Your future starts here. Join the fastest-growing network of

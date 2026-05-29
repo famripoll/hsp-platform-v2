@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 type AccountType = "student" | "parent" | "coach";
+type ParentPlan = "silver" | "gold";
+type ParentFreq = "monthly" | "6months" | "annual";
 
-const STEPS = ["Account", "Details", "Verify"] as const;
+const PARENT_STEPS = ["Account", "Plan", "Details", "Payment"] as const;
+const OTHER_STEPS = ["Account", "Details", "Verify"] as const;
 
 const ACCOUNT_CARDS: {
   id: AccountType;
@@ -81,9 +84,44 @@ function SelectField({
   );
 }
 
+function FreqCard({
+  label,
+  price,
+  note,
+  selected,
+  onClick,
+}: {
+  label: string;
+  price: string;
+  note?: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative bg-hsp-card rounded-lg p-3 text-left border-2 transition-all duration-200 ${
+        selected ? "border-hsp-red" : "border-transparent"
+      }`}
+    >
+      {selected && (
+        <span className="absolute top-1.5 right-1.5 text-hsp-red text-xs font-bold">
+          ✓
+        </span>
+      )}
+      <div className="text-xs font-semibold text-hsp-dark">{label}</div>
+      <div className="text-hsp-red font-bold text-sm">{price}</div>
+      {note && <div className="text-hsp-gray text-xs">{note}</div>}
+    </button>
+  );
+}
+
 export default function SignUpPage() {
   const [step, setStep] = useState(1);
   const [accountType, setAccountType] = useState<AccountType | null>(null);
+  const [parentPlan, setParentPlan] = useState<ParentPlan | null>(null);
+  const [parentFrequency, setParentFrequency] = useState<ParentFreq | null>(null);
 
   function selectAccount(type: AccountType) {
     setAccountType(type);
@@ -92,8 +130,10 @@ export default function SignUpPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStep(3);
+    setStep(accountType === "parent" ? 4 : 3);
   }
+
+  const activeSteps = accountType === "parent" ? PARENT_STEPS : OTHER_STEPS;
 
   return (
     <div>
@@ -110,7 +150,7 @@ export default function SignUpPage() {
 
       {/* Progress Stepper */}
       <div className="flex items-start justify-center mb-10">
-        {STEPS.map((label, i) => (
+        {activeSteps.map((label, i) => (
           <div key={label} className="flex items-start">
             <div className="flex flex-col items-center w-20">
               <div
@@ -130,7 +170,7 @@ export default function SignUpPage() {
                 {label}
               </span>
             </div>
-            {i < STEPS.length - 1 && (
+            {i < activeSteps.length - 1 && (
               <div
                 className={`h-[2px] w-12 mt-4 transition-colors duration-300 ${
                   step > i + 1 ? "bg-hsp-red" : "bg-hsp-card"
@@ -165,128 +205,276 @@ export default function SignUpPage() {
         </div>
       )}
 
-      {/* Step 2 — Dynamic form */}
-      {step === 2 && accountType && (
+      {/* Step 2 — Parent Plan selection */}
+      {step === 2 && accountType === "parent" && (
         <div className="max-w-lg mx-auto">
           <h2 className="text-xl font-bold text-hsp-dark text-center mb-8">
-            {accountType === "student" && "Student-Athlete Details"}
-            {accountType === "parent" && "Parent / Guardian Details"}
-            {accountType === "coach" && "College Coach Details"}
+            Choose Your Plan
           </h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <InputField
-              label="Full Name"
-              type="text"
-              required
-              placeholder="John Smith"
-            />
+          <div className="flex flex-col gap-6">
+            {/* Section 1: Plan cards */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-hsp-dark">
+                Select Your Plan *
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setParentPlan("silver");
+                    setParentFrequency(null);
+                  }}
+                  className={`relative bg-hsp-card rounded-lg p-4 text-left border-2 transition-all duration-200 ${
+                    parentPlan === "silver"
+                      ? "border-hsp-red"
+                      : "border-transparent"
+                  }`}
+                >
+                  {parentPlan === "silver" && (
+                    <span className="absolute top-2 right-2 text-hsp-red text-sm font-bold">
+                      ✓
+                    </span>
+                  )}
+                  <div className="font-bold text-hsp-dark text-sm">Silver</div>
+                  <div className="text-hsp-gray text-xs mt-1 leading-relaxed">
+                    Full athlete profile · NCAA/NAIA/NJCAA programs · Photo &amp; video uploads
+                  </div>
+                </button>
 
-            {accountType === "student" && (
-              <>
-                <InputField
-                  label="Email"
-                  type="email"
-                  required
-                  placeholder="you@email.com"
-                />
-                <InputField
-                  label="Password"
-                  type="password"
-                  required
-                  placeholder="Create a password"
-                />
-                <SelectField label="Grade" options={GRADES} required />
-                <InputField
-                  label="High School Name"
-                  type="text"
-                  required
-                  placeholder="Lincoln High School"
-                />
-                <InputField
-                  label="City / State"
-                  type="text"
-                  required
-                  placeholder="Miami, FL"
-                />
-                <InputField
-                  label="Parent / Guardian Email"
-                  type="email"
-                  required
-                  placeholder="parent@email.com"
-                />
-              </>
-            )}
-
-            {accountType === "coach" && (
-              <>
-                <InputField
-                  label="University Email (.edu only)"
-                  type="email"
-                  required
-                  placeholder="coach@university.edu"
-                  pattern="^[^@]+@[^@]+\.edu$"
-                  title="Must be a .edu email address"
-                />
-                <InputField
-                  label="University Name"
-                  type="text"
-                  required
-                  placeholder="State University"
-                />
-                <SelectField label="Division" options={DIVISIONS} required />
-                <InputField
-                  label="State"
-                  type="text"
-                  required
-                  placeholder="Florida"
-                />
-              </>
-            )}
-
-            {accountType === "parent" && (
-              <>
-                <InputField
-                  label="Email"
-                  type="email"
-                  required
-                  placeholder="you@email.com"
-                />
-                <InputField
-                  label="Password"
-                  type="password"
-                  required
-                  placeholder="Create a password"
-                />
-                <SelectField
-                  label="Relationship"
-                  options={RELATIONSHIPS}
-                  required
-                />
-              </>
-            )}
-
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-24 py-3 rounded-lg border-2 border-hsp-card text-hsp-gray text-sm font-semibold hover:border-hsp-gray hover:text-hsp-dark transition-all duration-200"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200"
-              >
-                Continue
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setParentPlan("gold");
+                    setParentFrequency(null);
+                  }}
+                  className={`relative bg-hsp-card rounded-lg p-4 text-left border-2 transition-all duration-200 ${
+                    parentPlan === "gold"
+                      ? "border-hsp-red"
+                      : "border-transparent"
+                  }`}
+                >
+                  {parentPlan === "gold" && (
+                    <span className="absolute top-2 right-2 text-hsp-red text-sm font-bold">
+                      ✓
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-hsp-dark text-sm">Gold</span>
+                    <span className="text-xs font-semibold text-hsp-red bg-white px-1.5 py-0.5 rounded">
+                      Most Popular
+                    </span>
+                  </div>
+                  <div className="text-hsp-gray text-xs mt-1 leading-relaxed">
+                    Everything in Silver · Priority visibility · Advanced filters
+                  </div>
+                </button>
+              </div>
             </div>
-          </form>
+
+            {/* Section 2: Billing frequency — shown after plan selected */}
+            {parentPlan && (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-semibold text-hsp-dark">
+                  Billing Frequency *
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {parentPlan === "silver" ? (
+                    <>
+                      <FreqCard
+                        label="Monthly"
+                        price="$30/mo"
+                        selected={parentFrequency === "monthly"}
+                        onClick={() => setParentFrequency("monthly")}
+                      />
+                      <FreqCard
+                        label="6 Months"
+                        price="$170 total"
+                        note="save $10"
+                        selected={parentFrequency === "6months"}
+                        onClick={() => setParentFrequency("6months")}
+                      />
+                      <FreqCard
+                        label="Annual"
+                        price="$320/year"
+                        note="save $40"
+                        selected={parentFrequency === "annual"}
+                        onClick={() => setParentFrequency("annual")}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <FreqCard
+                        label="Monthly"
+                        price="$50/mo"
+                        selected={parentFrequency === "monthly"}
+                        onClick={() => setParentFrequency("monthly")}
+                      />
+                      <FreqCard
+                        label="6 Months"
+                        price="$290 total"
+                        note="save $10"
+                        selected={parentFrequency === "6months"}
+                        onClick={() => setParentFrequency("6months")}
+                      />
+                      <FreqCard
+                        label="Annual"
+                        price="$580/year"
+                        note="save $20"
+                        selected={parentFrequency === "annual"}
+                        onClick={() => setParentFrequency("annual")}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-3 pt-6">
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="w-24 py-3 rounded-lg border-2 border-hsp-card text-hsp-gray text-sm font-semibold hover:border-hsp-gray hover:text-hsp-dark transition-all duration-200"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={() => setStep(3)}
+              disabled={parentPlan === null || parentFrequency === null}
+              className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Continue
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Step 3 — Verify */}
-      {step === 3 && (
+      {/* Step 2 (student/coach) / Step 3 (parent) — Details form */}
+      {((step === 2 && accountType !== "parent") ||
+        (step === 3 && accountType === "parent")) &&
+        accountType && (
+          <div className="max-w-lg mx-auto">
+            <h2 className="text-xl font-bold text-hsp-dark text-center mb-8">
+              {accountType === "student" && "Student-Athlete Details"}
+              {accountType === "parent" && "Parent / Guardian Details"}
+              {accountType === "coach" && "College Coach Details"}
+            </h2>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <InputField
+                label="Full Name"
+                type="text"
+                required
+                placeholder="John Smith"
+              />
+
+              {accountType === "student" && (
+                <>
+                  <InputField
+                    label="Email"
+                    type="email"
+                    required
+                    placeholder="you@email.com"
+                  />
+                  <InputField
+                    label="Password"
+                    type="password"
+                    required
+                    placeholder="Create a password"
+                  />
+                  <SelectField label="Grade" options={GRADES} required />
+                  <InputField
+                    label="High School Name"
+                    type="text"
+                    required
+                    placeholder="Lincoln High School"
+                  />
+                  <InputField
+                    label="City / State"
+                    type="text"
+                    required
+                    placeholder="Miami, FL"
+                  />
+                  <InputField
+                    label="Parent / Guardian Email"
+                    type="email"
+                    required
+                    placeholder="parent@email.com"
+                  />
+                </>
+              )}
+
+              {accountType === "coach" && (
+                <>
+                  <InputField
+                    label="University Email (.edu only)"
+                    type="email"
+                    required
+                    placeholder="coach@university.edu"
+                    pattern="^[^@]+@[^@]+\.edu$"
+                    title="Must be a .edu email address"
+                  />
+                  <InputField
+                    label="University Name"
+                    type="text"
+                    required
+                    placeholder="State University"
+                  />
+                  <SelectField label="Division" options={DIVISIONS} required />
+                  <InputField
+                    label="State"
+                    type="text"
+                    required
+                    placeholder="Florida"
+                  />
+                </>
+              )}
+
+              {accountType === "parent" && (
+                <>
+                  <InputField
+                    label="Email"
+                    type="email"
+                    required
+                    placeholder="you@email.com"
+                  />
+                  <InputField
+                    label="Password"
+                    type="password"
+                    required
+                    placeholder="Create a password"
+                  />
+                  <SelectField
+                    label="Relationship"
+                    options={RELATIONSHIPS}
+                    required
+                  />
+                </>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setStep(accountType === "parent" ? 2 : 1)}
+                  className="w-24 py-3 rounded-lg border-2 border-hsp-card text-hsp-gray text-sm font-semibold hover:border-hsp-gray hover:text-hsp-dark transition-all duration-200"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200"
+                >
+                  Continue
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+      {/* Step 3 — Verify (student/coach) */}
+      {step === 3 && accountType !== "parent" && (
         <div className="max-w-md mx-auto text-center py-8 flex flex-col items-center gap-5">
           <div className="w-16 h-16 bg-hsp-card rounded-full flex items-center justify-center text-3xl">
             ✉
@@ -297,6 +485,20 @@ export default function SignUpPage() {
           <p className="text-hsp-gray text-sm leading-relaxed">
             We sent a verification link to your email. Click the link to
             activate your account and begin your recruiting journey.
+          </p>
+        </div>
+      )}
+
+      {/* Step 4 — Payment (parent) */}
+      {step === 4 && accountType === "parent" && (
+        <div className="max-w-md mx-auto text-center py-8 flex flex-col items-center gap-5">
+          <div className="w-16 h-16 bg-hsp-card rounded-full flex items-center justify-center text-3xl">
+            💳
+          </div>
+          <h2 className="text-2xl font-bold text-hsp-dark">Payment</h2>
+          <p className="text-hsp-gray text-sm leading-relaxed">
+            Secure payment processing coming soon. Your account details have
+            been saved.
           </p>
         </div>
       )}
