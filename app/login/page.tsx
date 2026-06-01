@@ -1,13 +1,55 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+const UNAUTHORIZED_MSG =
+  "Your account is not authorized. Please contact your Parent/Guardian to select a payment plan.";
 
-  function handleSubmit(e: React.FormEvent) {
+export default function LoginPage() {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(
+          data.error === UNAUTHORIZED_MSG
+            ? UNAUTHORIZED_MSG
+            : "Invalid email or password"
+        );
+        return;
+      }
+
+      const dashboardMap: Record<string, string> = {
+        student: "/dashboard/student",
+        parent: "/dashboard/parent",
+        coach: "/dashboard/coach",
+      };
+
+      router.push(dashboardMap[data.role] ?? "/");
+    } catch {
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -37,6 +79,8 @@ export default function LoginPage() {
               type="email"
               required
               placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
             />
           </div>
@@ -52,6 +96,8 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-hsp-card rounded-lg px-4 py-3 pr-12 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
               />
               <button
@@ -75,12 +121,19 @@ export default function LoginPage() {
             </Link>
           </div>
 
+          {error && (
+            <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#d93025" }}>
+              {error}
+            </p>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200"
+            disabled={loading}
+            className="w-full py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
 
         </form>

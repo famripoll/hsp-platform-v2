@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type AccountType = "student" | "parent" | "coach";
@@ -118,26 +119,90 @@ function FreqCard({
 }
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [accountType, setAccountType] = useState<AccountType | null>(null);
   const [parentPlan, setParentPlan] = useState<ParentPlan | null>(null);
   const [parentFrequency, setParentFrequency] = useState<ParentFreq | null>(null);
 
+  const [formData, setFormData] = useState({
+    full_name: "", email: "", password: "",
+    high_school: "", city: "", state: "", grade: "", parent_email: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   function selectAccount(type: AccountType) {
     setAccountType(type);
+    setError(null);
     setStep(2);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStep(accountType === "parent" ? 4 : 3);
+    setError(null);
+
+    if (accountType === "coach" && !formData.email.endsWith(".edu")) {
+      setError("Please use your official university email (.edu)");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          full_name: formData.full_name,
+          role: accountType,
+          ...(accountType === "student" && {
+            high_school: formData.high_school,
+            city: formData.city,
+            state: formData.state,
+            grade: formData.grade,
+            parent_email: formData.parent_email,
+          }),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong.");
+        return;
+      }
+
+      if (accountType === "student") {
+        setSuccessMessage(
+          "Your profile is pending. We've sent an email to your parent/guardian for authorization."
+        );
+        setStep(3);
+      } else if (accountType === "coach") {
+        setSuccessMessage("Your account is pending manual verification.");
+        setStep(3);
+      } else if (accountType === "parent") {
+        router.push("/login");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const activeSteps = accountType === "parent" ? PARENT_STEPS : OTHER_STEPS;
 
   return (
     <div>
-      {/* Hero — breaks out of layout padding to go full-width */}
+      {/* Hero */}
       <section className="text-center mb-10 md:mb-14">
         <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
           <span className="text-hsp-red">Start</span>{" "}
@@ -213,7 +278,6 @@ export default function SignUpPage() {
           </h2>
 
           <div className="flex flex-col gap-6">
-            {/* Section 1: Plan cards */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-hsp-dark">
                 Select Your Plan *
@@ -272,7 +336,6 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Section 2: Billing frequency — shown after plan selected */}
             {parentPlan && (
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-semibold text-hsp-dark">
@@ -366,8 +429,11 @@ export default function SignUpPage() {
               <InputField
                 label="Full Name"
                 type="text"
+                name="full_name"
                 required
                 placeholder="John Smith"
+                value={formData.full_name}
+                onChange={handleChange}
               />
 
               {accountType === "student" && (
@@ -375,33 +441,64 @@ export default function SignUpPage() {
                   <InputField
                     label="Email"
                     type="email"
+                    name="email"
                     required
                     placeholder="you@email.com"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                   <InputField
                     label="Password"
                     type="password"
+                    name="password"
                     required
                     placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
-                  <SelectField label="Grade" options={GRADES} required />
+                  <SelectField
+                    label="Grade"
+                    options={GRADES}
+                    required
+                    name="grade"
+                    value={formData.grade}
+                    onChange={handleChange}
+                  />
                   <InputField
                     label="High School Name"
                     type="text"
+                    name="high_school"
                     required
                     placeholder="Lincoln High School"
+                    value={formData.high_school}
+                    onChange={handleChange}
                   />
                   <InputField
-                    label="City / State"
+                    label="City"
                     type="text"
+                    name="city"
                     required
-                    placeholder="Miami, FL"
+                    placeholder="Miami"
+                    value={formData.city}
+                    onChange={handleChange}
+                  />
+                  <InputField
+                    label="State"
+                    type="text"
+                    name="state"
+                    required
+                    placeholder="FL"
+                    value={formData.state}
+                    onChange={handleChange}
                   />
                   <InputField
                     label="Parent / Guardian Email"
                     type="email"
+                    name="parent_email"
                     required
                     placeholder="parent@email.com"
+                    value={formData.parent_email}
+                    onChange={handleChange}
                   />
                 </>
               )}
@@ -411,10 +508,20 @@ export default function SignUpPage() {
                   <InputField
                     label="University Email (.edu only)"
                     type="email"
+                    name="email"
                     required
                     placeholder="coach@university.edu"
-                    pattern="^[^@]+@[^@]+\.edu$"
-                    title="Must be a .edu email address"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  <InputField
+                    label="Password"
+                    type="password"
+                    name="password"
+                    required
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                   <InputField
                     label="University Name"
@@ -437,14 +544,20 @@ export default function SignUpPage() {
                   <InputField
                     label="Email"
                     type="email"
+                    name="email"
                     required
                     placeholder="you@email.com"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                   <InputField
                     label="Password"
                     type="password"
+                    name="password"
                     required
                     placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                   <SelectField
                     label="Relationship"
@@ -460,19 +573,29 @@ export default function SignUpPage() {
                 </>
               )}
 
+              {error && (
+                <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">
+                  {error}
+                </p>
+              )}
+
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(accountType === "parent" ? 2 : 1)}
+                  onClick={() => {
+                    setError(null);
+                    setStep(accountType === "parent" ? 2 : 1);
+                  }}
                   className="w-24 py-3 rounded-lg border-2 border-hsp-card text-hsp-gray text-sm font-semibold hover:border-hsp-gray hover:text-hsp-dark transition-all duration-200"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200"
+                  disabled={loading}
+                  className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Continue
+                  {loading ? "Processing..." : "Continue"}
                 </button>
               </div>
             </form>
@@ -486,11 +609,11 @@ export default function SignUpPage() {
             ✉
           </div>
           <h2 className="text-2xl font-bold text-hsp-dark">
-            Check your inbox
+            {accountType === "coach" ? "Account Submitted" : "Check your inbox"}
           </h2>
           <p className="text-hsp-gray text-sm leading-relaxed">
-            We sent a verification link to your email. Click the link to
-            activate your account and begin your recruiting journey.
+            {successMessage ??
+              "We sent a verification link to your email. Click the link to activate your account and begin your recruiting journey."}
           </p>
         </div>
       )}
