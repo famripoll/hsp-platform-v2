@@ -128,6 +128,7 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
     high_school: "", city: "", state: "", grade: "", parent_email: "",
+    athlete_email: "", relationship: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,6 +170,10 @@ export default function SignUpPage() {
             state: formData.state,
             grade: formData.grade,
             parent_email: formData.parent_email,
+          }),
+          ...(accountType === "parent" && {
+            athlete_email: formData.athlete_email,
+            relationship: formData.relationship,
           }),
         }),
       });
@@ -563,12 +568,18 @@ export default function SignUpPage() {
                     label="Relationship"
                     options={RELATIONSHIPS}
                     required
+                    name="relationship"
+                    value={formData.relationship}
+                    onChange={handleChange}
                   />
                   <InputField
                     label="Athlete's Registration Email *"
                     type="email"
+                    name="athlete_email"
                     required
                     placeholder="Enter the email your athlete used to register"
+                    value={formData.athlete_email}
+                    onChange={handleChange}
                   />
                 </>
               )}
