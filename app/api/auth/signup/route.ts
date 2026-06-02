@@ -15,6 +15,40 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
+  let student: { id: string } | null = null;
+
+  if (role === "parent") {
+    const { data: studentData, error: studentLookupError } = await supabase
+      .from("students")
+      .select("id")
+      .eq("email", athlete_email)
+      .single();
+    console.log("[signup] student lookup:", { studentData, studentLookupError });
+
+    if (studentLookupError || !studentData) {
+      return NextResponse.json(
+        { error: "No athlete account found. Please ask your athlete to register first." },
+        { status: 404 }
+      );
+    }
+
+    student = studentData;
+
+    const { data: existingParent, error: parentLookupError } = await supabase
+      .from("parents")
+      .select("id")
+      .eq("student_id", student.id)
+      .single();
+    console.log("[signup] existing parent lookup:", { existingParent, parentLookupError });
+
+    if (existingParent) {
+      return NextResponse.json(
+        { error: "A parent account is already linked to this athlete. Only one parent account is allowed per athlete." },
+        { status: 400 }
+      );
+    }
+  }
+
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -58,23 +92,9 @@ export async function POST(request: NextRequest) {
   }
 
   if (role === "parent") {
-    const { data: student, error: studentLookupError } = await supabase
-      .from("students")
-      .select("id")
-      .eq("email", athlete_email)
-      .single();
-    console.log("[signup] student lookup:", { student, studentLookupError });
-
-    if (studentLookupError || !student) {
-      return NextResponse.json(
-        { error: "No athlete account found. Please ask your athlete to register first." },
-        { status: 404 }
-      );
-    }
-
     const { error: parentError } = await supabase.from("parents").insert({
       profile_id: authData.user.id,
-      student_id: student.id,
+      student_id: student!.id,
       relationship,
     });
     console.log("[signup] parents.insert error:", parentError);
