@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
   if (role === "student") {
     const { error: studentError } = await supabase.from("students").insert({
       profile_id: authData.user.id,
+      email,
       high_school,
       city,
       state,

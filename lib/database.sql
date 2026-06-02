@@ -10,6 +10,7 @@ create table profiles (
 create table students (
   id uuid primary key default gen_random_uuid(),
   profile_id uuid references profiles on delete cascade,
+  email text,
   high_school text,
   city text,
   state text,
