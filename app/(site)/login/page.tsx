@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createClient } from "@/lib/supabase-client";
 
 const UNAUTHORIZED_MSG =
   "Your account is not authorized. Please contact your Parent/Guardian to select a payment plan.";
@@ -21,20 +22,31 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const supabase = createClient();
+
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await res.json();
+      if (authError || !authData.user) {
+        setError("Invalid email or password");
+        return;
+      }
 
-      if (!res.ok) {
-        setError(
-          data.error === UNAUTHORIZED_MSG
-            ? UNAUTHORIZED_MSG
-            : "Invalid email or password"
-        );
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("status, role")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        setError("Invalid email or password");
+        return;
+      }
+
+      if (profile.status === "pending" || profile.status === "expired") {
+        setError(UNAUTHORIZED_MSG);
         return;
       }
 
@@ -44,7 +56,7 @@ export default function LoginPage() {
         coach: "/dashboard/coach",
       };
 
-      router.push(dashboardMap[data.role] ?? "/");
+      router.push(dashboardMap[profile.role] ?? "/");
     } catch {
       setError("Invalid email or password");
     } finally {
