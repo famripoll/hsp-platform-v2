@@ -28,8 +28,8 @@ type Student = {
   parent_email?: string | null;
   // Future columns not yet in DB schema
   graduation_year?: string | null;
-  position_primary?: string | null;
-  position_secondary?: string | null;
+  primary_position?: string | null;
+  secondary_position?: string | null;
   bats?: string | null;
   throws?: string | null;
   height?: string | null;
@@ -181,13 +181,13 @@ export default async function StudentDashboardPage({
                   className="text-xs font-bold rounded px-2 py-1 text-white"
                   style={{ backgroundColor: "#d93025" }}
                 >
-                  PRIMARY&nbsp;&nbsp;{student.position_primary ?? DASH}
+                  PRIMARY&nbsp;&nbsp;{student.primary_position ?? DASH}
                 </span>
                 <span
                   className="text-xs rounded px-2 py-1"
                   style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
                 >
-                  SECONDARY&nbsp;&nbsp;{student.position_secondary ?? DASH}
+                  SECONDARY&nbsp;&nbsp;{student.secondary_position ?? DASH}
                 </span>
               </div>
 
