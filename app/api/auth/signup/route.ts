@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { email, password, full_name, role, high_school, city, state, grade, parent_email, athlete_email, relationship } = await request.json();
+  const { email, password, full_name, role, high_school, city, state, grade, parent_email, athlete_email, relationship, phone } = await request.json();
   console.log("[signup] received:", { email, full_name, role });
 
   if (!email || !password || !full_name || !role) {
@@ -101,6 +101,22 @@ export async function POST(request: NextRequest) {
 
     if (parentError) {
       return NextResponse.json({ error: parentError.message }, { status: 500 });
+    }
+  }
+
+  if (role === "coach") {
+    const { error: coachError } = await supabase.from("coaches").insert({
+      profile_id: authData.user.id,
+      university: "",
+      division: "",
+      state: "",
+      verified: false,
+      phone: phone ?? "",
+    });
+    console.log("[signup] coaches.insert error:", coachError);
+
+    if (coachError) {
+      return NextResponse.json({ error: coachError.message }, { status: 500 });
     }
   }
 

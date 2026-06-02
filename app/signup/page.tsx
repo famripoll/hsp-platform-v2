@@ -128,10 +128,11 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
     high_school: "", city: "", state: "", grade: "", parent_email: "",
-    athlete_email: "", relationship: "",
+    athlete_email: "", relationship: "", phone: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   function selectAccount(type: AccountType) {
@@ -147,6 +148,15 @@ export default function SignUpPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setPhoneError(null);
+
+    if (accountType === "coach") {
+      const digits = formData.phone.replace(/\D/g, "");
+      if (digits.length !== 10) {
+        setPhoneError("Please enter a valid 10-digit US phone number.");
+        return;
+      }
+    }
 
     if (accountType === "coach" && !formData.email.endsWith(".edu")) {
       setError("Please use your official university email (.edu)");
@@ -174,6 +184,9 @@ export default function SignUpPage() {
           ...(accountType === "parent" && {
             athlete_email: formData.athlete_email,
             relationship: formData.relationship,
+          }),
+          ...(accountType === "coach" && {
+            phone: formData.phone,
           }),
         }),
       });
@@ -510,6 +523,26 @@ export default function SignUpPage() {
 
               {accountType === "coach" && (
                 <>
+                  <div className="flex flex-col gap-1">
+                    <InputField
+                      label="Phone Number"
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="Phone Number"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        let formatted = digits;
+                        if (digits.length > 6) formatted = digits.slice(0, 3) + "-" + digits.slice(3, 6) + "-" + digits.slice(6);
+                        else if (digits.length > 3) formatted = digits.slice(0, 3) + "-" + digits.slice(3);
+                        setFormData((prev) => ({ ...prev, phone: formatted }));
+                      }}
+                    />
+                    {phoneError && (
+                      <p className="text-sm text-red-600">{phoneError}</p>
+                    )}
+                  </div>
                   <InputField
                     label="University Email (.edu only)"
                     type="email"

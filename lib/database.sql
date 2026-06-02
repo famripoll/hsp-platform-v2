@@ -34,6 +34,7 @@ create table coaches (
   university text,
   division text,
   state text,
+  phone text default '',
   verified boolean default false,
   created_at timestamp with time zone default now()
 );
