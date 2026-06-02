@@ -128,17 +128,17 @@ export default async function StudentDashboardPage({
           <div className="md:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm p-6">
 
-              {/* Avatar + Name */}
-              <div className="flex items-start gap-4 mb-4">
+              {/* Avatar + Name + Badges + Edit Profile */}
+              <div className="flex items-start gap-4 mb-5">
                 <div className="relative shrink-0">
                   <div
-                    className="w-20 h-20 rounded-full flex items-center justify-center"
+                    className="w-24 h-24 rounded-full flex items-center justify-center"
                     style={{ backgroundColor: "#0f172a" }}
                   >
-                    <User className="w-10 h-10 text-white" />
+                    <User className="w-12 h-12 text-white" />
                   </div>
                   <button
-                    className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm"
+                    className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm"
                     style={{ backgroundColor: "#d93025" }}
                     aria-label="Upload photo"
                   >
@@ -148,12 +148,12 @@ export default async function StudentDashboardPage({
 
                 <div className="flex-1 min-w-0">
                   <h2
-                    className="text-2xl font-bold leading-tight"
+                    className="text-2xl font-bold leading-tight text-right"
                     style={{ color: "#0f172a" }}
                   >
                     {profile.full_name ?? DASH}
                   </h2>
-                  <div className="flex items-center gap-1 mt-1">
+                  <div className="flex items-center justify-end gap-1 mt-1">
                     <GraduationCap
                       className="w-3.5 h-3.5 shrink-0"
                       style={{ color: "#64748b" }}
@@ -162,43 +162,45 @@ export default async function StudentDashboardPage({
                       {student.high_school ?? DASH}
                     </span>
                   </div>
-                  <span
-                    className="inline-block mt-1.5 text-xs rounded-full px-3 py-1"
-                    style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
+                  <div className="flex justify-end mt-1.5">
+                    <span
+                      className="text-xs rounded-full px-3 py-1"
+                      style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
+                    >
+                      {student.graduation_year
+                        ? `Class of ${student.graduation_year}`
+                        : student.grade
+                        ? `Grade ${student.grade}`
+                        : DASH}
+                    </span>
+                  </div>
+
+                  {/* Position Badges */}
+                  <div className="flex flex-row gap-2 justify-end w-full mt-2">
+                    <span
+                      className="text-xs font-bold rounded px-2 py-1 text-white"
+                      style={{ backgroundColor: "#d93025" }}
+                    >
+                      PRIMARY&nbsp;&nbsp;{student.primary_position ?? DASH}
+                    </span>
+                    <span
+                      className="text-xs rounded px-2 py-1"
+                      style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
+                    >
+                      SECONDARY&nbsp;&nbsp;{student.secondary_position ?? DASH}
+                    </span>
+                  </div>
+
+                  {/* Edit Profile */}
+                  <button
+                    className="w-full flex items-center justify-center gap-2 border text-sm font-semibold rounded-lg py-2 mt-3 transition-colors hover:bg-red-50"
+                    style={{ borderColor: "#d93025", color: "#d93025" }}
                   >
-                    {student.graduation_year
-                      ? `Class of ${student.graduation_year}`
-                      : student.grade
-                      ? `Grade ${student.grade}`
-                      : DASH}
-                  </span>
+                    <Pencil className="w-4 h-4" />
+                    Edit Profile
+                  </button>
                 </div>
               </div>
-
-              {/* Position Badges */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span
-                  className="text-xs font-bold rounded px-2 py-1 text-white"
-                  style={{ backgroundColor: "#d93025" }}
-                >
-                  PRIMARY&nbsp;&nbsp;{student.primary_position ?? DASH}
-                </span>
-                <span
-                  className="text-xs rounded px-2 py-1"
-                  style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
-                >
-                  SECONDARY&nbsp;&nbsp;{student.secondary_position ?? DASH}
-                </span>
-              </div>
-
-              {/* Edit Profile */}
-              <button
-                className="w-full flex items-center justify-center gap-2 border text-sm font-semibold rounded-lg py-2 mb-5 transition-colors hover:bg-red-50"
-                style={{ borderColor: "#d93025", color: "#d93025" }}
-              >
-                <Pencil className="w-4 h-4" />
-                Edit Profile
-              </button>
 
               {/* Stats 2×2 Grid */}
               <div className="grid grid-cols-2 gap-3 mb-5">
@@ -442,9 +444,9 @@ export default async function StudentDashboardPage({
 
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
-                  { sub: "GPA", label: "Unweighted", value: student.gpa?.toString() ?? DASH },
-                  { sub: "SAT", label: "Score", value: student.sat_score ?? DASH },
-                  { sub: "ACT", label: "Composite", value: student.act_score ?? DASH },
+                  { sub: "GPA", label: "Unweighted GPA", value: student.gpa?.toString() ?? DASH },
+                  { sub: "SAT", label: "Total Score", value: student.sat_score ?? DASH },
+                  { sub: "ACT", label: "Composite Score", value: student.act_score ?? DASH },
                 ].map((item) => (
                   <div
                     key={item.sub}
