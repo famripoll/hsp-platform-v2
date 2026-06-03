@@ -127,7 +127,7 @@ export default function SignUpPage() {
 
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
-    high_school: "", city: "", state: "", grade: "", parent_email: "",
+    high_school: "", city: "", state: "", grade: "", parent_email: "", parent_name: "",
     athlete_email: "", relationship: "", phone: "",
   });
   const [loading, setLoading] = useState(false);
@@ -180,6 +180,7 @@ export default function SignUpPage() {
             state: formData.state,
             grade: formData.grade,
             parent_email: formData.parent_email,
+            parent_name: formData.parent_name,
           }),
           ...(accountType === "parent" && {
             athlete_email: formData.athlete_email,
@@ -507,6 +508,15 @@ export default function SignUpPage() {
                     required
                     placeholder="Florida"
                     value={formData.state}
+                    onChange={handleChange}
+                  />
+                  <InputField
+                    label="Parent / Guardian Full Name"
+                    type="text"
+                    name="parent_name"
+                    required
+                    placeholder="Mike Smith"
+                    value={formData.parent_name}
                     onChange={handleChange}
                   />
                   <InputField

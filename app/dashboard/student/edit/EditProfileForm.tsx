@@ -16,6 +16,9 @@ type StudentData = {
   city?: string | null;
   state?: string | null;
   phone?: string | null;
+  parent_name?: string | null;
+  parent_email?: string | null;
+  parent_phone?: string | null;
   coach_name?: string | null;
   coach_email?: string | null;
   coach_phone?: string | null;
@@ -72,6 +75,9 @@ export default function EditProfileForm({
     city: initialData.city ?? "",
     state: initialData.state ?? "",
     phone: initialData.phone ?? "",
+    parent_name: initialData.parent_name ?? "",
+    parent_email: initialData.parent_email ?? "",
+    parent_phone: initialData.parent_phone ?? "",
     coach_name: initialData.coach_name ?? "",
     coach_email: initialData.coach_email ?? "",
     coach_phone: initialData.coach_phone ?? "",
@@ -140,6 +146,9 @@ export default function EditProfileForm({
         city: form.city || null,
         state: form.state || null,
         phone: form.phone || null,
+        parent_name: form.parent_name || null,
+        parent_email: form.parent_email || null,
+        parent_phone: form.parent_phone || null,
         coach_name: form.coach_name || null,
         coach_email: form.coach_email || null,
         coach_phone: form.coach_phone || null,
@@ -274,7 +283,26 @@ export default function EditProfileForm({
           </div>
         </div>
 
-        {/* Section 2: High School Coach Info */}
+        {/* Section 2: Parent / Guardian Info */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>Parent / Guardian Info</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className={LABEL}>Parent Name</label>
+              <input type="text" className={INPUT} value={form.parent_name} onChange={set("parent_name")} />
+            </div>
+            <div>
+              <label className={LABEL}>Parent Email</label>
+              <input type="text" className={INPUT} value={form.parent_email} onChange={set("parent_email")} />
+            </div>
+            <div>
+              <label className={LABEL}>Parent Phone</label>
+              <input type="text" className={INPUT} value={form.parent_phone} onChange={set("parent_phone")} />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: High School Coach Info */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h2 className={SECTION_TITLE}>High School Coach Info</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

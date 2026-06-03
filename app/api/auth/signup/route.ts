@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { email, password, full_name, role, high_school, city, state, grade, parent_email, athlete_email, relationship, phone } = await request.json();
+  const { email, password, full_name, role, high_school, city, state, grade, parent_email, parent_name, athlete_email, relationship, phone } = await request.json();
   console.log("[signup] received:", { email, full_name, role });
 
   if (!email || !password || !full_name || !role) {
@@ -84,6 +84,7 @@ export async function POST(request: NextRequest) {
       state,
       grade,
       parent_email,
+      parent_name,
     });
     console.log("[signup] students.insert error:", studentError);
 
