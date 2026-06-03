@@ -1,0 +1,414 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase-client";
+
+type StudentData = {
+  high_school?: string | null;
+  graduation_year?: string | null;
+  primary_position?: string | null;
+  secondary_position?: string | null;
+  bats?: string | null;
+  throws?: string | null;
+  height?: string | null;
+  weight?: string | null;
+  city?: string | null;
+  state?: string | null;
+  phone?: string | null;
+  coach_name?: string | null;
+  coach_email?: string | null;
+  coach_phone?: string | null;
+  stat_avg?: string | null;
+  stat_obp?: string | null;
+  stat_slg?: string | null;
+  stat_ops?: string | null;
+  stat_rbi?: string | null;
+  stat_sb?: string | null;
+  stat_fpd?: string | null;
+  stat_era?: string | null;
+  stat_whip?: string | null;
+  stat_ip?: string | null;
+  stat_k?: string | null;
+  stat_bb?: string | null;
+  stat_kbb?: string | null;
+  stat_velo?: string | null;
+  gpa?: number | null;
+  sat_score?: string | null;
+  act_score?: string | null;
+  intended_major?: string | null;
+  recruiting_goals?: string | null;
+};
+
+const POSITIONS = ["P", "C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
+
+const INPUT = "border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent";
+const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
+const SECTION_TITLE = "text-xl font-bold text-[#0f172a] mb-5";
+
+export default function EditProfileForm({
+  initialFullName,
+  initialData,
+  userId,
+}: {
+  initialFullName: string;
+  initialData: StudentData;
+  userId: string;
+}) {
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [form, setForm] = useState({
+    full_name: initialFullName,
+    high_school: initialData.high_school ?? "",
+    graduation_year: initialData.graduation_year ?? "",
+    primary_position: initialData.primary_position ?? "",
+    secondary_position: initialData.secondary_position ?? "",
+    bats: initialData.bats ?? "",
+    throws: initialData.throws ?? "",
+    height: initialData.height ?? "",
+    weight: initialData.weight ?? "",
+    city: initialData.city ?? "",
+    state: initialData.state ?? "",
+    phone: initialData.phone ?? "",
+    coach_name: initialData.coach_name ?? "",
+    coach_email: initialData.coach_email ?? "",
+    coach_phone: initialData.coach_phone ?? "",
+    stat_avg: initialData.stat_avg ?? "",
+    stat_obp: initialData.stat_obp ?? "",
+    stat_slg: initialData.stat_slg ?? "",
+    stat_ops: initialData.stat_ops ?? "",
+    stat_rbi: initialData.stat_rbi ?? "",
+    stat_sb: initialData.stat_sb ?? "",
+    stat_fpd: initialData.stat_fpd ?? "",
+    stat_era: initialData.stat_era ?? "",
+    stat_whip: initialData.stat_whip ?? "",
+    stat_ip: initialData.stat_ip ?? "",
+    stat_k: initialData.stat_k ?? "",
+    stat_bb: initialData.stat_bb ?? "",
+    stat_kbb: initialData.stat_kbb ?? "",
+    stat_velo: initialData.stat_velo ?? "",
+    gpa: initialData.gpa != null ? String(initialData.gpa) : "",
+    sat_score: initialData.sat_score ?? "",
+    act_score: initialData.act_score ?? "",
+    intended_major: initialData.intended_major ?? "",
+    recruiting_goals: initialData.recruiting_goals ?? "",
+  });
+
+  type FormKey = keyof typeof form;
+
+  function set(field: FormKey) {
+    return (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >
+    ) => {
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    const supabase = createClient();
+
+    const { error: profileErr } = await supabase
+      .from("profiles")
+      .update({ full_name: form.full_name })
+      .eq("id", userId);
+
+    if (profileErr) {
+      setSaving(false);
+      setError(profileErr.message);
+      return;
+    }
+
+    const { error: studentErr } = await supabase
+      .from("students")
+      .update({
+        high_school: form.high_school || null,
+        graduation_year: form.graduation_year || null,
+        primary_position: form.primary_position || null,
+        secondary_position: form.secondary_position || null,
+        bats: form.bats || null,
+        throws: form.throws || null,
+        height: form.height || null,
+        weight: form.weight || null,
+        city: form.city || null,
+        state: form.state || null,
+        phone: form.phone || null,
+        coach_name: form.coach_name || null,
+        coach_email: form.coach_email || null,
+        coach_phone: form.coach_phone || null,
+        stat_avg: form.stat_avg || null,
+        stat_obp: form.stat_obp || null,
+        stat_slg: form.stat_slg || null,
+        stat_ops: form.stat_ops || null,
+        stat_rbi: form.stat_rbi || null,
+        stat_sb: form.stat_sb || null,
+        stat_fpd: form.stat_fpd || null,
+        stat_era: form.stat_era || null,
+        stat_whip: form.stat_whip || null,
+        stat_ip: form.stat_ip || null,
+        stat_k: form.stat_k || null,
+        stat_bb: form.stat_bb || null,
+        stat_kbb: form.stat_kbb || null,
+        stat_velo: form.stat_velo || null,
+        gpa: form.gpa ? parseFloat(form.gpa) : null,
+        sat_score: form.sat_score || null,
+        act_score: form.act_score || null,
+        intended_major: form.intended_major || null,
+        recruiting_goals: form.recruiting_goals || null,
+      })
+      .eq("profile_id", userId);
+
+    if (studentErr) {
+      setSaving(false);
+      setError(studentErr.message);
+      return;
+    }
+
+    router.push("/dashboard/student");
+  }
+
+  const positionStats: { label: string; field: FormKey; step: string }[] = [
+    { label: "AVG", field: "stat_avg", step: "0.001" },
+    { label: "OBP", field: "stat_obp", step: "0.001" },
+    { label: "SLG", field: "stat_slg", step: "0.001" },
+    { label: "OPS", field: "stat_ops", step: "0.001" },
+    { label: "RBI", field: "stat_rbi", step: "1" },
+    { label: "SB", field: "stat_sb", step: "1" },
+    { label: "FPD%", field: "stat_fpd", step: "0.001" },
+  ];
+
+  const pitcherStats: { label: string; field: FormKey; step: string }[] = [
+    { label: "ERA", field: "stat_era", step: "0.01" },
+    { label: "WHIP", field: "stat_whip", step: "0.01" },
+    { label: "IP", field: "stat_ip", step: "0.1" },
+    { label: "K", field: "stat_k", step: "1" },
+    { label: "BB", field: "stat_bb", step: "1" },
+    { label: "K/BB", field: "stat_kbb", step: "0.01" },
+    { label: "VELO mph", field: "stat_velo", step: "1" },
+  ];
+
+  return (
+    <div className="max-w-[800px] mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-[#0f172a] mb-6">Edit Profile</h1>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+        {/* Section 1: Personal Info */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>Personal Info</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className={LABEL}>Full Name</label>
+              <input type="text" className={INPUT} value={form.full_name} onChange={set("full_name")} />
+            </div>
+            <div className="md:col-span-2">
+              <label className={LABEL}>High School</label>
+              <input type="text" className={INPUT} value={form.high_school} onChange={set("high_school")} />
+            </div>
+            <div>
+              <label className={LABEL}>Graduation Year</label>
+              <input type="text" className={INPUT} value={form.graduation_year} onChange={set("graduation_year")} />
+            </div>
+            <div>
+              <label className={LABEL}>Primary Position</label>
+              <select className={INPUT} value={form.primary_position} onChange={set("primary_position")}>
+                <option value="">Select…</option>
+                {POSITIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={LABEL}>Secondary Position</label>
+              <select className={INPUT} value={form.secondary_position} onChange={set("secondary_position")}>
+                <option value="">None</option>
+                {POSITIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={LABEL}>Bats</label>
+              <select className={INPUT} value={form.bats} onChange={set("bats")}>
+                <option value="">Select…</option>
+                <option value="Right">Right</option>
+                <option value="Left">Left</option>
+                <option value="Switch">Switch</option>
+              </select>
+            </div>
+            <div>
+              <label className={LABEL}>Throws</label>
+              <select className={INPUT} value={form.throws} onChange={set("throws")}>
+                <option value="">Select…</option>
+                <option value="Right">Right</option>
+                <option value="Left">Left</option>
+              </select>
+            </div>
+            <div>
+              <label className={LABEL}>{"Height (e.g. 5'7\")"}</label>
+              <input type="text" className={INPUT} value={form.height} onChange={set("height")} placeholder={"5'7\""} />
+            </div>
+            <div>
+              <label className={LABEL}>Weight (e.g. 145)</label>
+              <input type="text" className={INPUT} value={form.weight} onChange={set("weight")} placeholder="145" />
+            </div>
+            <div>
+              <label className={LABEL}>City</label>
+              <input type="text" className={INPUT} value={form.city} onChange={set("city")} />
+            </div>
+            <div>
+              <label className={LABEL}>State</label>
+              <input type="text" className={INPUT} value={form.state} onChange={set("state")} />
+            </div>
+            <div className="md:col-span-2">
+              <label className={LABEL}>Phone</label>
+              <input type="text" className={INPUT} value={form.phone} onChange={set("phone")} />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: High School Coach Info */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>High School Coach Info</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className={LABEL}>Coach Name</label>
+              <input type="text" className={INPUT} value={form.coach_name} onChange={set("coach_name")} />
+            </div>
+            <div>
+              <label className={LABEL}>Coach Email</label>
+              <input type="text" className={INPUT} value={form.coach_email} onChange={set("coach_email")} />
+            </div>
+            <div>
+              <label className={LABEL}>Coach Phone</label>
+              <input type="text" className={INPUT} value={form.coach_phone} onChange={set("coach_phone")} />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Position Player Stats */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>Position Player Stats</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {positionStats.map(({ label, field, step }) => (
+              <div key={field}>
+                <label className={LABEL}>{label}</label>
+                <input
+                  type="number"
+                  step={step}
+                  min="0"
+                  className={INPUT}
+                  value={form[field]}
+                  onChange={set(field)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Section 4: Pitcher Stats */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>Pitcher Stats</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {pitcherStats.map(({ label, field, step }) => (
+              <div key={field}>
+                <label className={LABEL}>{label}</label>
+                <input
+                  type="number"
+                  step={step}
+                  min="0"
+                  className={INPUT}
+                  value={form[field]}
+                  onChange={set(field)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Section 5: Academic Profile */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h2 className={SECTION_TITLE}>Academic Profile</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={LABEL}>GPA</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="5"
+                className={INPUT}
+                value={form.gpa}
+                onChange={set("gpa")}
+              />
+            </div>
+            <div>
+              <label className={LABEL}>SAT Score</label>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                className={INPUT}
+                value={form.sat_score}
+                onChange={set("sat_score")}
+              />
+            </div>
+            <div>
+              <label className={LABEL}>ACT Score</label>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                className={INPUT}
+                value={form.act_score}
+                onChange={set("act_score")}
+              />
+            </div>
+            <div>
+              <label className={LABEL}>Intended Major</label>
+              <input type="text" className={INPUT} value={form.intended_major} onChange={set("intended_major")} />
+            </div>
+            <div className="md:col-span-2">
+              <label className={LABEL}>Recruiting Goals</label>
+              <textarea
+                rows={4}
+                className={INPUT}
+                value={form.recruiting_goals}
+                onChange={set("recruiting_goals")}
+              />
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-red-600 text-sm font-medium">{error}</p>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3 pb-4">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity disabled:opacity-60"
+          >
+            {saving ? "Saving…" : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/student")}
+            className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
