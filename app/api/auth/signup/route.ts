@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
     const { error: studentError } = await supabase.from("students").insert({
       profile_id: authData.user.id,
       email,
+      full_name,
       high_school,
       city,
       state,

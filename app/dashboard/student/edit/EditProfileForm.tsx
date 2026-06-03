@@ -265,7 +265,7 @@ export default function EditProfileForm({
             </div>
             <div>
               <label className={LABEL}>State</label>
-              <input type="text" className={INPUT} value={form.state} onChange={set("state")} />
+              <input type="text" className={INPUT} value={form.state} onChange={set("state")} placeholder="Florida" />
             </div>
             <div className="md:col-span-2">
               <label className={LABEL}>Phone</label>

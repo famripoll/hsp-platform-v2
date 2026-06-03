@@ -505,7 +505,7 @@ export default function SignUpPage() {
                     type="text"
                     name="state"
                     required
-                    placeholder="FL"
+                    placeholder="Florida"
                     value={formData.state}
                     onChange={handleChange}
                   />
