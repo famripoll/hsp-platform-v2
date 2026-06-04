@@ -35,14 +35,11 @@ export default async function StudentEditPage() {
     <>
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200"
-          >
+          <span className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none cursor-pointer transition-transform duration-200 hover:scale-105">
             <span className="text-hsp-red">High</span>
             <span className="text-hsp-dark">School</span>
             <span className="text-hsp-dark">Prospect</span>
-          </Link>
+          </span>
           <div className="flex items-center gap-3">
             <span
               className="text-sm font-medium hidden sm:inline"

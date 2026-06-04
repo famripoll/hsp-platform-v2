@@ -22,11 +22,17 @@ type StudentData = {
   coach_name?: string | null;
   coach_email?: string | null;
   coach_phone?: string | null;
+  stat_ab?: string | null;
+  stat_h?: string | null;
+  stat_2b?: string | null;
+  stat_3b?: string | null;
+  stat_r?: string | null;
   stat_avg?: string | null;
   stat_obp?: string | null;
   stat_slg?: string | null;
   stat_ops?: string | null;
   stat_rbi?: string | null;
+  stat_hr?: string | null;
   stat_sb?: string | null;
   stat_fpd?: string | null;
   stat_era?: string | null;
@@ -81,11 +87,17 @@ export default function EditProfileForm({
     coach_name: initialData.coach_name ?? "",
     coach_email: initialData.coach_email ?? "",
     coach_phone: initialData.coach_phone ?? "",
+    stat_ab: initialData.stat_ab ?? "",
+    stat_h: initialData.stat_h ?? "",
+    stat_2b: initialData.stat_2b ?? "",
+    stat_3b: initialData.stat_3b ?? "",
+    stat_r: initialData.stat_r ?? "",
     stat_avg: initialData.stat_avg ?? "",
     stat_obp: initialData.stat_obp ?? "",
     stat_slg: initialData.stat_slg ?? "",
     stat_ops: initialData.stat_ops ?? "",
     stat_rbi: initialData.stat_rbi ?? "",
+    stat_hr: initialData.stat_hr ?? "",
     stat_sb: initialData.stat_sb ?? "",
     stat_fpd: initialData.stat_fpd ?? "",
     stat_era: initialData.stat_era ?? "",
@@ -152,11 +164,17 @@ export default function EditProfileForm({
         coach_name: form.coach_name || null,
         coach_email: form.coach_email || null,
         coach_phone: form.coach_phone || null,
+        stat_ab: form.stat_ab || null,
+        stat_h: form.stat_h || null,
+        stat_2b: form.stat_2b || null,
+        stat_3b: form.stat_3b || null,
+        stat_r: form.stat_r || null,
         stat_avg: form.stat_avg || null,
         stat_obp: form.stat_obp || null,
         stat_slg: form.stat_slg || null,
         stat_ops: form.stat_ops || null,
         stat_rbi: form.stat_rbi || null,
+        stat_hr: form.stat_hr || null,
         stat_sb: form.stat_sb || null,
         stat_fpd: form.stat_fpd || null,
         stat_era: form.stat_era || null,
@@ -183,14 +201,18 @@ export default function EditProfileForm({
     router.push("/dashboard/student");
   }
 
-  const positionStats: { label: string; field: FormKey; step: string }[] = [
-    { label: "AVG", field: "stat_avg", step: "0.001" },
-    { label: "OBP", field: "stat_obp", step: "0.001" },
-    { label: "SLG", field: "stat_slg", step: "0.001" },
-    { label: "OPS", field: "stat_ops", step: "0.001" },
+  const positionStats: { label: string; field: FormKey; step?: string; decimal?: boolean }[] = [
+    { label: "AB", field: "stat_ab", step: "1" },
+    { label: "H", field: "stat_h", step: "1" },
+    { label: "2B", field: "stat_2b", step: "1" },
+    { label: "3B", field: "stat_3b", step: "1" },
+    { label: "HR", field: "stat_hr", step: "1" },
+    { label: "AVG", field: "stat_avg", decimal: true },
+    { label: "OBP", field: "stat_obp", decimal: true },
+    { label: "SLG", field: "stat_slg", decimal: true },
+    { label: "R", field: "stat_r", step: "1" },
     { label: "RBI", field: "stat_rbi", step: "1" },
     { label: "SB", field: "stat_sb", step: "1" },
-    { label: "FPD%", field: "stat_fpd", step: "0.001" },
   ];
 
   const pitcherStats: { label: string; field: FormKey; step: string }[] = [
@@ -325,17 +347,35 @@ export default function EditProfileForm({
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h2 className={SECTION_TITLE}>Position Player Stats</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {positionStats.map(({ label, field, step }) => (
+            {positionStats.map(({ label, field, step, decimal }) => (
               <div key={field}>
                 <label className={LABEL}>{label}</label>
-                <input
-                  type="number"
-                  step={step}
-                  min="0"
-                  className={INPUT}
-                  value={form[field]}
-                  onChange={set(field)}
-                />
+                {decimal ? (
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className={INPUT}
+                    value={form[field]}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const afterDecimal = raw.includes(".")
+                        ? raw.split(".")[1] ?? ""
+                        : raw.replace(/\D/g, "");
+                      const digits = afterDecimal.replace(/\D/g, "").slice(0, 3);
+                      const formatted = digits.length > 0 ? "0." + digits : "";
+                      setForm((prev) => ({ ...prev, [field]: formatted }));
+                    }}
+                  />
+                ) : (
+                  <input
+                    type="number"
+                    step={step}
+                    min="0"
+                    className={INPUT}
+                    value={form[field]}
+                    onChange={set(field)}
+                  />
+                )}
               </div>
             ))}
           </div>

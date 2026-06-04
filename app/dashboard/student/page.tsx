@@ -40,11 +40,17 @@ type Student = {
   coach_name?: string | null;
   coach_email?: string | null;
   coach_phone?: string | null;
+  stat_ab?: string | null;
+  stat_h?: string | null;
+  stat_2b?: string | null;
+  stat_3b?: string | null;
+  stat_r?: string | null;
   stat_avg?: string | null;
   stat_obp?: string | null;
   stat_slg?: string | null;
   stat_ops?: string | null;
   stat_rbi?: string | null;
+  stat_hr?: string | null;
   stat_sb?: string | null;
   stat_fpd?: string | null;
   stat_era?: string | null;
@@ -390,13 +396,17 @@ export default async function StudentDashboardPage({
               {activeTab === "position" ? (
                 <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
                   {[
-                    { label: "AVG", value: student.stat_avg ?? DASH },
-                    { label: "OBP", value: student.stat_obp ?? DASH },
-                    { label: "SLG", value: student.stat_slg ?? DASH },
-                    { label: "OPS", value: student.stat_ops ?? DASH },
+                    { label: "AB", value: student.stat_ab ?? DASH },
+                    { label: "H", value: student.stat_h ?? DASH },
+                    { label: "2B", value: student.stat_2b ?? DASH },
+                    { label: "3B", value: student.stat_3b ?? DASH },
+                    { label: "HR", value: student.stat_hr ?? DASH },
+                    { label: "AVG", value: student.stat_avg ? parseFloat(student.stat_avg).toFixed(3).replace(/^0/, "") : DASH },
+                    { label: "OBP", value: student.stat_obp ? parseFloat(student.stat_obp).toFixed(3).replace(/^0/, "") : DASH },
+                    { label: "SLG", value: student.stat_slg ? parseFloat(student.stat_slg).toFixed(3).replace(/^0/, "") : DASH },
+                    { label: "R", value: student.stat_r ?? DASH },
                     { label: "RBI", value: student.stat_rbi ?? DASH },
                     { label: "SB", value: student.stat_sb ?? DASH },
-                    { label: "FPD%", value: student.stat_fpd ?? DASH },
                   ].map((s) => (
                     <div key={s.label} className="text-center">
                       <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
