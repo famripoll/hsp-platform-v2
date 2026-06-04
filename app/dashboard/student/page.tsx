@@ -104,7 +104,7 @@ export default async function StudentDashboardPage({
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            href="/"
+            href="/dashboard/student"
             className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200"
           >
             <span className="text-hsp-red">High</span>
@@ -444,8 +444,8 @@ export default async function StudentDashboardPage({
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
                   { sub: "GPA", label: "Unweighted GPA", value: student.gpa?.toString() ?? DASH },
-                  { sub: "SAT", label: "Total Score", value: student.sat_score ?? DASH },
-                  { sub: "ACT", label: "Composite Score", value: student.act_score ?? DASH },
+                  { sub: "SAT", label: "SAT Total Score", value: student.sat_score ?? DASH },
+                  { sub: "ACT", label: "ACT Composite Score", value: student.act_score ?? DASH },
                 ].map((item) => (
                   <div
                     key={item.sub}
