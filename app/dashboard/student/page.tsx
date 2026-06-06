@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "./LogOutButton";
+import MediaUpload from "./MediaUpload";
 import {
   User,
   GraduationCap,
@@ -13,7 +14,6 @@ import {
   Target,
   Sparkles,
   Play,
-  Video,
 } from "lucide-react";
 
 type Student = {
@@ -509,26 +509,7 @@ export default async function StudentDashboardPage({
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center">
-                  <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
-                  <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
-                    Upload Photos
-                  </p>
-                  <p className="text-xs" style={{ color: "#64748b" }}>
-                    JPG, PNG up to 10MB
-                  </p>
-                </div>
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center">
-                  <Video className="w-8 h-8" style={{ color: "#d93025" }} />
-                  <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
-                    Upload Videos
-                  </p>
-                  <p className="text-xs" style={{ color: "#64748b" }}>
-                    MP4 up to 500MB
-                  </p>
-                </div>
-              </div>
+              <MediaUpload />
 
               <button
                 className="w-full bg-red-50 font-semibold rounded-xl py-3 transition-colors hover:bg-red-100"
