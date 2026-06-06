@@ -3,14 +3,14 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "./LogOutButton";
 import MediaUpload from "./MediaUpload";
+import MediaGallery from "./MediaGallery";
+import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import {
-  User,
   GraduationCap,
   MapPin,
   Mail,
   Phone,
   Pencil,
-  Camera,
   Target,
   Sparkles,
   Play,
@@ -136,21 +136,7 @@ export default async function StudentDashboardPage({
 
               {/* Avatar + Name + Badges + Edit Profile */}
               <div className="flex items-start gap-4 mb-5">
-                <div className="relative shrink-0">
-                  <div
-                    className="w-24 h-24 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "#0f172a" }}
-                  >
-                    <User className="w-12 h-12 text-white" />
-                  </div>
-                  <button
-                    className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm"
-                    style={{ backgroundColor: "#d93025" }}
-                    aria-label="Upload photo"
-                  >
-                    <Camera className="w-3 h-3 text-white" />
-                  </button>
-                </div>
+                <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} />
 
                 <div className="flex-1 min-w-0">
                   <h2
@@ -511,12 +497,7 @@ export default async function StudentDashboardPage({
 
               <MediaUpload />
 
-              <button
-                className="w-full bg-red-50 font-semibold rounded-xl py-3 transition-colors hover:bg-red-100"
-                style={{ color: "#d93025" }}
-              >
-                View Media →
-              </button>
+              <MediaGallery />
             </div>
 
           </div>
