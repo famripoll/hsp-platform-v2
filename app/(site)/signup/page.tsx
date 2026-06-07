@@ -554,7 +554,7 @@ export default function SignUpPage() {
                     )}
                   </div>
                   <InputField
-                    label="University Email (.edu only)"
+                    label="University Email"
                     type="email"
                     name="email"
                     required
