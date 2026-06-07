@@ -27,6 +27,7 @@ type Student = {
   grade?: string | null;
   gpa?: number | null;
   parent_email?: string | null;
+  photo_url?: string | null;
   // Future columns not yet in DB schema
   graduation_year?: string | null;
   primary_position?: string | null;
