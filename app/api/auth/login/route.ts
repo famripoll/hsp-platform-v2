@@ -6,6 +6,9 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+const COACH_PENDING_MSG =
+  "Your coach account is pending manual verification. You will receive an email once your account is activated and you can access the coach dashboard.";
+
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json();
 
@@ -30,6 +33,10 @@ export async function POST(request: NextRequest) {
 
   if (profileError || !profile) {
     return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+  }
+
+  if (profile.role === "coach" && profile.status === "pending") {
+    return NextResponse.json({ error: COACH_PENDING_MSG }, { status: 403 });
   }
 
   if (profile.status === "pending" || profile.status === "expired") {

@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase-client";
 
 const UNAUTHORIZED_MSG =
   "Your account is not authorized. Please contact your Parent/Guardian to select a payment plan.";
+const COACH_PENDING_MSG =
+  "Your coach account is pending manual verification. You will receive an email once your account is activated and you can access the coach dashboard.";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,6 +44,11 @@ export default function LoginPage() {
 
       if (profileError || !profile) {
         setError("Invalid email or password");
+        return;
+      }
+
+      if (profile.role === "coach" && profile.status === "pending") {
+        setError(COACH_PENDING_MSG);
         return;
       }
 
