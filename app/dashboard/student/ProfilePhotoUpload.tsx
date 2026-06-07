@@ -63,8 +63,13 @@ export default function ProfilePhotoUpload({ initialPhotoUrl }: Props) {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   useEffect(() => {
-    if (!photoPath) { setSignedUrl(null); return; }
     let cancelled = false;
+    if (!photoPath) {
+      Promise.resolve().then(() => {
+        if (!cancelled) setSignedUrl(null);
+      });
+      return () => { cancelled = true; };
+    }
     supabase.storage
       .from("profile-photos")
       .createSignedUrl(photoPath, 3600)
