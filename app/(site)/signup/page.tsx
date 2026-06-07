@@ -201,7 +201,7 @@ export default function SignUpPage() {
 
       if (accountType === "student") {
         setSuccessMessage(
-          "Your profile is pending. We've sent an email to your parent/guardian for authorization."
+          "Account created successfully! Please log in to continue."
         );
         setStep(3);
       } else if (accountType === "coach") {
@@ -663,12 +663,20 @@ export default function SignUpPage() {
             ✉
           </div>
           <h2 className="text-2xl font-bold text-hsp-dark">
-            {accountType === "coach" ? "Account Submitted" : "Check your inbox"}
+            {accountType === "coach" ? "Account Submitted" : "Account Created!"}
           </h2>
           <p className="text-hsp-gray text-sm leading-relaxed">
             {successMessage ??
               "We sent a verification link to your email. Click the link to activate your account and begin your recruiting journey."}
           </p>
+          {accountType === "student" && (
+            <Link
+              href="/login"
+              className="px-6 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200"
+            >
+              Go to Login
+            </Link>
+          )}
         </div>
       )}
 

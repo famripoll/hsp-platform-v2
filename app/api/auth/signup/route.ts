@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: authError?.message ?? "Sign up failed." }, { status: 400 });
   }
 
-  const status = role === "parent" ? "active" : "pending";
+  const status = role === "coach" ? "pending" : "active";
 
   const { error: profileError } = await supabase.from("profiles").insert({
     id: authData.user.id,
