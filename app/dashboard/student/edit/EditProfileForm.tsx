@@ -16,6 +16,8 @@ type StudentData = {
   city?: string | null;
   state?: string | null;
   phone?: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
   parent_name?: string | null;
   parent_email?: string | null;
   parent_phone?: string | null;
@@ -81,6 +83,8 @@ export default function EditProfileForm({
     city: initialData.city ?? "",
     state: initialData.state ?? "",
     phone: initialData.phone ?? "",
+    facebook_url: initialData.facebook_url ?? "",
+    instagram_url: initialData.instagram_url ?? "",
     parent_name: initialData.parent_name ?? "",
     parent_email: initialData.parent_email ?? "",
     parent_phone: initialData.parent_phone ?? "",
@@ -158,6 +162,8 @@ export default function EditProfileForm({
         city: form.city || null,
         state: form.state || null,
         phone: form.phone || null,
+        facebook_url: form.facebook_url || null,
+        instagram_url: form.instagram_url || null,
         parent_name: form.parent_name || null,
         parent_email: form.parent_email || null,
         parent_phone: form.parent_phone || null,
@@ -301,6 +307,14 @@ export default function EditProfileForm({
             <div className="md:col-span-2">
               <label className={LABEL}>Phone</label>
               <input type="text" className={INPUT} value={form.phone} onChange={set("phone")} />
+            </div>
+            <div>
+              <label className={LABEL}>Facebook URL</label>
+              <input type="text" className={INPUT} value={form.facebook_url} onChange={set("facebook_url")} placeholder="https://facebook.com/yourprofile" />
+            </div>
+            <div>
+              <label className={LABEL}>Instagram URL</label>
+              <input type="text" className={INPUT} value={form.instagram_url} onChange={set("instagram_url")} placeholder="https://instagram.com/yourprofile" />
             </div>
           </div>
         </div>

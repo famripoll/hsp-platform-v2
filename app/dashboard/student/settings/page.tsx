@@ -2,10 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "../LogOutButton";
-import EditProfileForm from "./EditProfileForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 import { Settings } from "lucide-react";
 
-export default async function StudentEditPage() {
+export default async function StudentSettingsPage() {
   const supabase = await createServerClient();
 
   const {
@@ -18,7 +18,7 @@ export default async function StudentEditPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, status, full_name, email")
+    .select("role, status, full_name")
     .eq("id", user.id)
     .single();
 
@@ -26,25 +26,22 @@ export default async function StudentEditPage() {
     redirect("/login");
   }
 
-  const { data: student } = await supabase
-    .from("students")
-    .select("*")
-    .eq("profile_id", user.id)
-    .single();
-
   return (
     <>
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <span className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none cursor-pointer transition-transform duration-200 hover:scale-105 shrink-0">
+          <Link
+            href="/dashboard/student"
+            className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 shrink-0"
+          >
             <span className="text-hsp-red">High</span>
             <span className="text-hsp-dark">School</span>
             <span className="text-hsp-dark">Prospect</span>
-          </span>
+          </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/dashboard/student/settings"
-              className="flex items-center gap-1 text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
+              className="flex items-center gap-1 text-sm text-[#d93025] transition-colors"
             >
               <Settings className="w-4 h-4" />
               <span className="hidden sm:inline">Settings</span>
@@ -54,11 +51,13 @@ export default async function StudentEditPage() {
         </div>
       </nav>
 
-      <EditProfileForm
-        initialFullName={profile.full_name ?? ""}
-        initialData={student ?? {}}
-        userId={user.id}
-      />
+      <div className="max-w-[800px] mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold text-[#0f172a] mb-6">Account Settings</h1>
+
+        <div className="flex flex-col gap-6">
+          <ChangePasswordForm />
+        </div>
+      </div>
     </>
   );
 }

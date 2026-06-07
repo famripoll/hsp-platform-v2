@@ -2,9 +2,12 @@
 
 import { useRef, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase-client";
-import { Camera, Video, Loader2 } from "lucide-react";
+import { Camera, Video, Loader2, Lock } from "lucide-react";
 
-export default function MediaUpload() {
+const LOCKED_MSG = "Upgrade to a paid subscription to upload photos and videos. Please ask your Parent/Guardian to select a payment plan.";
+
+export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus: string }) {
+  const isPaid = subscriptionStatus === "paid";
   const supabase = createClient();
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -192,6 +195,10 @@ export default function MediaUpload() {
         />
         <button
           onClick={() => {
+            if (!isPaid) {
+              setPhotoMsg({ text: LOCKED_MSG, error: true });
+              return;
+            }
             if (!photoUploading) photoInputRef.current?.click();
           }}
           disabled={photoUploading}
@@ -199,14 +206,16 @@ export default function MediaUpload() {
         >
           {photoUploading ? (
             <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
-          ) : (
+          ) : isPaid ? (
             <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
+          ) : (
+            <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
           )}
           <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
             Upload Photos
           </p>
           <p className="text-xs" style={{ color: "#64748b" }}>
-            JPG, PNG up to 10MB ({photoCount}/5)
+            {isPaid ? `JPG, PNG up to 10MB (${photoCount}/5)` : "Paid plan required"}
           </p>
         </button>
         {photoMsg && (
@@ -235,6 +244,10 @@ export default function MediaUpload() {
         />
         <button
           onClick={() => {
+            if (!isPaid) {
+              setVideoMsg({ text: LOCKED_MSG, error: true });
+              return;
+            }
             if (!videoUploading) videoInputRef.current?.click();
           }}
           disabled={videoUploading}
@@ -242,14 +255,16 @@ export default function MediaUpload() {
         >
           {videoUploading ? (
             <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
-          ) : (
+          ) : isPaid ? (
             <Video className="w-8 h-8" style={{ color: "#d93025" }} />
+          ) : (
+            <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
           )}
           <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
             Upload Videos
           </p>
           <p className="text-xs" style={{ color: "#64748b" }}>
-            MP4, MOV up to 100MB ({videoCount}/3)
+            {isPaid ? `MP4, MOV up to 100MB (${videoCount}/3)` : "Paid plan required"}
           </p>
         </button>
         {videoMsg && (

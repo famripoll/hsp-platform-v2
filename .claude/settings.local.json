@@ -5,7 +5,8 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\gramm\\\\Documents\\\\hsp-platform-v2\\\\app\\\\components\\\\\" -ErrorAction SilentlyContinue | Select-Object Name)",
       "Bash(node -e \"require\\('lucide-react'\\); console.log\\('ok'\\)\")",
       "Bash(npm install *)",
-      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
+      "Bash(node -e \"const lr = require\\('c:/Users/gramm/Documents/hsp-platform-v2/node_modules/lucide-react'\\); const keys = Object.keys\\(lr\\).filter\\(k => /facebook|instagram|social|share/i.test\\(k\\)\\); console.log\\(keys\\);\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\gramm\\Documents\\hsp-platform-v2\\app"

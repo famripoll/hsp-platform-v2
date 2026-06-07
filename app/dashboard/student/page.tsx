@@ -14,6 +14,7 @@ import {
   Target,
   Sparkles,
   Play,
+  Settings,
 } from "lucide-react";
 
 type Student = {
@@ -35,6 +36,8 @@ type Student = {
   height?: string | null;
   weight?: string | null;
   phone?: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
   parent_name?: string | null;
   parent_phone?: string | null;
   coach_name?: string | null;
@@ -64,6 +67,7 @@ type Student = {
   act_score?: string | null;
   intended_major?: string | null;
   recruiting_goals?: string | null;
+  subscription_status?: string | null;
 };
 
 const DASH = "—";
@@ -108,19 +112,23 @@ export default async function StudentDashboardPage({
     <>
       {/* Dashboard Navbar */}
       <nav className="bg-white border-b border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <Link
             href="/dashboard/student"
-            className="flex items-baseline gap-1 font-black text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200"
+            className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 shrink-0"
           >
             <span className="text-hsp-red">High</span>
             <span className="text-hsp-dark">School</span>
             <span className="text-hsp-dark">Prospect</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium hidden sm:inline" style={{ color: "#0f172a" }}>
-              {profile.full_name ?? ""}
-            </span>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/dashboard/student/settings"
+              className="flex items-center gap-1 text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
+            >
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
             <LogOutButton />
           </div>
         </div>
@@ -167,19 +175,17 @@ export default async function StudentDashboardPage({
                     </span>
                   </div>
 
-                  {/* Position Badges */}
-                  <div className="flex flex-row gap-2 justify-end w-full mt-2">
-                    <span
-                      className="text-xs font-bold rounded px-2 py-1 text-white"
-                      style={{ backgroundColor: "#d93025" }}
-                    >
-                      PRIMARY&nbsp;&nbsp;{student.primary_position ?? DASH}
-                    </span>
-                    <span
-                      className="text-xs rounded px-2 py-1"
-                      style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
-                    >
-                      SECONDARY&nbsp;&nbsp;{student.secondary_position ?? DASH}
+                  {/* Positions */}
+                  <div className="flex justify-end mt-2">
+                    <span className="text-sm" style={{ color: "#64748b" }}>
+                      <span className="font-semibold" style={{ color: "#d93025" }}>Position:&nbsp;</span>
+                      <span style={{ color: "#0f172a" }}>
+                        {student.primary_position
+                          ? student.secondary_position
+                            ? `${student.primary_position}, ${student.secondary_position}`
+                            : student.primary_position
+                          : DASH}
+                      </span>
                     </span>
                   </div>
 
@@ -273,6 +279,46 @@ export default async function StudentDashboardPage({
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.phone}
                     </a>
+                  )}
+                  {(student.facebook_url || student.instagram_url) && (
+                    <div className="flex items-center gap-3 mt-2">
+                      {student.facebook_url && (
+                        <a
+                          href={student.facebook_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Facebook"
+                          className="text-[#64748b] hover:text-[#d93025] transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                          </svg>
+                        </a>
+                      )}
+                      {student.instagram_url && (
+                        <a
+                          href={student.instagram_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Instagram"
+                          className="text-[#64748b] hover:text-[#d93025] transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -428,7 +474,21 @@ export default async function StudentDashboardPage({
               )}
             </div>
 
-            {/* CARD 3: Academic Profile & Goals */}
+            {/* CARD 3: Media */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Play className="w-5 h-5" style={{ color: "#d93025" }} />
+                <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
+                  Media
+                </h3>
+              </div>
+
+              <MediaUpload subscriptionStatus={student.subscription_status ?? "free"} />
+
+              <MediaGallery />
+            </div>
+
+            {/* CARD 4: Academic Profile & Goals */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-5 h-5" style={{ color: "#d93025" }} />
@@ -484,20 +544,6 @@ export default async function StudentDashboardPage({
                   {student.recruiting_goals ?? DASH}
                 </p>
               </div>
-            </div>
-
-            {/* CARD 4: Media */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Play className="w-5 h-5" style={{ color: "#d93025" }} />
-                <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
-                  Media
-                </h3>
-              </div>
-
-              <MediaUpload />
-
-              <MediaGallery />
             </div>
 
           </div>

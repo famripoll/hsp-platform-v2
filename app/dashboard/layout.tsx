@@ -5,7 +5,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen shrink-0"
       style={{ backgroundColor: "#F2F3F3" }}
     >
       {children}
