@@ -128,7 +128,7 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
     high_school: "", city: "", state: "", grade: "", parent_email: "", parent_name: "",
-    athlete_email: "", relationship: "", phone: "",
+    athlete_email: "", relationship: "", phone: "", university: "", division: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -188,6 +188,9 @@ export default function SignUpPage() {
           }),
           ...(accountType === "coach" && {
             phone: formData.phone,
+            university: formData.university,
+            division: formData.division,
+            state: formData.state,
           }),
         }),
       });
@@ -574,15 +577,28 @@ export default function SignUpPage() {
                   <InputField
                     label="University Name"
                     type="text"
+                    name="university"
                     required
                     placeholder="State University"
+                    value={formData.university}
+                    onChange={handleChange}
                   />
-                  <SelectField label="Division" options={DIVISIONS} required />
+                  <SelectField
+                    label="Division"
+                    options={DIVISIONS}
+                    required
+                    name="division"
+                    value={formData.division}
+                    onChange={handleChange}
+                  />
                   <InputField
                     label="State"
                     type="text"
+                    name="state"
                     required
                     placeholder="Florida"
+                    value={formData.state}
+                    onChange={handleChange}
                   />
                 </>
               )}
