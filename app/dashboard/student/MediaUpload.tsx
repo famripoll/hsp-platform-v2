@@ -17,6 +17,7 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
   const [videoUploading, setVideoUploading] = useState(false);
   const [photoMsg, setPhotoMsg] = useState<{ text: string; error: boolean } | null>(null);
   const [videoMsg, setVideoMsg] = useState<{ text: string; error: boolean } | null>(null);
+  const [showUpgradeButton, setShowUpgradeButton] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -179,104 +180,117 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 mb-4">
-      {/* Photo Upload */}
-      <div>
-        <input
-          ref={photoInputRef}
-          type="file"
-          accept="image/jpeg,image/png"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handlePhotoChange(file);
-            e.target.value = "";
-          }}
-        />
+    <>
+      {showUpgradeButton && (
         <button
-          onClick={() => {
-            if (!isPaid) {
-              setPhotoMsg({ text: LOCKED_MSG, error: true });
-              return;
-            }
-            if (!photoUploading) photoInputRef.current?.click();
-          }}
-          disabled={photoUploading}
-          className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          type="button"
+          className="absolute top-6 right-6 bg-hsp-red text-white font-semibold rounded-xl px-4 py-2 text-sm shadow-sm hover:opacity-90 transition-opacity hover:scale-105 transition-transform duration-200"
         >
-          {photoUploading ? (
-            <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
-          ) : isPaid ? (
-            <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
-          ) : (
-            <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
-          )}
-          <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
-            Upload Photos
-          </p>
-          <p className="text-xs" style={{ color: "#64748b" }}>
-            {isPaid ? `JPG, PNG up to 10MB (${photoCount}/5)` : "Paid plan required"}
-          </p>
+          Upgrade
         </button>
-        {photoMsg && (
-          <p
-            className={`text-xs mt-1.5 text-center ${
-              photoMsg.error ? "text-red-600" : "text-green-600"
-            }`}
-          >
-            {photoMsg.text}
-          </p>
-        )}
-      </div>
+      )}
 
-      {/* Video Upload */}
-      <div>
-        <input
-          ref={videoInputRef}
-          type="file"
-          accept="video/mp4,video/quicktime,.mov,.mp4"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleVideoChange(file);
-            e.target.value = "";
-          }}
-        />
-        <button
-          onClick={() => {
-            if (!isPaid) {
-              setVideoMsg({ text: LOCKED_MSG, error: true });
-              return;
-            }
-            if (!videoUploading) videoInputRef.current?.click();
-          }}
-          disabled={videoUploading}
-          className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {videoUploading ? (
-            <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
-          ) : isPaid ? (
-            <Video className="w-8 h-8" style={{ color: "#d93025" }} />
-          ) : (
-            <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
-          )}
-          <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
-            Upload Videos
-          </p>
-          <p className="text-xs" style={{ color: "#64748b" }}>
-            {isPaid ? `MP4, MOV up to 100MB (${videoCount}/3)` : "Paid plan required"}
-          </p>
-        </button>
-        {videoMsg && (
-          <p
-            className={`text-xs mt-1.5 text-center ${
-              videoMsg.error ? "text-red-600" : "text-green-600"
-            }`}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {/* Photo Upload */}
+        <div>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/jpeg,image/png"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handlePhotoChange(file);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => {
+              setShowUpgradeButton(true);
+              if (!isPaid) {
+                setPhotoMsg({ text: LOCKED_MSG, error: true });
+                return;
+              }
+              if (!photoUploading) photoInputRef.current?.click();
+            }}
+            disabled={photoUploading}
+            className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {videoMsg.text}
-          </p>
-        )}
+            {photoUploading ? (
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
+            ) : isPaid ? (
+              <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
+            ) : (
+              <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
+            )}
+            <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
+              Upload Photos
+            </p>
+            <p className="text-xs" style={{ color: "#64748b" }}>
+              {isPaid ? `JPG, PNG up to 10MB (${photoCount}/5)` : "Paid plan required"}
+            </p>
+          </button>
+          {photoMsg && (
+            <p
+              className={`text-xs mt-1.5 text-center ${
+                photoMsg.error ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              {photoMsg.text}
+            </p>
+          )}
+        </div>
+
+        {/* Video Upload */}
+        <div>
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/quicktime,.mov,.mp4"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleVideoChange(file);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => {
+              setShowUpgradeButton(true);
+              if (!isPaid) {
+                setVideoMsg({ text: LOCKED_MSG, error: true });
+                return;
+              }
+              if (!videoUploading) videoInputRef.current?.click();
+            }}
+            disabled={videoUploading}
+            className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {videoUploading ? (
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
+            ) : isPaid ? (
+              <Video className="w-8 h-8" style={{ color: "#d93025" }} />
+            ) : (
+              <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
+            )}
+            <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
+              Upload Videos
+            </p>
+            <p className="text-xs" style={{ color: "#64748b" }}>
+              {isPaid ? `MP4, MOV up to 100MB (${videoCount}/3)` : "Paid plan required"}
+            </p>
+          </button>
+          {videoMsg && (
+            <p
+              className={`text-xs mt-1.5 text-center ${
+                videoMsg.error ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              {videoMsg.text}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

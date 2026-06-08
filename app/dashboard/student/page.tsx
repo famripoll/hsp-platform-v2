@@ -476,7 +476,7 @@ export default async function StudentDashboardPage({
             </div>
 
             {/* CARD 3: Media */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="relative bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Play className="w-5 h-5" style={{ color: "#d93025" }} />
                 <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>

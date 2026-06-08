@@ -663,7 +663,11 @@ export default function SignUpPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className={`flex-1 py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed ${
+                    accountType !== "parent"
+                      ? "hover:scale-105 transition-transform duration-200 disabled:hover:scale-100"
+                      : ""
+                  }`}
                 >
                   {loading ? "Processing..." : "Continue"}
                 </button>
