@@ -17,7 +17,6 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
   const [videoUploading, setVideoUploading] = useState(false);
   const [photoMsg, setPhotoMsg] = useState<{ text: string; error: boolean } | null>(null);
   const [videoMsg, setVideoMsg] = useState<{ text: string; error: boolean } | null>(null);
-  const [showUpgradeButton, setShowUpgradeButton] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -181,15 +180,6 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
 
   return (
     <>
-      {showUpgradeButton && (
-        <button
-          type="button"
-          className="absolute top-6 right-6 bg-hsp-red text-white font-semibold rounded-xl px-4 py-2 text-sm shadow-sm hover:opacity-90 transition-opacity hover:scale-105 transition-transform duration-200"
-        >
-          Upgrade
-        </button>
-      )}
-
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Photo Upload */}
         <div>
@@ -206,7 +196,6 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
           />
           <button
             onClick={() => {
-              setShowUpgradeButton(true);
               if (!isPaid) {
                 setPhotoMsg({ text: LOCKED_MSG, error: true });
                 return;
@@ -256,7 +245,6 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
           />
           <button
             onClick={() => {
-              setShowUpgradeButton(true);
               if (!isPaid) {
                 setVideoMsg({ text: LOCKED_MSG, error: true });
                 return;
