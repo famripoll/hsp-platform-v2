@@ -11,8 +11,6 @@ import {
   Mail,
   Phone,
   Pencil,
-  Target,
-  Sparkles,
   Play,
   Settings,
 } from "lucide-react";
@@ -191,8 +189,8 @@ export default async function StudentDashboardPage({
                   </div>
 
                   {/* Edit Profile */}
-                  <Link href="/dashboard/student/edit" className="mt-3 block">
-                    <button className="w-full flex items-center justify-center gap-2 border border-[#d93025] text-[#d93025] rounded-xl px-4 py-2 text-sm font-medium hover:bg-[#d93025] hover:text-white transition-colors">
+                  <Link href="/dashboard/student/edit" className="mt-3 flex justify-end">
+                    <button className="inline-flex items-center justify-center gap-2 border border-[#d93025] text-[#d93025] rounded-xl px-3.5 py-2 text-sm font-medium hover:bg-[#d93025] hover:text-white transition-colors">
                       <Pencil className="w-4 h-4" />
                       Edit Profile
                     </button>
@@ -255,6 +253,48 @@ export default async function StudentDashboardPage({
 
               {/* Contact Sections */}
               <div className="flex flex-col gap-4">
+
+                {/* Academics */}
+                <div className="border-t border-gray-100 pt-4">
+                  <p
+                    className="text-xs font-semibold uppercase mb-2"
+                    style={{ color: "#d93025" }}
+                  >
+                    Academics
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {[
+                      { label: "GPA", value: student.gpa?.toString() ?? DASH },
+                      { label: "SAT", value: student.sat_score ?? DASH },
+                      { label: "ACT", value: student.act_score ?? DASH },
+                    ].map((item) => (
+                      <div
+                        key={item.label}
+                        className="rounded-xl px-2 py-2 text-center"
+                        style={{ backgroundColor: "#F2F3F3" }}
+                      >
+                        <p
+                          className="text-[10px] font-semibold uppercase mb-0.5"
+                          style={{ color: "#64748b" }}
+                        >
+                          {item.label}
+                        </p>
+                        <p className="text-sm font-bold" style={{ color: "#0f172a" }}>
+                          {item.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p
+                    className="text-xs font-semibold uppercase mb-1"
+                    style={{ color: "#64748b" }}
+                  >
+                    Intended Major
+                  </p>
+                  <p className="text-sm font-bold" style={{ color: "#0f172a" }}>
+                    {student.intended_major ?? DASH}
+                  </p>
+                </div>
 
                 {/* Student */}
                 <div className="border-t border-gray-100 pt-4">
@@ -488,65 +528,6 @@ export default async function StudentDashboardPage({
 
               <MediaGallery />
             </div>
-
-            {/* CARD 4: Academic Profile & Goals */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Target className="w-5 h-5" style={{ color: "#d93025" }} />
-                <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
-                  Academic Profile &amp; Goals
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                {[
-                  { sub: "GPA", label: "Unweighted GPA", value: student.gpa?.toString() ?? DASH },
-                  { sub: "SAT", label: "SAT Total Score", value: student.sat_score ?? DASH },
-                  { sub: "ACT", label: "ACT Composite Score", value: student.act_score ?? DASH },
-                ].map((item) => (
-                  <div
-                    key={item.sub}
-                    className="rounded-xl p-4 text-center"
-                    style={{ backgroundColor: "#F2F3F3" }}
-                  >
-                    <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
-                      {item.value}
-                    </p>
-                    <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                      {item.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mb-4">
-                <p
-                  className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: "#64748b" }}
-                >
-                  Intended Major
-                </p>
-                <p className="text-lg font-semibold" style={{ color: "#0f172a" }}>
-                  {student.intended_major ?? DASH}
-                </p>
-              </div>
-
-              <div className="bg-red-50 rounded-xl p-4">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <Sparkles className="w-3.5 h-3.5" style={{ color: "#d93025" }} />
-                  <p
-                    className="text-xs font-bold uppercase tracking-wide"
-                    style={{ color: "#d93025" }}
-                  >
-                    My Recruiting Goals
-                  </p>
-                </div>
-                <p className="text-sm" style={{ color: "#0f172a" }}>
-                  {student.recruiting_goals ?? DASH}
-                </p>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
