@@ -48,7 +48,6 @@ type StudentData = {
   sat_score?: string | null;
   act_score?: string | null;
   intended_major?: string | null;
-  recruiting_goals?: string | null;
 };
 
 const POSITIONS = ["P", "C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
@@ -115,7 +114,6 @@ export default function EditProfileForm({
     sat_score: initialData.sat_score ?? "",
     act_score: initialData.act_score ?? "",
     intended_major: initialData.intended_major ?? "",
-    recruiting_goals: initialData.recruiting_goals ?? "",
   });
 
   type FormKey = keyof typeof form;
@@ -194,7 +192,6 @@ export default function EditProfileForm({
         sat_score: form.sat_score || null,
         act_score: form.act_score || null,
         intended_major: form.intended_major || null,
-        recruiting_goals: form.recruiting_goals || null,
       })
       .eq("profile_id", userId);
 
@@ -456,15 +453,6 @@ export default function EditProfileForm({
             <div>
               <label className={LABEL}>Intended Major</label>
               <input type="text" className={INPUT} value={form.intended_major} onChange={set("intended_major")} />
-            </div>
-            <div className="md:col-span-2">
-              <label className={LABEL}>Recruiting Goals</label>
-              <textarea
-                rows={4}
-                className={INPUT}
-                value={form.recruiting_goals}
-                onChange={set("recruiting_goals")}
-              />
             </div>
           </div>
         </div>
