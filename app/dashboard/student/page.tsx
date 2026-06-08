@@ -65,7 +65,6 @@ type Student = {
   sat_score?: string | null;
   act_score?: string | null;
   intended_major?: string | null;
-  recruiting_goals?: string | null;
   subscription_status?: string | null;
 };
 
