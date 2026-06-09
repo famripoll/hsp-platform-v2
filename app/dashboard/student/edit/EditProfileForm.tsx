@@ -18,6 +18,9 @@ type StudentData = {
   phone?: string | null;
   facebook_url?: string | null;
   instagram_url?: string | null;
+  snapchat_url?: string | null;
+  tiktok_url?: string | null;
+  x_url?: string | null;
   parent_name?: string | null;
   parent_email?: string | null;
   parent_phone?: string | null;
@@ -84,6 +87,9 @@ export default function EditProfileForm({
     phone: initialData.phone ?? "",
     facebook_url: initialData.facebook_url ?? "",
     instagram_url: initialData.instagram_url ?? "",
+    snapchat_url: initialData.snapchat_url ?? "",
+    tiktok_url: initialData.tiktok_url ?? "",
+    x_url: initialData.x_url ?? "",
     parent_name: initialData.parent_name ?? "",
     parent_email: initialData.parent_email ?? "",
     parent_phone: initialData.parent_phone ?? "",
@@ -128,6 +134,16 @@ export default function EditProfileForm({
     };
   }
 
+  function formatPhone(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 10);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  const formatUrl = (url: string) =>
+    url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -160,8 +176,11 @@ export default function EditProfileForm({
         city: form.city || null,
         state: form.state || null,
         phone: form.phone || null,
-        facebook_url: form.facebook_url || null,
-        instagram_url: form.instagram_url || null,
+        facebook_url: form.facebook_url ? formatUrl(form.facebook_url) : null,
+        instagram_url: form.instagram_url ? formatUrl(form.instagram_url) : null,
+        snapchat_url: form.snapchat_url ? formatUrl(form.snapchat_url) : null,
+        tiktok_url: form.tiktok_url ? formatUrl(form.tiktok_url) : null,
+        x_url: form.x_url ? formatUrl(form.x_url) : null,
         parent_name: form.parent_name || null,
         parent_email: form.parent_email || null,
         parent_phone: form.parent_phone || null,
@@ -303,7 +322,13 @@ export default function EditProfileForm({
             </div>
             <div className="md:col-span-2">
               <label className={LABEL}>Phone</label>
-              <input type="text" className={INPUT} value={form.phone} onChange={set("phone")} />
+              <input
+                type="text"
+                className={INPUT}
+                value={form.phone}
+                onChange={(e) => setForm((prev) => ({ ...prev, phone: formatPhone(e.target.value) }))}
+                placeholder="239-123-4567"
+              />
             </div>
             <div>
               <label className={LABEL}>Facebook URL</label>
@@ -312,6 +337,18 @@ export default function EditProfileForm({
             <div>
               <label className={LABEL}>Instagram URL</label>
               <input type="text" className={INPUT} value={form.instagram_url} onChange={set("instagram_url")} placeholder="https://instagram.com/yourprofile" />
+            </div>
+            <div>
+              <label className={LABEL}>Snapchat URL</label>
+              <input type="text" className={INPUT} value={form.snapchat_url} onChange={set("snapchat_url")} placeholder="https://snapchat.com/add/username" />
+            </div>
+            <div>
+              <label className={LABEL}>TikTok URL</label>
+              <input type="text" className={INPUT} value={form.tiktok_url} onChange={set("tiktok_url")} placeholder="https://tiktok.com/@username" />
+            </div>
+            <div>
+              <label className={LABEL}>X URL</label>
+              <input type="text" className={INPUT} value={form.x_url} onChange={set("x_url")} placeholder="https://x.com/username" />
             </div>
           </div>
         </div>
@@ -330,7 +367,13 @@ export default function EditProfileForm({
             </div>
             <div>
               <label className={LABEL}>Parent Phone</label>
-              <input type="text" className={INPUT} value={form.parent_phone} onChange={set("parent_phone")} />
+              <input
+                type="text"
+                className={INPUT}
+                value={form.parent_phone}
+                onChange={(e) => setForm((prev) => ({ ...prev, parent_phone: formatPhone(e.target.value) }))}
+                placeholder="239-123-4567"
+              />
             </div>
           </div>
         </div>
@@ -349,7 +392,13 @@ export default function EditProfileForm({
             </div>
             <div>
               <label className={LABEL}>Coach Phone</label>
-              <input type="text" className={INPUT} value={form.coach_phone} onChange={set("coach_phone")} />
+              <input
+                type="text"
+                className={INPUT}
+                value={form.coach_phone}
+                onChange={(e) => setForm((prev) => ({ ...prev, coach_phone: formatPhone(e.target.value) }))}
+                placeholder="239-123-4567"
+              />
             </div>
           </div>
         </div>
@@ -466,14 +515,14 @@ export default function EditProfileForm({
           <button
             type="submit"
             disabled={saving}
-            className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity disabled:opacity-60"
+            className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>
           <button
             type="button"
             onClick={() => router.push("/dashboard/student")}
-            className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
+            className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors transition-transform duration-200 hover:scale-105"
           >
             Cancel
           </button>

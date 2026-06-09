@@ -2,21 +2,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "./LogOutButton";
-import MediaUpload from "./MediaUpload";
-import MediaGallery from "./MediaGallery";
 import ProfilePhotoUpload from "./ProfilePhotoUpload";
+import StudentTabs from "./StudentTabs";
 import {
   GraduationCap,
   MapPin,
   Mail,
   Phone,
   Pencil,
-  Play,
   Settings,
-  Lock,
-  Bell,
-  Target,
-  Search,
 } from "lucide-react";
 
 type Student = {
@@ -41,6 +35,9 @@ type Student = {
   phone?: string | null;
   facebook_url?: string | null;
   instagram_url?: string | null;
+  snapchat_url?: string | null;
+  tiktok_url?: string | null;
+  x_url?: string | null;
   parent_name?: string | null;
   parent_phone?: string | null;
   coach_name?: string | null;
@@ -74,33 +71,8 @@ type Student = {
 
 const DASH = "—";
 
-const US_STATES = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
-  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
-  "New Hampshire", "New Jersey", "New Mexico", "New York",
-  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-  "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico",
-];
-
-const DIVISIONS = [
-  "NCAA Division I",
-  "NCAA Division II",
-  "NCAA Division III",
-  "NAIA",
-  "NJCAA",
-];
-
-const TABS = [
-  { label: "Overview", value: "overview" },
-  { label: "Search Colleges", value: "search" },
-  { label: "Your Target Schools", value: "target" },
-  { label: "Notifications", value: "notifications" },
-] as const;
+const formatUrl = (url: string) =>
+  url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
 
 export default async function StudentDashboardPage({
   searchParams,
@@ -136,18 +108,18 @@ export default async function StudentDashboardPage({
   const student = (studentRaw ?? {}) as unknown as Student;
 
   const params = await searchParams;
-  const activeSection =
+  const initialTab =
     params.tab === "search" ? "search" :
     params.tab === "target" ? "target" :
     params.tab === "notifications" ? "notifications" :
     "overview";
-  const activeStatsTab = params.stats === "pitcher" ? "pitcher" : "position";
+  const initialStatsTab = params.stats === "pitcher" ? "pitcher" : "position";
 
   return (
     <>
       {/* Dashboard Navbar */}
       <nav className="bg-white border-b border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between min-w-0">
           <Link
             href="/dashboard/student"
             className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 shrink-0"
@@ -170,12 +142,12 @@ export default async function StudentDashboardPage({
       </nav>
 
       {/* Page Content */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6">
+        <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
           {/* ── LEFT COLUMN: Player Profile Card ── */}
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+          <div className="md:col-span-1 w-full">
+            <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 w-full">
 
               {/* Avatar + Name + Badges + Edit Profile */}
               <div className="flex items-start gap-4 mb-5">
@@ -183,7 +155,7 @@ export default async function StudentDashboardPage({
 
                 <div className="flex-1 min-w-0">
                   <h2
-                    className="text-2xl font-bold leading-tight text-right"
+                    className="text-xl sm:text-2xl font-bold leading-tight text-right"
                     style={{ color: "#0f172a" }}
                   >
                     {profile.full_name ?? DASH}
@@ -343,11 +315,17 @@ export default async function StudentDashboardPage({
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                     {profile.full_name ?? DASH}
                   </p>
-                  <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
-                    <Mail className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{profile.email ?? DASH}</span>
-                  </div>
-                  {student.phone && (
+                  {profile.email ? (
+                    <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{profile.email}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                    </div>
+                  )}
+                  {student.phone ? (
                     <a
                       href={`tel:${student.phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
@@ -356,47 +334,98 @@ export default async function StudentDashboardPage({
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.phone}
                     </a>
-                  )}
-                  {(student.facebook_url || student.instagram_url) && (
-                    <div className="flex items-center gap-3 mt-2">
-                      {student.facebook_url && (
-                        <a
-                          href={student.facebook_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Facebook"
-                          className="text-[#64748b] hover:text-[#d93025] transition-colors"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                          >
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                          </svg>
-                        </a>
-                      )}
-                      {student.instagram_url && (
-                        <a
-                          href={student.instagram_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Instagram"
-                          className="text-[#64748b] hover:text-[#d93025] transition-colors"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                          >
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                          </svg>
-                        </a>
-                      )}
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm mt-1 cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Phone className="w-3.5 h-3.5 shrink-0" />
                     </div>
                   )}
+                  <div className="flex items-center gap-3 mt-2">
+                    {student.facebook_url ? (
+                      <a
+                        href={formatUrl(student.facebook_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                        className="text-[#1877F2]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#cbd5e1] cursor-default">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    )}
+                    {student.instagram_url ? (
+                      <a
+                        href={formatUrl(student.instagram_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="text-[#E1306C]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#cbd5e1] cursor-default">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                      </svg>
+                    )}
+                    {student.snapchat_url ? (
+                      <a
+                        href={formatUrl(student.snapchat_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Snapchat"
+                        className="text-[#F7B731]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                          <path d="M12.166.009C9.639.009 6.856 1.157 5.23 3.37c-.959 1.302-1.404 2.95-1.306 4.898v.005l-.091.052c-.361.207-.753.312-1.164.312-.307 0-.598-.058-.863-.17l-.098-.043-.104.009c-.04.003-.079.005-.117.005-.337 0-.587-.095-.704-.267-.072-.105-.085-.237-.038-.374l.025-.07-.038-.065C.648 7.448.5 7.057.5 6.65c0-.547.209-.994.602-1.295.14-.107.3-.184.476-.228l.171-.043.018-.175c.025-.247.21-.44.451-.487l.121-.023.079-.093C2.79 3.87 4.186 2.694 6.057 1.839 7.844.994 9.854.5 12 .5s4.156.494 5.943 1.339c1.871.855 3.267 2.031 4.123 3.467l.079.093.121.023c.241.047.426.24.451.487l.018.175.171.043c.176.044.336.121.476.228.393.301.602.748.602 1.295 0 .407-.148.798-.232.993l-.038.065.025.07c.047.137.034.269-.038.374-.117.172-.367.267-.704.267-.038 0-.077-.002-.117-.005l-.104-.009-.098.043c-.265.112-.556.17-.863.17-.411 0-.803-.105-1.164-.312l-.091-.052v-.005c.098-1.948-.347-3.596-1.306-4.898C17.144 1.157 14.361.009 12.166.009zM23.469 15.98l-.102-.027c-.608-.162-1.181-.584-1.7-1.254-.341-.439-.582-.896-.697-1.131-.028-.057-.048-.097-.061-.12l-.057-.105-.118-.025c-.095-.02-.195-.03-.296-.03-.294 0-.584.082-.812.23-.734.475-1.506.716-2.295.716-.27 0-.539-.026-.8-.077l-.052-.01-.05.017c-.146.051-.294.076-.44.076-.266 0-.498-.08-.651-.22-.085-.077-.135-.163-.148-.252l-.017-.113-.088-.073c-1.045-.867-1.927-1.948-2.623-3.215l-.057-.104-.118-.017c-.29-.04-.569-.194-.761-.419-.184-.215-.255-.465-.196-.698.068-.268.303-.471.625-.545l.106-.025.058-.092C12.398 8.6 12.5 8.1 12.5 7.5c0-.863-.336-1.58-.97-2.076-.532-.42-1.236-.641-2.03-.641-.794 0-1.498.221-2.03.641C6.836 5.92 6.5 6.637 6.5 7.5c0 .6.102 1.1.45 1.563l.058.092.106.025c.322.074.557.277.625.545.059.233-.012.483-.196.698-.192.225-.471.379-.761.419l-.118.017-.057.104c-.696 1.267-1.578 2.348-2.623 3.215l-.088.073-.017.113c-.013.089-.063.175-.148.252-.153.14-.385.22-.651.22-.146 0-.294-.025-.44-.076l-.05-.017-.052.01c-.261.051-.53.077-.8.077-.789 0-1.561-.241-2.295-.716-.228-.148-.518-.23-.812-.23-.101 0-.201.01-.296.03l-.118.025-.057.105c-.013.023-.033.063-.061.12-.115.235-.356.692-.697 1.131-.519.67-1.092 1.092-1.7 1.254l-.102.027-.024.101c-.075.311.183.638.553.683l.138.017.067.121c.194.348.457.535.783.535.114 0 .236-.022.364-.065l.129-.044.117.075c.478.307.887.459 1.252.465l.037.001c.31 0 .613-.092.927-.281l.134-.081.148.047c.58.184 1.194.327 1.826.425l.108.017.073.083c.573.651 1.399 1.039 2.368 1.039.317 0 .64-.044.961-.131l.127-.034.11.073c.576.383 1.264.585 1.994.585s1.418-.202 1.994-.585l.11-.073.127.034c.321.087.644.131.961.131.969 0 1.795-.388 2.368-1.039l.073-.083.108-.017c.632-.098 1.246-.241 1.826-.425l.148-.047.134.081c.314.189.617.281.927.281l.037-.001c.365-.006.774-.158 1.252-.465l.117-.075.129.044c.128.043.25.065.364.065.326 0 .589-.187.783-.535l.067-.121.138-.017c.37-.045.628-.372.553-.683l-.024-.101z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#cbd5e1] cursor-default">
+                        <path d="M12.166.009C9.639.009 6.856 1.157 5.23 3.37c-.959 1.302-1.404 2.95-1.306 4.898v.005l-.091.052c-.361.207-.753.312-1.164.312-.307 0-.598-.058-.863-.17l-.098-.043-.104.009c-.04.003-.079.005-.117.005-.337 0-.587-.095-.704-.267-.072-.105-.085-.237-.038-.374l.025-.07-.038-.065C.648 7.448.5 7.057.5 6.65c0-.547.209-.994.602-1.295.14-.107.3-.184.476-.228l.171-.043.018-.175c.025-.247.21-.44.451-.487l.121-.023.079-.093C2.79 3.87 4.186 2.694 6.057 1.839 7.844.994 9.854.5 12 .5s4.156.494 5.943 1.339c1.871.855 3.267 2.031 4.123 3.467l.079.093.121.023c.241.047.426.24.451.487l.018.175.171.043c.176.044.336.121.476.228.393.301.602.748.602 1.295 0 .407-.148.798-.232.993l-.038.065.025.07c.047.137.034.269-.038.374-.117.172-.367.267-.704.267-.038 0-.077-.002-.117-.005l-.104-.009-.098.043c-.265.112-.556.17-.863.17-.411 0-.803-.105-1.164-.312l-.091-.052v-.005c.098-1.948-.347-3.596-1.306-4.898C17.144 1.157 14.361.009 12.166.009zM23.469 15.98l-.102-.027c-.608-.162-1.181-.584-1.7-1.254-.341-.439-.582-.896-.697-1.131-.028-.057-.048-.097-.061-.12l-.057-.105-.118-.025c-.095-.02-.195-.03-.296-.03-.294 0-.584.082-.812.23-.734.475-1.506.716-2.295.716-.27 0-.539-.026-.8-.077l-.052-.01-.05.017c-.146.051-.294.076-.44.076-.266 0-.498-.08-.651-.22-.085-.077-.135-.163-.148-.252l-.017-.113-.088-.073c-1.045-.867-1.927-1.948-2.623-3.215l-.057-.104-.118-.017c-.29-.04-.569-.194-.761-.419-.184-.215-.255-.465-.196-.698.068-.268.303-.471.625-.545l.106-.025.058-.092C12.398 8.6 12.5 8.1 12.5 7.5c0-.863-.336-1.58-.97-2.076-.532-.42-1.236-.641-2.03-.641-.794 0-1.498.221-2.03.641C6.836 5.92 6.5 6.637 6.5 7.5c0 .6.102 1.1.45 1.563l.058.092.106.025c.322.074.557.277.625.545.059.233-.012.483-.196.698-.192.225-.471.379-.761.419l-.118.017-.057.104c-.696 1.267-1.578 2.348-2.623 3.215l-.088.073-.017.113c-.013.089-.063.175-.148.252-.153.14-.385.22-.651.22-.146 0-.294-.025-.44-.076l-.05-.017-.052.01c-.261.051-.53.077-.8.077-.789 0-1.561-.241-2.295-.716-.228-.148-.518-.23-.812-.23-.101 0-.201.01-.296.03l-.118.025-.057.105c-.013.023-.033.063-.061.12-.115.235-.356.692-.697 1.131-.519.67-1.092 1.092-1.7 1.254l-.102.027-.024.101c-.075.311.183.638.553.683l.138.017.067.121c.194.348.457.535.783.535.114 0 .236-.022.364-.065l.129-.044.117.075c.478.307.887.459 1.252.465l.037.001c.31 0 .613-.092.927-.281l.134-.081.148.047c.58.184 1.194.327 1.826.425l.108.017.073.083c.573.651 1.399 1.039 2.368 1.039.317 0 .64-.044.961-.131l.127-.034.11.073c.576.383 1.264.585 1.994.585s1.418-.202 1.994-.585l.11-.073.127.034c.321.087.644.131.961.131.969 0 1.795-.388 2.368-1.039l.073-.083.108-.017c.632-.098 1.246-.241 1.826-.425l.148-.047.134.081c.314.189.617.281.927.281l.037-.001c.365-.006.774-.158 1.252-.465l.117-.075.129.044c.128.043.25.065.364.065.326 0 .589-.187.783-.535l.067-.121.138-.017c.37-.045.628-.372.553-.683l-.024-.101z" />
+                      </svg>
+                    )}
+                    {student.tiktok_url ? (
+                      <a
+                        href={formatUrl(student.tiktok_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="TikTok"
+                        className="text-[#000000]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.72a8.19 8.19 0 004.79 1.54V6.79a4.85 4.85 0 01-1.02-.1z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#cbd5e1] cursor-default">
+                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.72a8.19 8.19 0 004.79 1.54V6.79a4.85 4.85 0 01-1.02-.1z" />
+                      </svg>
+                    )}
+                    {student.x_url ? (
+                      <a
+                        href={formatUrl(student.x_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="X"
+                        className="text-[#000000]"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.258 5.63 5.906-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#cbd5e1] cursor-default">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.258 5.63 5.906-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+                      </svg>
+                    )}
+                  </div>
                 </div>
 
                 {/* Parent / Guardian */}
@@ -410,11 +439,17 @@ export default async function StudentDashboardPage({
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                     {student.parent_name ?? DASH}
                   </p>
-                  <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
-                    <Mail className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{student.parent_email ?? DASH}</span>
-                  </div>
-                  {student.parent_phone && (
+                  {student.parent_email ? (
+                    <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{student.parent_email}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                    </div>
+                  )}
+                  {student.parent_phone ? (
                     <a
                       href={`tel:${student.parent_phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
@@ -423,6 +458,10 @@ export default async function StudentDashboardPage({
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.parent_phone}
                     </a>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm mt-1 cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Phone className="w-3.5 h-3.5 shrink-0" />
+                    </div>
                   )}
                 </div>
 
@@ -437,13 +476,17 @@ export default async function StudentDashboardPage({
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                     {student.coach_name ? `Coach ${student.coach_name}` : DASH}
                   </p>
-                  {student.coach_email && (
+                  {student.coach_email ? (
                     <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
                       <Mail className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">{student.coach_email}</span>
                     </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                    </div>
                   )}
-                  {student.coach_phone && (
+                  {student.coach_phone ? (
                     <a
                       href={`tel:${student.coach_phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
@@ -452,262 +495,24 @@ export default async function StudentDashboardPage({
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.coach_phone}
                     </a>
-                  )}
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          {/* ── RIGHT COLUMN ── */}
-          <div className="md:col-span-2 flex flex-col gap-6">
-
-            {/* Tab Navigation */}
-            <div className="bg-white rounded-2xl shadow-sm">
-              <nav className="flex justify-center px-2">
-                {TABS.map((tab) => (
-                  <a
-                    key={tab.value}
-                    href={`?tab=${tab.value}`}
-                    className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
-                      activeSection === tab.value
-                        ? "border-[#d93025] text-[#d93025] font-semibold"
-                        : "border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105"
-                    }`}
-                  >
-                    {tab.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-
-            {/* ── OVERVIEW TAB ── */}
-            {activeSection === "overview" && (
-              <>
-                {/* Stats Card */}
-                <div className="bg-white rounded-2xl shadow-sm p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <p
-                        className="text-xs uppercase tracking-wide mb-0.5"
-                        style={{ color: "#64748b" }}
-                      >
-                        2026 Season
-                      </p>
-                      <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
-                        Stats
-                      </h3>
-                    </div>
-                    <div className="flex rounded-lg overflow-hidden border border-gray-200 text-xs font-semibold">
-                      <a
-                        href="?tab=overview&stats=position"
-                        className="px-3 py-2 transition-colors"
-                        style={
-                          activeStatsTab === "position"
-                            ? { backgroundColor: "#0f172a", color: "#ffffff" }
-                            : { backgroundColor: "#F2F3F3", color: "#0f172a" }
-                        }
-                      >
-                        Position Player
-                      </a>
-                      <a
-                        href="?tab=overview&stats=pitcher"
-                        className="px-3 py-2 transition-colors"
-                        style={
-                          activeStatsTab === "pitcher"
-                            ? { backgroundColor: "#0f172a", color: "#ffffff" }
-                            : { backgroundColor: "#F2F3F3", color: "#0f172a" }
-                        }
-                      >
-                        Pitcher
-                      </a>
-                    </div>
-                  </div>
-
-                  {activeStatsTab === "position" ? (
-                    <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
-                      {[
-                        { label: "AB", value: student.stat_ab ?? DASH },
-                        { label: "H", value: student.stat_h ?? DASH },
-                        { label: "2B", value: student.stat_2b ?? DASH },
-                        { label: "3B", value: student.stat_3b ?? DASH },
-                        { label: "HR", value: student.stat_hr ?? DASH },
-                        { label: "AVG", value: student.stat_avg ? parseFloat(student.stat_avg).toFixed(3).replace(/^0/, "") : DASH },
-                        { label: "OBP", value: student.stat_obp ? parseFloat(student.stat_obp).toFixed(3).replace(/^0/, "") : DASH },
-                        { label: "SLG", value: student.stat_slg ? parseFloat(student.stat_slg).toFixed(3).replace(/^0/, "") : DASH },
-                        { label: "R", value: student.stat_r ?? DASH },
-                        { label: "RBI", value: student.stat_rbi ?? DASH },
-                        { label: "SB", value: student.stat_sb ?? DASH },
-                      ].map((s) => (
-                        <div key={s.label} className="text-center">
-                          <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
-                            {s.value}
-                          </p>
-                          <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                            {s.label}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
                   ) : (
-                    <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
-                      {[
-                        { label: "ERA", value: student.stat_era ?? DASH },
-                        { label: "WHIP", value: student.stat_whip ?? DASH },
-                        { label: "IP", value: student.stat_ip ?? DASH },
-                        { label: "K", value: student.stat_k ?? DASH },
-                        { label: "BB", value: student.stat_bb ?? DASH },
-                        { label: "K/BB", value: student.stat_kbb ?? DASH },
-                        { label: "VELO mph", value: student.stat_velo ?? DASH },
-                      ].map((s) => (
-                        <div key={s.label} className="text-center">
-                          <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
-                            {s.value}
-                          </p>
-                          <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                            {s.label}
-                          </p>
-                        </div>
-                      ))}
+                    <div className="flex items-center gap-2 text-sm mt-1 cursor-default" style={{ color: "#cbd5e1" }}>
+                      <Phone className="w-3.5 h-3.5 shrink-0" />
                     </div>
                   )}
                 </div>
 
-                {/* Media Card */}
-                <div className="bg-white rounded-2xl shadow-sm p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Play className="w-5 h-5" style={{ color: "#d93025" }} />
-                    <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
-                      Media
-                    </h3>
-                  </div>
-
-                  <MediaUpload subscriptionStatus={student.subscription_status ?? "free"} />
-
-                  <MediaGallery />
-                </div>
-
-                {/* Upgrade Banner — free users only */}
-                {(student.subscription_status ?? "free") !== "paid" && (
-                  <div className="bg-white rounded-2xl shadow-sm p-6">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: "#F2F3F3" }}
-                      >
-                        <Lock className="w-5 h-5" style={{ color: "#64748b" }} />
-                      </div>
-                      <p className="flex-1 text-sm font-medium" style={{ color: "#0f172a" }}>
-                        Unlock full access — upgrade your plan to upload photos and videos.
-                      </p>
-                      <Link
-                        href="/pricing"
-                        className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
-                        style={{ backgroundColor: "#d93025" }}
-                      >
-                        Upgrade Now
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* ── SEARCH UNIVERSITIES TAB ── */}
-            {activeSection === "search" && (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-                  Search Colleges
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label
-                      className="text-sm font-medium mb-1 block"
-                      style={{ color: "#64748b" }}
-                    >
-                      State
-                    </label>
-                    <select
-                      className="border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent text-sm"
-                      style={{ color: "#0f172a" }}
-                      defaultValue=""
-                    >
-                      <option value="">All States</option>
-                      {US_STATES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label
-                      className="text-sm font-medium mb-1 block"
-                      style={{ color: "#64748b" }}
-                    >
-                      Division
-                    </label>
-                    <select
-                      className="border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent text-sm"
-                      style={{ color: "#0f172a" }}
-                      defaultValue=""
-                    >
-                      <option value="">All Divisions</option>
-                      {DIVISIONS.map((d) => (
-                        <option key={d} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="text-sm font-semibold text-white rounded-xl px-4 py-2 mb-8 hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: "#d93025" }}
-                >
-                  Search
-                </button>
-
-                <div className="flex flex-col items-center justify-center py-12 gap-3">
-                  <Search className="w-10 h-10" style={{ color: "#d1d5db" }} />
-                  <p className="text-sm text-center" style={{ color: "#64748b" }}>
-                    Search results will appear here
-                  </p>
-                </div>
               </div>
-            )}
-
-            {/* ── TARGET SCHOOLS TAB ── */}
-            {activeSection === "target" && (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-                  Your Target Schools
-                </h3>
-                <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <Target className="w-10 h-10" style={{ color: "#d1d5db" }} />
-                  <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
-                    No target schools yet. Search colleges and save your favorites.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* ── NOTIFICATIONS TAB ── */}
-            {activeSection === "notifications" && (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-                  Notifications
-                </h3>
-                <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <Bell className="w-10 h-10" style={{ color: "#d1d5db" }} />
-                  <p className="text-sm text-center" style={{ color: "#64748b" }}>
-                    No notifications yet.
-                  </p>
-                </div>
-              </div>
-            )}
-
+            </div>
           </div>
+
+          {/* ── RIGHT COLUMN: client-side tabs ── */}
+          <StudentTabs
+            student={student}
+            initialTab={initialTab}
+            initialStatsTab={initialStatsTab}
+          />
+
         </div>
       </div>
     </>
