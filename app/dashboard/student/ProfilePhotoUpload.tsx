@@ -8,6 +8,7 @@ import { Camera, User, Loader2, X } from "lucide-react";
 
 type Props = {
   initialPhotoUrl: string | null;
+  size?: string;
 };
 
 function createImage(url: string): Promise<HTMLImageElement> {
@@ -46,7 +47,7 @@ async function getCroppedBlob(imageSrc: string, pixelCrop: Area): Promise<Blob> 
   });
 }
 
-export default function ProfilePhotoUpload({ initialPhotoUrl }: Props) {
+export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24" }: Props) {
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -199,7 +200,7 @@ export default function ProfilePhotoUpload({ initialPhotoUrl }: Props) {
         />
 
         <div
-          className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden"
+          className={`${size} rounded-full flex items-center justify-center overflow-hidden`}
           style={{ backgroundColor: "#0f172a" }}
         >
           {uploading ? (

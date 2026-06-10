@@ -5,12 +5,13 @@ import LogOutButton from "./LogOutButton";
 import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import StudentTabs from "./StudentTabs";
 import {
-  GraduationCap,
   MapPin,
   Mail,
   Phone,
-  Pencil,
   Settings,
+  Calendar,
+  User,
+  Pencil,
 } from "lucide-react";
 
 type Student = {
@@ -149,65 +150,62 @@ export default async function StudentDashboardPage({
           <div className="md:col-span-1 w-full">
             <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 w-full">
 
-              {/* Avatar + Name + Badges + Edit Profile */}
-              <div className="flex items-start gap-4 mb-5">
-                <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} />
-
-                <div className="flex-1 min-w-0">
-                  <h2
-                    className="text-xl sm:text-2xl font-bold leading-tight text-right"
-                    style={{ color: "#0f172a" }}
-                  >
-                    {profile.full_name ?? DASH}
-                  </h2>
-                  <div className="flex items-center justify-end gap-1 mt-1">
-                    <GraduationCap
-                      className="w-3.5 h-3.5 shrink-0"
-                      style={{ color: "#64748b" }}
-                    />
-                    <span className="text-sm truncate" style={{ color: "#64748b" }}>
-                      {student.high_school ?? DASH}
-                    </span>
-                  </div>
-                  <div className="flex justify-end mt-1.5">
-                    <span
-                      className="text-xs rounded-full px-3 py-1"
-                      style={{ backgroundColor: "#F2F3F3", color: "#0f172a" }}
-                    >
-                      {student.graduation_year
-                        ? `Class of ${student.graduation_year}`
-                        : student.grade
-                        ? `Grade ${student.grade}`
-                        : DASH}
-                    </span>
+              {/* Avatar + Name + Info + Edit Profile */}
+              <div className="relative flex flex-col -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-0 bg-gradient-to-b from-red-50 to-white rounded-t-2xl">
+                <Link href="/dashboard/student/edit" className="absolute top-3 right-3">
+                  <button className="p-1 rounded-md text-[#64748b] hover:text-[#d93025] hover:bg-red-50 transition-colors">
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                </Link>
+                <div className="flex flex-row items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-6 pb-4">
+                  <div className="shrink-0">
+                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-20 h-20" />
                   </div>
 
-                  {/* Positions */}
-                  <div className="flex justify-end mt-2">
-                    <span className="text-sm" style={{ color: "#64748b" }}>
-                      <span className="font-semibold" style={{ color: "#d93025" }}>Position:&nbsp;</span>
-                      <span style={{ color: "#0f172a" }}>
-                        {student.primary_position
-                          ? student.secondary_position
-                            ? `${student.primary_position}, ${student.secondary_position}`
-                            : student.primary_position
-                          : DASH}
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-xl font-bold text-[#0f172a] leading-tight truncate">
+                      {profile.full_name ?? DASH}
+                    </h2>
+
+                    <div className="border-b border-gray-200 my-1" />
+
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4 text-[#64748b] shrink-0" />
+                      <span className="text-sm text-[#64748b] truncate">
+                        {student.high_school ?? DASH}
                       </span>
-                    </span>
-                  </div>
+                    </div>
 
-                  {/* Edit Profile */}
-                  <Link href="/dashboard/student/edit" className="mt-3 flex justify-end">
-                    <button className="inline-flex items-center justify-center gap-2 border border-[#d93025] text-[#d93025] rounded-xl px-3.5 py-2 text-sm font-medium hover:bg-[#d93025] hover:text-white transition-colors">
-                      <Pencil className="w-4 h-4" />
-                      Edit Profile
-                    </button>
-                  </Link>
+                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
+                        <span className="text-sm text-[#64748b] whitespace-nowrap">
+                          {student.graduation_year
+                            ? `Class of ${student.graduation_year}`
+                            : student.grade
+                            ? `Grade ${student.grade}`
+                            : DASH}
+                        </span>
+                      </div>
+                      <span className="text-sm text-[#64748b]">|</span>
+                      <div className="flex items-center gap-1 min-w-0">
+                        <User className="w-4 h-4 text-[#d93025] shrink-0" />
+                        <span className="text-sm font-semibold text-[#d93025] whitespace-nowrap">Position:</span>
+                        <span className="text-sm text-[#0f172a] truncate">
+                          {student.primary_position
+                            ? student.secondary_position
+                              ? `${student.primary_position}, ${student.secondary_position}`
+                              : student.primary_position
+                            : DASH}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Stats 2×2 Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="grid grid-cols-2 gap-3 mb-5 border-t border-gray-100 pt-4">
                 {(
                   [
                     { label: "BATS", value: student.bats ?? DASH, icon: false },
