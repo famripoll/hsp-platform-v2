@@ -192,7 +192,7 @@ export default async function StudentDashboardPage({
                 <EditProfileButton isParent={isParentViewer} />
                 <div className="flex flex-row items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-6 pb-4">
                   <div className="shrink-0">
-                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-20 h-20" isParent={isParentViewer} />
+                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-24 h-24" isParent={isParentViewer} />
                   </div>
 
                   <div className="flex-1 min-w-0">

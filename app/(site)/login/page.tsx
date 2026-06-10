@@ -47,8 +47,19 @@ export default function LoginPage() {
         return;
       }
 
-      if (profile.role === "coach" && profile.status === "pending") {
-        setError(COACH_PENDING_MSG);
+      if (profile.role === "coach") {
+        const { data: coachRow } = await supabase
+          .from("coaches")
+          .select("verified")
+          .eq("profile_id", authData.user.id)
+          .single();
+
+        if (!coachRow?.verified) {
+          setError(COACH_PENDING_MSG);
+          return;
+        }
+
+        router.push("/dashboard/coach");
         return;
       }
 

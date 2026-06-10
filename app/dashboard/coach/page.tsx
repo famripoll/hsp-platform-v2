@@ -57,7 +57,6 @@ export default async function CoachDashboardPage() {
 
   const coach = (coachRaw ?? {}) as Coach;
   const isVerified = coach.verified === true;
-  const isPending = profile.status === "pending" || !isVerified;
 
   const featureCards = [
     {
@@ -110,14 +109,6 @@ export default async function CoachDashboardPage() {
 
       {/* Page Content */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6">
-        {isPending && (
-          <div className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
-            <p className="text-sm font-medium" style={{ color: "#d93025" }}>
-              Your coach account is pending manual verification. Some features may remain limited until your account is approved.
-            </p>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left Column: Coach Profile Card */}
           <div className="md:col-span-1">
