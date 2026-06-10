@@ -9,6 +9,7 @@ import { Camera, User, Loader2, X } from "lucide-react";
 type Props = {
   initialPhotoUrl: string | null;
   size?: string;
+  isParent?: boolean;
 };
 
 function createImage(url: string): Promise<HTMLImageElement> {
@@ -47,7 +48,7 @@ async function getCroppedBlob(imageSrc: string, pixelCrop: Area): Promise<Blob> 
   });
 }
 
-export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24" }: Props) {
+export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24", isParent = false }: Props) {
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -212,15 +213,25 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
           )}
         </div>
 
-        <button
-          onClick={() => { if (!uploading) fileInputRef.current?.click(); }}
-          disabled={uploading}
-          className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm disabled:opacity-70"
-          style={{ backgroundColor: "#d93025" }}
-          aria-label="Upload photo"
-        >
-          <Camera className="w-3 h-3 text-white" />
-        </button>
+        {isParent ? (
+          <div
+            className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm cursor-default opacity-40"
+            style={{ backgroundColor: "#d93025" }}
+            aria-hidden="true"
+          >
+            <Camera className="w-3 h-3 text-white" />
+          </div>
+        ) : (
+          <button
+            onClick={() => { if (!uploading) fileInputRef.current?.click(); }}
+            disabled={uploading}
+            className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm disabled:opacity-70"
+            style={{ backgroundColor: "#d93025" }}
+            aria-label="Upload photo"
+          >
+            <Camera className="w-3 h-3 text-white" />
+          </button>
+        )}
 
         {errorMsg && (
           <p className="absolute top-full left-0 mt-1.5 text-xs text-red-600 whitespace-nowrap">

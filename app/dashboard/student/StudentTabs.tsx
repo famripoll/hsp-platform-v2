@@ -96,9 +96,10 @@ type Props = {
   student: Student;
   initialTab?: string;
   initialStatsTab?: string;
+  isParentViewer?: boolean;
 };
 
-export default function StudentTabs({ student, initialTab = "overview", initialStatsTab = "position" }: Props) {
+export default function StudentTabs({ student, initialTab = "overview", initialStatsTab = "position", isParentViewer = false }: Props) {
   const [activeSection, setActiveSection] = useState<TabValue>(
     VALID_TABS.includes(initialTab) ? (initialTab as TabValue) : "overview"
   );

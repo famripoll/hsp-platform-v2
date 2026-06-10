@@ -4,14 +4,14 @@ import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "./LogOutButton";
 import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import StudentTabs from "./StudentTabs";
+import EditProfileButton from "./EditProfileButton";
+import SettingsLink from "./SettingsLink";
 import {
   MapPin,
   Mail,
   Phone,
-  Settings,
   Calendar,
   User,
-  Pencil,
 } from "lucide-react";
 
 type Student = {
@@ -96,15 +96,51 @@ export default async function StudentDashboardPage({
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "student" || profile.status !== "active") {
+  const isAllowedRole = profile.role === "student" || profile.role === "parent";
+  if (!profile || !isAllowedRole || profile.status !== "active") {
     redirect("/login");
   }
 
-  const { data: studentRaw } = await supabase
-    .from("students")
-    .select("*")
-    .eq("profile_id", user.id)
-    .single();
+  const isParentViewer = profile.role === "parent";
+  let studentRaw: Record<string, unknown> | null = null;
+  let displayProfile = { full_name: profile.full_name, email: profile.email };
+
+  if (isParentViewer) {
+    const { data: parentRow } = await supabase
+      .from("parents")
+      .select("student_id")
+      .eq("profile_id", user.id)
+      .single();
+
+    if (!parentRow) redirect("/login");
+
+    const { data: studentData } = await supabase
+      .from("students")
+      .select("*")
+      .eq("id", parentRow.student_id)
+      .single();
+
+    studentRaw = studentData;
+
+    if (studentData?.profile_id) {
+      const { data: studentProfile } = await supabase
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", studentData.profile_id)
+        .single();
+      displayProfile = {
+        full_name: studentProfile?.full_name ?? null,
+        email: studentProfile?.email ?? null,
+      };
+    }
+  } else {
+    const { data } = await supabase
+      .from("students")
+      .select("*")
+      .eq("profile_id", user.id)
+      .single();
+    studentRaw = data;
+  }
 
   const student = (studentRaw ?? {}) as unknown as Student;
 
@@ -130,17 +166,20 @@ export default async function StudentDashboardPage({
             <span className="text-hsp-dark">Prospect</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/dashboard/student/settings"
-              className="flex items-center gap-1 text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </Link>
+            <SettingsLink isParent={isParentViewer} />
             <LogOutButton />
           </div>
         </div>
       </nav>
+
+      {/* View-only banner for parent viewers */}
+      {isParentViewer && (
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8 pt-4">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
+            👁 You are viewing {displayProfile.full_name}&apos;s profile — View Only Mode
+          </div>
+        </div>
+      )}
 
       {/* Page Content */}
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6">
@@ -152,19 +191,15 @@ export default async function StudentDashboardPage({
 
               {/* Avatar + Name + Info + Edit Profile */}
               <div className="relative flex flex-col -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-0 bg-gradient-to-b from-red-50 to-white rounded-t-2xl">
-                <Link href="/dashboard/student/edit" className="absolute top-3 right-3">
-                  <button className="p-1 rounded-md text-[#64748b] hover:text-[#d93025] hover:bg-red-50 transition-colors">
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                </Link>
+                <EditProfileButton isParent={isParentViewer} />
                 <div className="flex flex-row items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-6 pb-4">
                   <div className="shrink-0">
-                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-20 h-20" />
+                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-20 h-20" isParent={isParentViewer} />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <h2 className="text-xl font-bold text-[#0f172a] leading-tight truncate">
-                      {profile.full_name ?? DASH}
+                      {displayProfile.full_name ?? DASH}
                     </h2>
 
                     <div className="border-b border-gray-200 my-1" />
@@ -311,12 +346,12 @@ export default async function StudentDashboardPage({
                     Student
                   </p>
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
-                    {profile.full_name ?? DASH}
+                    {displayProfile.full_name ?? DASH}
                   </p>
-                  {profile.email ? (
+                  {displayProfile.email ? (
                     <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
                       <Mail className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">{profile.email}</span>
+                      <span className="truncate">{displayProfile.email}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-sm cursor-default" style={{ color: "#cbd5e1" }}>
@@ -452,6 +487,7 @@ export default async function StudentDashboardPage({
             student={student}
             initialTab={initialTab}
             initialStatsTab={initialStatsTab}
+            isParentViewer={isParentViewer}
           />
 
         </div>

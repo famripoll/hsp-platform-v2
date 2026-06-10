@@ -57,9 +57,29 @@ export default function LoginPage() {
         return;
       }
 
+      if (profile.role === "parent") {
+        const { data: parentRow } = await supabase
+          .from("parents")
+          .select("student_id")
+          .eq("profile_id", authData.user.id)
+          .single();
+
+        if (!parentRow) {
+          setError("No linked student found for this parent account.");
+          return;
+        }
+
+        localStorage.setItem("viewerRole", "parent");
+        router.push("/dashboard/student");
+        return;
+      }
+
+      if (profile.role === "student") {
+        localStorage.setItem("viewerRole", "student");
+      }
+
       const dashboardMap: Record<string, string> = {
         student: "/dashboard/student",
-        parent: "/dashboard/parent",
         coach: "/dashboard/coach",
       };
 
