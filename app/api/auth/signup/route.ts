@@ -12,7 +12,7 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { email, password, full_name, role, high_school, city, state, grade, parent_email, parent_name, athlete_email, relationship, phone, university, division } = await request.json();
+  const { email, password, full_name, role, high_school, city, state, grade, graduation_year, parent_email, parent_name, athlete_email, relationship, phone, university, division } = await request.json();
   console.log("[signup] received:", { email, full_name, role });
 
   if (!email || !password || !full_name || !role) {
@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
       city,
       state,
       grade,
+      graduation_year,
       parent_email,
       parent_name,
     });

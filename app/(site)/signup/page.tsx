@@ -119,6 +119,13 @@ export default function SignUpPage() {
 
     setLoading(true);
 
+    let graduationYear: string | undefined;
+    if (accountType === "student" && formData.grade) {
+      const currentYear = new Date().getFullYear();
+      const gradeNumber = parseInt(formData.grade.replace("Grade ", ""));
+      graduationYear = String(currentYear + (12 - gradeNumber));
+    }
+
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -133,6 +140,7 @@ export default function SignUpPage() {
             city: formData.city,
             state: formData.state,
             grade: formData.grade,
+            graduation_year: graduationYear,
             parent_email: formData.parent_email,
             parent_name: formData.parent_name,
           }),

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase-client";
 
 type StudentData = {
   high_school?: string | null;
+  grade?: string | null;
   graduation_year?: string | null;
   primary_position?: string | null;
   secondary_position?: string | null;
@@ -71,6 +72,8 @@ export default function EditProfileForm({
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [satError, setSatError] = useState<string | null>(null);
+  const [actError, setActError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     full_name: initialFullName,
@@ -146,6 +149,7 @@ export default function EditProfileForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (satError || actError) return;
     setSaving(true);
     setError(null);
 
@@ -268,6 +272,12 @@ export default function EditProfileForm({
             <div>
               <label className={LABEL}>Graduation Year</label>
               <input type="text" className={INPUT} value={form.graduation_year} onChange={set("graduation_year")} />
+            </div>
+            <div>
+              <label className={LABEL}>Grade</label>
+              <div className="border border-gray-200 rounded-lg px-3 py-2 w-full bg-gray-50 text-sm text-gray-500">
+                {initialData.grade ?? "—"}
+              </div>
             </div>
             <div>
               <label className={LABEL}>Primary Position</label>
@@ -482,22 +492,44 @@ export default function EditProfileForm({
               <input
                 type="number"
                 step="1"
-                min="0"
+                min="400"
+                max="1600"
                 className={INPUT}
                 value={form.sat_score}
-                onChange={set("sat_score")}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
+                  setForm((prev) => ({ ...prev, sat_score: raw }));
+                  if (raw === "") {
+                    setSatError(null);
+                  } else {
+                    const n = parseInt(raw);
+                    setSatError(n < 400 || n > 1600 ? "SAT score must be between 400 and 1600" : null);
+                  }
+                }}
               />
+              {satError && <p className="text-red-500 text-xs mt-1">{satError}</p>}
             </div>
             <div>
               <label className={LABEL}>ACT Score</label>
               <input
                 type="number"
                 step="1"
-                min="0"
+                min="1"
+                max="36"
                 className={INPUT}
                 value={form.act_score}
-                onChange={set("act_score")}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, "").slice(0, 2);
+                  setForm((prev) => ({ ...prev, act_score: raw }));
+                  if (raw === "") {
+                    setActError(null);
+                  } else {
+                    const n = parseInt(raw);
+                    setActError(n < 1 || n > 36 ? "ACT score must be between 1 and 36" : null);
+                  }
+                }}
               />
+              {actError && <p className="text-red-500 text-xs mt-1">{actError}</p>}
             </div>
             <div>
               <label className={LABEL}>Intended Major</label>

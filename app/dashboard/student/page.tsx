@@ -12,6 +12,7 @@ import {
   Phone,
   Calendar,
   User,
+  Eye,
 } from "lucide-react";
 
 type Student = {
@@ -165,21 +166,18 @@ export default async function StudentDashboardPage({
             <span className="text-hsp-dark">School</span>
             <span className="text-hsp-dark">Prospect</span>
           </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {isParentViewer && (
+              <span className="bg-amber-100 text-amber-700 text-xs font-medium rounded-full px-3 py-1 flex items-center gap-1">
+                <Eye className="w-3 h-3 shrink-0" />
+                <span className="hidden sm:inline">View Only</span>
+              </span>
+            )}
             <SettingsLink isParent={isParentViewer} />
             <LogOutButton />
           </div>
         </div>
       </nav>
-
-      {/* View-only banner for parent viewers */}
-      {isParentViewer && (
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 pt-4">
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
-            👁 You are viewing {displayProfile.full_name}&apos;s profile — View Only Mode
-          </div>
-        </div>
-      )}
 
       {/* Page Content */}
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6">
@@ -202,40 +200,37 @@ export default async function StudentDashboardPage({
                       {displayProfile.full_name ?? DASH}
                     </h2>
 
-                    <div className="border-b border-gray-200 my-1" />
-
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-[#64748b] shrink-0" />
-                      <span className="text-sm text-[#64748b] truncate">
-                        {student.high_school ?? DASH}
+                    <div className="flex items-center gap-1 mt-1 min-w-0">
+                      <User className="w-4 h-4 text-[#d93025] shrink-0" />
+                      <span className="text-sm font-semibold text-[#d93025] whitespace-nowrap">Position:</span>
+                      <span className="text-sm text-[#0f172a] truncate">
+                        {student.primary_position
+                          ? student.secondary_position
+                            ? `${student.primary_position}, ${student.secondary_position}`
+                            : student.primary_position
+                          : DASH}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
-                        <span className="text-sm text-[#64748b] whitespace-nowrap">
-                          {student.graduation_year
-                            ? `Class of ${student.graduation_year}`
-                            : student.grade
-                            ? `Grade ${student.grade}`
-                            : DASH}
-                        </span>
-                      </div>
-                      <span className="text-sm text-[#64748b]">|</span>
-                      <div className="flex items-center gap-1 min-w-0">
-                        <User className="w-4 h-4 text-[#d93025] shrink-0" />
-                        <span className="text-sm font-semibold text-[#d93025] whitespace-nowrap">Position:</span>
-                        <span className="text-sm text-[#0f172a] truncate">
-                          {student.primary_position
-                            ? student.secondary_position
-                              ? `${student.primary_position}, ${student.secondary_position}`
-                              : student.primary_position
-                            : DASH}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
+                      <span className="text-sm text-[#64748b] whitespace-nowrap">
+                        {student.graduation_year
+                          ? `Class of ${student.graduation_year}`
+                          : student.grade
+                          ? student.grade
+                          : DASH}
+                      </span>
                     </div>
+
+                    <div className="border-b border-gray-200 my-1" />
                   </div>
+                </div>
+                <div className="px-4 sm:px-6 pb-4 flex items-center justify-center gap-1 flex-wrap">
+                  <MapPin className="w-4 h-4 text-[#64748b] shrink-0" />
+                  <span className="text-sm text-[#64748b] break-words text-center">
+                    {student.high_school ?? DASH}
+                  </span>
                 </div>
               </div>
 
@@ -282,7 +277,7 @@ export default async function StudentDashboardPage({
                         />
                       )}
                       <span
-                        className="text-sm font-semibold leading-tight"
+                        className="text-sm font-semibold leading-tight truncate"
                         style={{ color: "#0f172a" }}
                       >
                         {item.value}
