@@ -6,6 +6,11 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 export async function POST(request: NextRequest) {
   const { email, password, full_name, role, high_school, city, state, grade, parent_email, parent_name, athlete_email, relationship, phone, university, division } = await request.json();
   console.log("[signup] received:", { email, full_name, role });
@@ -90,6 +95,48 @@ export async function POST(request: NextRequest) {
 
     if (studentError) {
       return NextResponse.json({ error: studentError.message }, { status: 500 });
+    }
+
+    // Auto-create parent auth account
+    const { data: studentRow } = await supabase
+      .from("students")
+      .select("id")
+      .eq("profile_id", authData.user.id)
+      .single();
+    console.log("Student ID found:", studentRow?.id);
+
+    if (studentRow && parent_email && parent_name) {
+      const tempPassword = crypto.randomUUID();
+      const parentAuthUser = await supabaseAdmin.auth.admin.createUser({
+        email: parent_email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: { full_name: parent_name, role: "parent" },
+      });
+      const { data: parentAuthData, error: parentAuthError } = parentAuthUser;
+      console.log("[signup] parent auth.admin.createUser:", { userId: parentAuthData?.user?.id, parentAuthError });
+
+      if (parentAuthData?.user && !parentAuthError) {
+        console.log("Parent auth user created:", parentAuthUser.data?.user?.id);
+        console.log("Parent temp password:", tempPassword);
+
+        const profileInsert = await supabaseAdmin.from("profiles").insert({
+          id: parentAuthData.user.id,
+          email: parent_email,
+          full_name: parent_name,
+          role: "parent",
+          status: "active",
+        });
+        console.log("Parent profile insert result:", profileInsert);
+
+        console.log("Inserting into parents table with:", { profile_id: parentAuthData.user.id, student_id: studentRow.id });
+        const parentsInsert = await supabaseAdmin.from("parents").insert({
+          profile_id: parentAuthData.user.id,
+          student_id: studentRow.id,
+          relationship: "Guardian",
+        });
+        console.log("Parents table insert result:", parentsInsert);
+      }
     }
   }
 
