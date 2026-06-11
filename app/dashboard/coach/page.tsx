@@ -36,6 +36,7 @@ type Profile = {
 
 type ProspectStudent = {
   id: string
+  profile_id: string | null
   full_name: string | null
   high_school: string | null
   city: string | null
@@ -49,11 +50,14 @@ type ProspectStudent = {
   throws: string | null
   photo_url: string | null
   stat_avg: string | null
+  stat_obp: string | null
   stat_hr: string | null
   stat_rbi: string | null
+  stat_sb: string | null
   stat_era: string | null
   stat_whip: string | null
   stat_velo: string | null
+  stat_k: string | null
   subscription_status: string | null
 }
 
@@ -64,6 +68,19 @@ type Filters = {
   minGpa: string
   bats: string
   throws: string
+  videoAvailable: string
+}
+
+type AdvancedFilters = {
+  minVelo: string
+  maxWhip: string
+  maxEra: string
+  minK: string
+  minAvg: string
+  minObp: string
+  minHr: string
+  minRbi: string
+  minSb: string
 }
 
 const POSITIONS = ['P', 'C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH']
@@ -74,12 +91,11 @@ const GPA_OPTIONS = [
   { label: '2.5+', value: '2.5' },
   { label: '3.0+', value: '3.0' },
   { label: '3.5+', value: '3.5' },
-  { label: '4.0+', value: '4.0' },
 ]
 
 // Only safe, non-private columns — never include contact/social/family fields
 const SAFE_SELECT =
-  'id, full_name, high_school, city, state, graduation_year, grade, gpa, primary_position, secondary_position, bats, throws, photo_url, stat_avg, stat_hr, stat_rbi, stat_era, stat_whip, stat_velo, subscription_status'
+  'id, profile_id, full_name, high_school, city, state, graduation_year, grade, gpa, primary_position, secondary_position, bats, throws, photo_url, stat_avg, stat_obp, stat_hr, stat_rbi, stat_sb, stat_era, stat_whip, stat_velo, stat_k, subscription_status'
 
 const EMPTY_FILTERS: Filters = {
   state: '',
@@ -88,6 +104,19 @@ const EMPTY_FILTERS: Filters = {
   minGpa: '',
   bats: '',
   throws: '',
+  videoAvailable: '',
+}
+
+const EMPTY_ADVANCED: AdvancedFilters = {
+  minVelo: '',
+  maxWhip: '',
+  maxEra: '',
+  minK: '',
+  minAvg: '',
+  minObp: '',
+  minHr: '',
+  minRbi: '',
+  minSb: '',
 }
 
 const FALLBACK = 'Not provided'
@@ -120,18 +149,41 @@ export default function CoachDashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [coach, setCoach] = useState<Coach>({})
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS)
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(EMPTY_ADVANCED)
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [students, setStudents] = useState<ProspectStudent[]>([])
+  const [videoProfileIds, setVideoProfileIds] = useState<Set<string>>(new Set())
   const [searching, setSearching] = useState(false)
   const [searched, setSearched] = useState(false)
   const [activeTab, setActiveTab] = useState<CoachTabValue>('prospects')
 
   const runSearch = useCallback(
-    async (activeFilters: Filters) => {
+    async (activeFilters: Filters, activeAdvanced: AdvancedFilters) => {
       setSearching(true)
+
+      // Video filter: pre-fetch profile_ids that have at least one media record
+      let videoIds: string[] | null = null
+      if (activeFilters.videoAvailable === 'Yes') {
+        const { data: mediaData } = await supabase
+          .from('student_media')
+          .select('profile_id')
+        videoIds = ((mediaData ?? []) as { profile_id: string | null }[])
+          .map((m) => m.profile_id)
+          .filter((id): id is string => Boolean(id))
+        if (videoIds.length === 0) {
+          setStudents([])
+          setVideoProfileIds(new Set())
+          setSearched(true)
+          setSearching(false)
+          return
+        }
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let q: any = supabase
         .from('students')
-        .select(SAFE_SELECT)
+        .select(`${SAFE_SELECT}, profiles!inner(status)`)
+        .eq('profiles.status', 'active')
         .order('full_name', { ascending: true })
         .limit(200)
 
@@ -141,9 +193,46 @@ export default function CoachDashboardPage() {
       if (activeFilters.minGpa) q = q.gte('gpa', parseFloat(activeFilters.minGpa))
       if (activeFilters.bats) q = q.eq('bats', activeFilters.bats)
       if (activeFilters.throws) q = q.eq('throws', activeFilters.throws)
+      if (videoIds !== null) q = q.in('profile_id', videoIds)
+
+      // Advanced filters — pitcher
+      if (activeFilters.position === 'P') {
+        if (activeAdvanced.minVelo) q = q.gte('stat_velo', parseFloat(activeAdvanced.minVelo))
+        if (activeAdvanced.maxWhip) q = q.lte('stat_whip', parseFloat(activeAdvanced.maxWhip))
+        if (activeAdvanced.maxEra) q = q.lte('stat_era', parseFloat(activeAdvanced.maxEra))
+        if (activeAdvanced.minK) q = q.gte('stat_k', parseInt(activeAdvanced.minK))
+      } else {
+        if (activeAdvanced.minAvg) q = q.gte('stat_avg', parseFloat(activeAdvanced.minAvg))
+        if (activeAdvanced.minObp) q = q.gte('stat_obp', parseFloat(activeAdvanced.minObp))
+        if (activeAdvanced.minHr) q = q.gte('stat_hr', parseInt(activeAdvanced.minHr))
+        if (activeAdvanced.minRbi) q = q.gte('stat_rbi', parseInt(activeAdvanced.minRbi))
+        if (activeAdvanced.minSb) q = q.gte('stat_sb', parseInt(activeAdvanced.minSb))
+      }
 
       const { data } = await q
-      setStudents(data ?? [])
+      const results: ProspectStudent[] = data ?? []
+      setStudents(results)
+
+      // Determine which result students have video in student_media
+      const resultProfileIds = results
+        .map((s) => s.profile_id)
+        .filter((id): id is string => Boolean(id))
+      if (resultProfileIds.length > 0) {
+        const { data: mediaRows } = await supabase
+          .from('student_media')
+          .select('profile_id')
+          .in('profile_id', resultProfileIds)
+        setVideoProfileIds(
+          new Set(
+            ((mediaRows ?? []) as { profile_id: string | null }[])
+              .map((m) => m.profile_id)
+              .filter((id): id is string => Boolean(id))
+          )
+        )
+      } else {
+        setVideoProfileIds(new Set())
+      }
+
       setSearched(true)
       setSearching(false)
     },
@@ -186,12 +275,13 @@ export default function CoachDashboardPage() {
       setCoach(coachData ?? {})
       setAuthLoading(false)
 
-      await runSearch(EMPTY_FILTERS)
+      await runSearch(EMPTY_FILTERS, EMPTY_ADVANCED)
     }
     init()
   }, [router, supabase, runSearch])
 
   const isVerified = coach.verified === true
+  const isPitcherFilter = filters.position === 'P'
 
   if (authLoading) {
     return (
@@ -361,7 +451,7 @@ export default function CoachDashboardPage() {
               </nav>
             </div>
 
-            {/* Prospect Search Tab */}
+            {/* ── PROSPECT SEARCH TAB ── */}
             {activeTab === 'prospects' && (
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 {/* Header */}
@@ -383,8 +473,8 @@ export default function CoachDashboardPage() {
                   )}
                 </div>
 
-                {/* Filters */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                {/* Filters Row 1: State, Grad Year, Position */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                   <div>
                     <label className={LABEL_CLS}>State</label>
                     <input
@@ -393,7 +483,7 @@ export default function CoachDashboardPage() {
                       placeholder="e.g. CA, Texas"
                       value={filters.state}
                       onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
-                      onKeyDown={(e) => e.key === 'Enter' && runSearch(filters)}
+                      onKeyDown={(e) => e.key === 'Enter' && runSearch(filters, advancedFilters)}
                     />
                   </div>
                   <div>
@@ -426,6 +516,10 @@ export default function CoachDashboardPage() {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                {/* Filters Row 2: Min GPA, Bats, Throws, Video Available */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                   <div>
                     <label className={LABEL_CLS}>Min GPA</label>
                     <select
@@ -465,21 +559,164 @@ export default function CoachDashboardPage() {
                       <option value="Left">Left</option>
                     </select>
                   </div>
+                  <div>
+                    <label className={LABEL_CLS}>Video Available</label>
+                    <select
+                      className={INPUT_CLS}
+                      value={filters.videoAvailable}
+                      onChange={(e) =>
+                        setFilters((f) => ({ ...f, videoAvailable: e.target.value }))
+                      }
+                    >
+                      <option value="">Any</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Advanced Filters — collapsible */}
+                <div className="mb-5">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvanced((v) => !v)}
+                    className="text-xs font-medium transition-colors"
+                    style={{ color: '#64748b' }}
+                  >
+                    Advanced Filters {showAdvanced ? '▲' : '▼'}
+                  </button>
+
+                  {showAdvanced && (
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {isPitcherFilter ? (
+                        <>
+                          <div>
+                            <label className={LABEL_CLS}>Min Fastball Velocity</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 80"
+                              value={advancedFilters.minVelo}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minVelo: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Max WHIP</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 1.50"
+                              value={advancedFilters.maxWhip}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, maxWhip: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Max ERA</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 3.00"
+                              value={advancedFilters.maxEra}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, maxEra: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Min Strikeouts</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 20"
+                              value={advancedFilters.minK}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minK: e.target.value }))
+                              }
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            <label className={LABEL_CLS}>Min AVG</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. .280"
+                              value={advancedFilters.minAvg}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minAvg: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Min OBP</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. .350"
+                              value={advancedFilters.minObp}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minObp: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Min HR</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 5"
+                              value={advancedFilters.minHr}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minHr: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Min RBI</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 15"
+                              value={advancedFilters.minRbi}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minRbi: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            <label className={LABEL_CLS}>Min SB</label>
+                            <input
+                              type="number"
+                              className={INPUT_CLS}
+                              placeholder="e.g. 5"
+                              value={advancedFilters.minSb}
+                              onChange={(e) =>
+                                setAdvancedFilters((f) => ({ ...f, minSb: e.target.value }))
+                              }
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Search Button */}
                 <button
                   type="button"
-                  onClick={() => runSearch(filters)}
+                  onClick={() => runSearch(filters, advancedFilters)}
                   disabled={searching}
                   className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
                   style={{ backgroundColor: '#d93025' }}
                   onMouseEnter={(e) =>
                     !searching && ((e.currentTarget.style.backgroundColor = '#b91c1c'))
                   }
-                  onMouseLeave={(e) =>
-                    ((e.currentTarget.style.backgroundColor = '#d93025'))
-                  }
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#d93025')}
                 >
                   {searching ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -501,13 +738,17 @@ export default function CoachDashboardPage() {
                       </div>
                     ) : students.length === 0 ? (
                       <p className="text-sm text-center py-6" style={{ color: '#64748b' }}>
-                        No prospects found matching your filters.
+                        No prospects found.
                       </p>
                     ) : (
-                      <div className="max-h-[480px] overflow-y-auto -mx-1 px-1">
+                      <div className="max-h-[520px] overflow-y-auto -mx-1 px-1">
                         {students.map((student) => {
                           const pitcher = student.primary_position === 'P'
                           const initials = getInitials(student.full_name)
+                          const hasVideo = student.profile_id
+                            ? videoProfileIds.has(student.profile_id)
+                            : false
+
                           return (
                             <div
                               key={student.id}
@@ -531,9 +772,10 @@ export default function CoachDashboardPage() {
 
                               {/* Info */}
                               <div className="flex-1 min-w-0">
+                                {/* Name + position */}
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span
-                                    className="font-semibold text-sm"
+                                    className="font-bold text-sm"
                                     style={{ color: '#0f172a' }}
                                   >
                                     {student.full_name ?? '—'}
@@ -541,58 +783,81 @@ export default function CoachDashboardPage() {
                                   {student.primary_position && (
                                     <span
                                       className="text-xs rounded px-1.5 py-0.5 font-medium shrink-0"
-                                      style={{
-                                        backgroundColor: '#F2F3F3',
-                                        color: '#0f172a',
-                                      }}
+                                      style={{ backgroundColor: '#F2F3F3', color: '#0f172a' }}
                                     >
                                       {student.primary_position}
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-xs truncate mt-0.5" style={{ color: '#64748b' }}>
-                                  {[student.high_school, student.state].filter(Boolean).join(', ') ||
-                                    '—'}
-                                </p>
-                                {/* Stats row — hidden on mobile */}
-                                <div
-                                  className="hidden sm:flex items-center gap-3 mt-1 flex-wrap"
+
+                                {/* School, state, grad year */}
+                                <p
+                                  className="text-xs truncate mt-0.5"
                                   style={{ color: '#64748b' }}
                                 >
-                                  {student.graduation_year && (
-                                    <span className="text-xs">
-                                      <span
-                                        className="font-medium"
-                                        style={{ color: '#0f172a' }}
-                                      >
-                                        {student.graduation_year}
-                                      </span>{' '}
-                                      Grad
-                                    </span>
-                                  )}
+                                  {[
+                                    student.high_school,
+                                    student.state,
+                                    student.graduation_year
+                                      ? `'${student.graduation_year.slice(-2)}`
+                                      : null,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(', ') || '—'}
+                                </p>
+
+                                {/* GPA badge + media badges */}
+                                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                   {student.gpa != null && (
-                                    <span className="text-xs">
-                                      GPA{' '}
-                                      <span className="font-medium" style={{ color: '#0f172a' }}>
-                                        {student.gpa}
-                                      </span>
+                                    <span
+                                      className="text-[10px] rounded-full px-2 py-0.5 font-semibold"
+                                      style={{ backgroundColor: '#dcfce7', color: '#166534' }}
+                                    >
+                                      GPA {student.gpa}
                                     </span>
                                   )}
+                                  {hasVideo && (
+                                    <span
+                                      className="text-[10px] rounded-full px-2 py-0.5 font-medium"
+                                      style={{ backgroundColor: '#eff6ff', color: '#1d4ed8' }}
+                                    >
+                                      📹 Video
+                                    </span>
+                                  )}
+                                  {student.photo_url && (
+                                    <span
+                                      className="text-[10px] rounded-full px-2 py-0.5 font-medium"
+                                      style={{ backgroundColor: '#f0fdf4', color: '#15803d' }}
+                                    >
+                                      📷 Photo
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Stats row — hidden on mobile */}
+                                <div
+                                  className="hidden sm:flex items-center gap-0 mt-1 text-xs flex-wrap"
+                                  style={{ color: '#64748b' }}
+                                >
                                   {pitcher ? (
                                     <>
-                                      {student.stat_era && (
-                                        <span className="text-xs">
-                                          ERA{' '}
+                                      {student.stat_velo && (
+                                        <span>
+                                          FB{' '}
                                           <span
                                             className="font-medium"
                                             style={{ color: '#0f172a' }}
                                           >
-                                            {student.stat_era}
-                                          </span>
+                                            {student.stat_velo}
+                                          </span>{' '}
+                                          mph
                                         </span>
                                       )}
                                       {student.stat_whip && (
-                                        <span className="text-xs">
+                                        <span>
+                                          {student.stat_velo && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
                                           WHIP{' '}
                                           <span
                                             className="font-medium"
@@ -602,14 +867,33 @@ export default function CoachDashboardPage() {
                                           </span>
                                         </span>
                                       )}
-                                      {student.stat_velo && (
-                                        <span className="text-xs">
-                                          Velo{' '}
+                                      {student.stat_era && (
+                                        <span>
+                                          {(student.stat_velo || student.stat_whip) && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
+                                          ERA{' '}
                                           <span
                                             className="font-medium"
                                             style={{ color: '#0f172a' }}
                                           >
-                                            {student.stat_velo}
+                                            {student.stat_era}
+                                          </span>
+                                        </span>
+                                      )}
+                                      {student.stat_k && (
+                                        <span>
+                                          {(student.stat_velo ||
+                                            student.stat_whip ||
+                                            student.stat_era) && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
+                                          K{' '}
+                                          <span
+                                            className="font-medium"
+                                            style={{ color: '#0f172a' }}
+                                          >
+                                            {student.stat_k}
                                           </span>
                                         </span>
                                       )}
@@ -617,7 +901,7 @@ export default function CoachDashboardPage() {
                                   ) : (
                                     <>
                                       {student.stat_avg && (
-                                        <span className="text-xs">
+                                        <span>
                                           AVG{' '}
                                           <span
                                             className="font-medium"
@@ -627,8 +911,25 @@ export default function CoachDashboardPage() {
                                           </span>
                                         </span>
                                       )}
+                                      {student.stat_obp && (
+                                        <span>
+                                          {student.stat_avg && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
+                                          OBP{' '}
+                                          <span
+                                            className="font-medium"
+                                            style={{ color: '#0f172a' }}
+                                          >
+                                            {student.stat_obp}
+                                          </span>
+                                        </span>
+                                      )}
                                       {student.stat_hr && (
-                                        <span className="text-xs">
+                                        <span>
+                                          {(student.stat_avg || student.stat_obp) && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
                                           HR{' '}
                                           <span
                                             className="font-medium"
@@ -639,7 +940,12 @@ export default function CoachDashboardPage() {
                                         </span>
                                       )}
                                       {student.stat_rbi && (
-                                        <span className="text-xs">
+                                        <span>
+                                          {(student.stat_avg ||
+                                            student.stat_obp ||
+                                            student.stat_hr) && (
+                                            <span className="mx-1.5">·</span>
+                                          )}
                                           RBI{' '}
                                           <span
                                             className="font-medium"
@@ -688,7 +994,7 @@ export default function CoachDashboardPage() {
               </div>
             )}
 
-            {/* Watchlist Tab */}
+            {/* ── WATCHLIST TAB ── */}
             {activeTab === 'watchlist' && (
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 <h3 className="text-xl font-bold mb-5" style={{ color: '#0f172a' }}>
@@ -703,7 +1009,7 @@ export default function CoachDashboardPage() {
               </div>
             )}
 
-            {/* Messages Tab */}
+            {/* ── MESSAGES TAB ── */}
             {activeTab === 'messages' && (
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 <h3 className="text-xl font-bold mb-5" style={{ color: '#0f172a' }}>
@@ -718,7 +1024,7 @@ export default function CoachDashboardPage() {
               </div>
             )}
 
-            {/* Notifications Tab */}
+            {/* ── NOTIFICATIONS TAB ── */}
             {activeTab === 'notifications' && (
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 <h3 className="text-xl font-bold mb-5" style={{ color: '#0f172a' }}>
