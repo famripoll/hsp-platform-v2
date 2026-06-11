@@ -156,6 +156,7 @@ export default function CoachDashboardPage() {
   const [searching, setSearching] = useState(false)
   const [searched, setSearched] = useState(false)
   const [activeTab, setActiveTab] = useState<CoachTabValue>('prospects')
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
 
   const runSearch = useCallback(
     async (activeFilters: Filters, activeAdvanced: AdvancedFilters) => {
@@ -187,7 +188,7 @@ export default function CoachDashboardPage() {
         .order('full_name', { ascending: true })
         .limit(200)
 
-      if (activeFilters.state) q = q.ilike('state', `%${activeFilters.state}%`)
+      if (activeFilters.state) q = q.eq('state', activeFilters.state)
       if (activeFilters.gradYear) q = q.eq('graduation_year', activeFilters.gradYear)
       if (activeFilters.position) q = q.eq('primary_position', activeFilters.position)
       if (activeFilters.minGpa) q = q.gte('gpa', parseFloat(activeFilters.minGpa))
@@ -212,6 +213,25 @@ export default function CoachDashboardPage() {
       const { data } = await q
       const results: ProspectStudent[] = data ?? []
       setStudents(results)
+
+      // Resolve signed URLs for student photos
+      const photoEntries = await Promise.all(
+        results
+          .filter((s) => s.photo_url)
+          .map(async (s) => {
+            const path = s.photo_url!
+            if (path.startsWith('http')) return [s.id, path] as const
+            const { data: urlData } = await supabase.storage
+              .from('profile-photos')
+              .createSignedUrl(path, 3600)
+            return [s.id, urlData?.signedUrl ?? ''] as const
+          })
+      )
+      const photoMap: Record<string, string> = {}
+      for (const [id, url] of photoEntries) {
+        if (url) photoMap[id] = url
+      }
+      setPhotoUrls(photoMap)
 
       // Determine which result students have video in student_media
       const resultProfileIds = results
@@ -477,14 +497,41 @@ export default function CoachDashboardPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                   <div>
                     <label className={LABEL_CLS}>State</label>
-                    <input
-                      type="text"
+                    <select
                       className={INPUT_CLS}
-                      placeholder="e.g. CA, Texas"
                       value={filters.state}
                       onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
-                      onKeyDown={(e) => e.key === 'Enter' && runSearch(filters, advancedFilters)}
-                    />
+                    >
+                      <option value="">Any State / Region</option>
+                      <optgroup label="United States — States">
+                        {['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="U.S. Territories">
+                        {['Puerto Rico','Guam','U.S. Virgin Islands','American Samoa','Northern Mariana Islands'].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Caribbean">
+                        {['Antigua and Barbuda','Bahamas','Barbados','Cuba','Dominica','Dominican Republic','Grenada','Haiti','Jamaica','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Trinidad and Tobago'].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Central America">
+                        {['Belize','Costa Rica','El Salvador','Guatemala','Honduras','Mexico','Nicaragua','Panama'].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="South America">
+                        {['Argentina','Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana','Paraguay','Peru','Suriname','Uruguay','Venezuela'].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="North America">
+                        <option value="Canada">Canada</option>
+                      </optgroup>
+                    </select>
                   </div>
                   <div>
                     <label className={LABEL_CLS}>Graduation Year</label>
@@ -755,20 +802,20 @@ export default function CoachDashboardPage() {
                               className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0"
                             >
                               {/* Avatar */}
-                              <div
-                                className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden"
-                                style={{ backgroundColor: '#d93025' }}
-                              >
-                                {student.photo_url ? (
-                                  <img
-                                    src={student.photo_url}
-                                    alt=""
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  initials
-                                )}
-                              </div>
+                              {photoUrls[student.id] ? (
+                                <img
+                                  src={photoUrls[student.id]}
+                                  alt=""
+                                  className="w-9 h-9 rounded-full object-cover shrink-0"
+                                />
+                              ) : (
+                                <div
+                                  className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
+                                  style={{ backgroundColor: '#d93025' }}
+                                >
+                                  {initials}
+                                </div>
+                              )}
 
                               {/* Info */}
                               <div className="flex-1 min-w-0">
