@@ -78,6 +78,7 @@ export default function EditProfileForm({
   const [form, setForm] = useState({
     full_name: initialFullName,
     high_school: initialData.high_school ?? "",
+    grade: initialData.grade ?? "",
     graduation_year: initialData.graduation_year ?? "",
     primary_position: initialData.primary_position ?? "",
     secondary_position: initialData.secondary_position ?? "",
@@ -170,6 +171,7 @@ export default function EditProfileForm({
       .from("students")
       .update({
         high_school: form.high_school || null,
+        grade: form.grade || null,
         graduation_year: form.graduation_year || null,
         primary_position: form.primary_position || null,
         secondary_position: form.secondary_position || null,
@@ -271,13 +273,38 @@ export default function EditProfileForm({
             </div>
             <div>
               <label className={LABEL}>Graduation Year</label>
-              <input type="text" className={INPUT} value={form.graduation_year} onChange={set("graduation_year")} />
+              <input
+                type="text"
+                className={INPUT}
+                value={form.graduation_year}
+                onChange={(e) => {
+                  const graduationYear = e.target.value;
+                  const currentYear = new Date().getFullYear();
+                  const gradNum = 12 - (parseInt(graduationYear) - currentYear);
+                  const newGrade = gradNum >= 9 && gradNum <= 12 ? `Grade ${gradNum}` : "";
+                  setForm((prev) => ({ ...prev, graduation_year: graduationYear, grade: newGrade }));
+                }}
+              />
             </div>
             <div>
               <label className={LABEL}>Grade</label>
-              <div className="border border-gray-200 rounded-lg px-3 py-2 w-full bg-gray-50 text-sm text-gray-500">
-                {initialData.grade ?? "—"}
-              </div>
+              <select
+                className={INPUT}
+                value={form.grade}
+                onChange={(e) => {
+                  const grade = e.target.value;
+                  const currentYear = new Date().getFullYear();
+                  const gradeNumber = parseInt(grade.replace("Grade ", ""));
+                  const graduationYear = grade ? (currentYear + (12 - gradeNumber)).toString() : "";
+                  setForm((prev) => ({ ...prev, grade, graduation_year: graduationYear }));
+                }}
+              >
+                <option value="">Select…</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+              </select>
             </div>
             <div>
               <label className={LABEL}>Primary Position</label>
