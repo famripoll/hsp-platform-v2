@@ -22,7 +22,8 @@ export default async function StudentSettingsPage() {
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "student" || profile.status !== "active") {
+  const isAllowedRole = profile?.role === "student" || profile?.role === "parent";
+  if (!profile || !isAllowedRole || profile.status !== "active") {
     redirect("/login");
   }
 

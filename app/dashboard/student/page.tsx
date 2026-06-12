@@ -12,7 +12,6 @@ import {
   Phone,
   Calendar,
   User,
-  Eye,
 } from "lucide-react";
 
 type Student = {
@@ -167,13 +166,7 @@ export default async function StudentDashboardPage({
             <span className="text-hsp-dark">Prospect</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {isParentViewer && (
-              <span className="bg-amber-100 text-amber-700 text-xs font-medium rounded-full px-3 py-1 flex items-center gap-1">
-                <Eye className="w-3 h-3 shrink-0" />
-                <span className="hidden sm:inline">View Only</span>
-              </span>
-            )}
-            <SettingsLink isParent={isParentViewer} />
+            <SettingsLink />
             <LogOutButton />
           </div>
         </div>
@@ -189,10 +182,10 @@ export default async function StudentDashboardPage({
 
               {/* Avatar + Name + Info + Edit Profile */}
               <div className="relative flex flex-col -mx-4 sm:-mx-6 -mt-4 sm:-mt-6 mb-0 bg-gradient-to-b from-red-50 to-white rounded-t-2xl">
-                <EditProfileButton isParent={isParentViewer} />
+                <EditProfileButton />
                 <div className="flex flex-row items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-6 pb-4">
                   <div className="shrink-0">
-                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-24 h-24" isParent={isParentViewer} />
+                    <ProfilePhotoUpload initialPhotoUrl={student.photo_url ?? null} size="w-24 h-24" />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -482,7 +475,6 @@ export default async function StudentDashboardPage({
             student={student}
             initialTab={initialTab}
             initialStatsTab={initialStatsTab}
-            isParentViewer={isParentViewer}
           />
 
         </div>
