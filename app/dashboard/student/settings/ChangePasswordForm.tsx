@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase-client";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
@@ -127,7 +126,7 @@ export default function ChangePasswordForm() {
 
         <div>
           <div className="border-t border-gray-100 my-5" />
-          <div className="pt-1 flex items-center gap-3">
+          <div className="pt-1">
             <button
               type="submit"
               disabled={saving}
@@ -135,12 +134,6 @@ export default function ChangePasswordForm() {
             >
               {saving ? "Updating…" : "Update Password"}
             </button>
-            <Link
-              href="/dashboard/student"
-              className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
-            >
-              Back
-            </Link>
           </div>
         </div>
       </form>

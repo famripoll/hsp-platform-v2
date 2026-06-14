@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { CreditCard, Gift, Calendar } from "lucide-react";
 
 const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
@@ -119,7 +118,7 @@ export default function SubscriptionCard({
         </div>
 
         <div>
-          <div className="pt-1 flex items-center gap-3">
+          <div className="pt-1">
             <button
               onClick={handleManageBilling}
               disabled={loading}
@@ -127,12 +126,6 @@ export default function SubscriptionCard({
             >
               {loading ? "Loading…" : "Manage Billing"}
             </button>
-            <Link
-              href="/dashboard/student"
-              className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
-            >
-              Back
-            </Link>
           </div>
 
           {portalError && (
