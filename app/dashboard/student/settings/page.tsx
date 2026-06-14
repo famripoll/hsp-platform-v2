@@ -2,8 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "../LogOutButton";
-import ChangePasswordForm from "./ChangePasswordForm";
-import SubscriptionCard from "./SubscriptionCard";
+import SettingsTabs from "./SettingsTabs";
 import { Settings } from "lucide-react";
 
 export default async function StudentSettingsPage() {
@@ -30,6 +29,9 @@ export default async function StudentSettingsPage() {
 
   let subscriptionStatus: string | null = null;
   let studentId: string | null = null;
+  let parentName: string | null = null;
+  let parentEmail: string | null = null;
+  let parentPhone: string | null = null;
 
   if (profile.role === "parent") {
     const { data: parentRow } = await supabase
@@ -41,20 +43,26 @@ export default async function StudentSettingsPage() {
     if (parentRow) {
       const { data: studentData } = await supabase
         .from("students")
-        .select("id, subscription_status")
+        .select("id, subscription_status, parent_name, parent_email, parent_phone")
         .eq("id", parentRow.student_id)
         .single();
       subscriptionStatus = studentData?.subscription_status ?? null;
       studentId = studentData?.id ?? null;
+      parentName = studentData?.parent_name ?? null;
+      parentEmail = studentData?.parent_email ?? null;
+      parentPhone = studentData?.parent_phone ?? null;
     }
   } else {
     const { data: studentData } = await supabase
       .from("students")
-      .select("id, subscription_status")
+      .select("id, subscription_status, parent_name, parent_email, parent_phone")
       .eq("profile_id", user.id)
       .single();
     subscriptionStatus = studentData?.subscription_status ?? null;
     studentId = studentData?.id ?? null;
+    parentName = studentData?.parent_name ?? null;
+    parentEmail = studentData?.parent_email ?? null;
+    parentPhone = studentData?.parent_phone ?? null;
   }
 
   let subscriptionPlan: "silver" | "gold" | null = null;
@@ -120,16 +128,13 @@ export default async function StudentSettingsPage() {
             </div>
             <Link
               href="/dashboard/student"
-              className="hidden sm:block border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 self-end w-fit"
+              className="hidden sm:block border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
             >
               Back
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-            <ChangePasswordForm />
-            <SubscriptionCard subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} />
-          </div>
+          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} />
         </div>
       </div>
     </>

@@ -48,7 +48,8 @@ export default function SubscriptionCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 h-full grid grid-rows-[auto_1fr]">
+    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+      <div className="max-w-sm mx-auto w-full">
       <div className="flex items-start gap-3">
         <div className="bg-red-50 rounded-xl p-3 shrink-0">
           <CreditCard size={22} color="#d93025" />
@@ -59,7 +60,7 @@ export default function SubscriptionCard({
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 justify-between">
+      <div className="flex flex-col gap-4">
         <div>
           <div className="border-t border-gray-100 my-5" />
           <div className="flex flex-col gap-4">
@@ -132,6 +133,7 @@ export default function SubscriptionCard({
             <p className="mt-3 text-sm text-gray-500">{portalError}</p>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

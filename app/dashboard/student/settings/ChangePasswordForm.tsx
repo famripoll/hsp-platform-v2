@@ -46,18 +46,19 @@ export default function ChangePasswordForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 h-full grid grid-rows-[auto_1fr]">
+    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+      <div className="max-w-sm mx-auto w-full">
       <div className="flex items-start gap-3">
         <div className="bg-red-50 rounded-xl p-3 shrink-0">
           <Lock size={22} color="#d93025" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#0f172a]">Security</h2>
+          <h2 className="text-xl font-bold text-[#0f172a]">Password</h2>
           <p className="text-sm text-[#64748b]">Change your password to keep your account secure.</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col max-w-sm justify-between">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <div className="border-t border-gray-100 my-5" />
           <div className="flex flex-col gap-4">
@@ -126,7 +127,7 @@ export default function ChangePasswordForm() {
 
         <div>
           <div className="border-t border-gray-100 my-5" />
-          <div className="pt-1">
+          <div className="pt-1 flex items-center gap-3">
             <button
               type="submit"
               disabled={saving}
@@ -137,6 +138,7 @@ export default function ChangePasswordForm() {
           </div>
         </div>
       </form>
+      </div>
     </div>
   );
 }
