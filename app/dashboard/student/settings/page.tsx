@@ -32,6 +32,7 @@ export default async function StudentSettingsPage() {
   let parentName: string | null = null;
   let parentEmail: string | null = null;
   let parentPhone: string | null = null;
+  let parentRelationship: string | null = null;
   let familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[] = [];
 
   if (profile.role === "parent") {
@@ -44,7 +45,7 @@ export default async function StudentSettingsPage() {
     if (parentRow) {
       const { data: studentData } = await supabase
         .from("students")
-        .select("id, subscription_status, parent_name, parent_email, parent_phone")
+        .select("id, subscription_status, parent_name, parent_email, parent_phone, parent_relationship")
         .eq("id", parentRow.student_id)
         .single();
       subscriptionStatus = studentData?.subscription_status ?? null;
@@ -52,11 +53,12 @@ export default async function StudentSettingsPage() {
       parentName = studentData?.parent_name ?? null;
       parentEmail = studentData?.parent_email ?? null;
       parentPhone = studentData?.parent_phone ?? null;
+      parentRelationship = studentData?.parent_relationship ?? null;
     }
   } else {
     const { data: studentData } = await supabase
       .from("students")
-      .select("id, subscription_status, parent_name, parent_email, parent_phone")
+      .select("id, subscription_status, parent_name, parent_email, parent_phone, parent_relationship")
       .eq("profile_id", user.id)
       .single();
     subscriptionStatus = studentData?.subscription_status ?? null;
@@ -64,6 +66,7 @@ export default async function StudentSettingsPage() {
     parentName = studentData?.parent_name ?? null;
     parentEmail = studentData?.parent_email ?? null;
     parentPhone = studentData?.parent_phone ?? null;
+    parentRelationship = studentData?.parent_relationship ?? null;
   }
 
   let subscriptionPlan: "silver" | "gold" | null = null;
@@ -143,7 +146,7 @@ export default async function StudentSettingsPage() {
             </Link>
           </div>
 
-          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} familyMembers={familyMembers} studentId={studentId} />
+          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
         </div>
       </div>
     </>

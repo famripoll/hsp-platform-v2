@@ -20,6 +20,7 @@ export default function SettingsTabs({
   parentName,
   parentEmail,
   parentPhone,
+  parentRelationship,
   familyMembers,
   studentId,
 }: {
@@ -29,6 +30,7 @@ export default function SettingsTabs({
   parentName: string | null;
   parentEmail: string | null;
   parentPhone: string | null;
+  parentRelationship: string | null;
   familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[];
   studentId: string | null;
 }) {
@@ -62,7 +64,7 @@ export default function SettingsTabs({
           billingFrequency={billingFrequency}
         />
       )}
-      {activeTab === "family" && <FamilyTab familyMembers={familyMembers} studentId={studentId} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} />}
+      {activeTab === "family" && <FamilyTab familyMembers={familyMembers} studentId={studentId} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} />}
     </div>
   );
 }

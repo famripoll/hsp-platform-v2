@@ -28,20 +28,27 @@ export default function FamilyTab({
   parentName,
   parentEmail,
   parentPhone,
+  parentRelationship,
 }: {
   familyMembers: FamilyMember[];
   studentId: string | null;
   parentName: string | null;
   parentEmail: string | null;
   parentPhone: string | null;
+  parentRelationship: string | null;
 }) {
   const [members, setMembers] = useState<FamilyMember[]>(familyMembers);
   const [fullName, setFullName] = useState("");
   const [relationship, setRelationship] = useState("");
+  const [otherRelationshipText, setOtherRelationshipText] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const motherCount = (parentRelationship === "Mother" ? 1 : 0) + members.filter((m) => m.relationship === "Mother").length;
+  const fatherCount = (parentRelationship === "Father" ? 1 : 0) + members.filter((m) => m.relationship === "Father").length;
+  const grandparentCount = members.filter((m) => m.relationship === "Grandparent").length;
 
   function clearMessage() {
     setSaveMessage(null);
@@ -53,10 +60,15 @@ export default function FamilyTab({
       setSaveMessage("Please fill in Full Name and Relationship.");
       return;
     }
+    if (relationship === "Other" && !otherRelationshipText.trim()) {
+      setSaveMessage("Please specify the relationship.");
+      return;
+    }
     if (!studentId) {
       setSaveMessage("Unable to save right now. Please try again later.");
       return;
     }
+    const finalRelationship = relationship === "Other" ? otherRelationshipText.trim() : relationship;
     setSaving(true);
     const supabase = createClient();
     const { data, error } = await supabase
@@ -64,7 +76,7 @@ export default function FamilyTab({
       .insert({
         student_id: studentId,
         full_name: fullName.trim(),
-        relationship,
+        relationship: finalRelationship,
         email: email.trim() || null,
         phone: phone.trim() || null,
       })
@@ -78,6 +90,7 @@ export default function FamilyTab({
     setMembers((prev) => [...prev, data]);
     setFullName("");
     setRelationship("");
+    setOtherRelationshipText("");
     setEmail("");
     setPhone("");
     setSaveMessage("Family member added.");
@@ -123,17 +136,39 @@ export default function FamilyTab({
           <select
             className={INPUT}
             value={relationship}
-            onChange={(e) => { setRelationship(e.target.value); clearMessage(); }}
+            onChange={(e) => {
+              setRelationship(e.target.value);
+              if (e.target.value !== "Other") setOtherRelationshipText("");
+              clearMessage();
+            }}
           >
             <option value="" disabled>Please select</option>
-            <option>Mother</option>
-            <option>Father</option>
-            <option>Grandparent</option>
-            <option>Guardian</option>
-            <option>Sibling</option>
-            <option>Other</option>
+            {motherCount >= 1
+              ? <option value="Mother" disabled>Mother (already added)</option>
+              : <option value="Mother">Mother</option>}
+            {fatherCount >= 1
+              ? <option value="Father" disabled>Father (already added)</option>
+              : <option value="Father">Father</option>}
+            {grandparentCount >= 4
+              ? <option value="Grandparent" disabled>Grandparent (max reached)</option>
+              : <option value="Grandparent">Grandparent</option>}
+            <option value="Guardian">Guardian</option>
+            <option value="Sibling">Sibling</option>
+            <option value="Other">Other</option>
           </select>
         </div>
+        {relationship === "Other" && (
+          <div className="md:col-span-2">
+            <label className={LABEL}>Please specify</label>
+            <input
+              type="text"
+              className={INPUT}
+              value={otherRelationshipText}
+              onChange={(e) => { setOtherRelationshipText(e.target.value); clearMessage(); }}
+              placeholder="e.g. Aunt, Family Friend"
+            />
+          </div>
+        )}
       </div>
 
       <p className="text-sm font-semibold text-[#0f172a] mt-2">Contact Info</p>
