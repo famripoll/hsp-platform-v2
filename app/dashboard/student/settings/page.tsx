@@ -32,6 +32,7 @@ export default async function StudentSettingsPage() {
   let parentName: string | null = null;
   let parentEmail: string | null = null;
   let parentPhone: string | null = null;
+  let familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[] = [];
 
   if (profile.role === "parent") {
     const { data: parentRow } = await supabase
@@ -82,6 +83,14 @@ export default async function StudentSettingsPage() {
       subscriptionPlan = subData.plan as "silver" | "gold";
       billingFrequency = subData.billing_frequency as "monthly" | "6months" | "annual";
     }
+
+    const { data: familyData } = await supabase
+      .from("family_members")
+      .select("id, full_name, relationship, email, phone")
+      .eq("student_id", studentId)
+      .order("created_at", { ascending: true });
+
+    familyMembers = familyData ?? [];
   }
 
   return (
@@ -134,7 +143,7 @@ export default async function StudentSettingsPage() {
             </Link>
           </div>
 
-          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} />
+          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} familyMembers={familyMembers} studentId={studentId} />
         </div>
       </div>
     </>

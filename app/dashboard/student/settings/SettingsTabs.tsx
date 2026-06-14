@@ -20,6 +20,8 @@ export default function SettingsTabs({
   parentName,
   parentEmail,
   parentPhone,
+  familyMembers,
+  studentId,
 }: {
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
@@ -27,6 +29,8 @@ export default function SettingsTabs({
   parentName: string | null;
   parentEmail: string | null;
   parentPhone: string | null;
+  familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[];
+  studentId: string | null;
 }) {
   const [activeTab, setActiveTab] = useState<TabValue>("security");
 
@@ -58,7 +62,7 @@ export default function SettingsTabs({
           billingFrequency={billingFrequency}
         />
       )}
-      {activeTab === "family" && <FamilyTab parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} />}
+      {activeTab === "family" && <FamilyTab familyMembers={familyMembers} studentId={studentId} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} />}
     </div>
   );
 }
