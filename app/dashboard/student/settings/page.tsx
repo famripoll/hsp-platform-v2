@@ -29,6 +29,7 @@ export default async function StudentSettingsPage() {
   }
 
   let subscriptionStatus: string | null = null;
+  let studentId: string | null = null;
 
   if (profile.role === "parent") {
     const { data: parentRow } = await supabase
@@ -40,18 +41,39 @@ export default async function StudentSettingsPage() {
     if (parentRow) {
       const { data: studentData } = await supabase
         .from("students")
-        .select("subscription_status")
+        .select("id, subscription_status")
         .eq("id", parentRow.student_id)
         .single();
       subscriptionStatus = studentData?.subscription_status ?? null;
+      studentId = studentData?.id ?? null;
     }
   } else {
     const { data: studentData } = await supabase
       .from("students")
-      .select("subscription_status")
+      .select("id, subscription_status")
       .eq("profile_id", user.id)
       .single();
     subscriptionStatus = studentData?.subscription_status ?? null;
+    studentId = studentData?.id ?? null;
+  }
+
+  let subscriptionPlan: "silver" | "gold" | null = null;
+  let billingFrequency: "monthly" | "6months" | "annual" | null = null;
+
+  if (studentId) {
+    const { data: subData } = await supabase
+      .from("subscriptions")
+      .select("plan, billing_frequency, status")
+      .eq("student_id", studentId)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (subData) {
+      subscriptionPlan = subData.plan as "silver" | "gold";
+      billingFrequency = subData.billing_frequency as "monthly" | "6months" | "annual";
+    }
   }
 
   return (
@@ -88,7 +110,7 @@ export default async function StudentSettingsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             <ChangePasswordForm />
-            <SubscriptionCard subscriptionStatus={subscriptionStatus} />
+            <SubscriptionCard subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} />
           </div>
         </div>
       </div>

@@ -6,10 +6,21 @@ import { CreditCard, Gift, Calendar } from "lucide-react";
 
 const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
 
+function formatFrequency(freq: "monthly" | "6months" | "annual" | null): string {
+  if (freq === "monthly") return "Monthly";
+  if (freq === "6months") return "Every 6 Months";
+  if (freq === "annual") return "Annual";
+  return "";
+}
+
 export default function SubscriptionCard({
   subscriptionStatus,
+  subscriptionPlan,
+  billingFrequency,
 }: {
   subscriptionStatus: string | null;
+  subscriptionPlan: "silver" | "gold" | null;
+  billingFrequency: "monthly" | "6months" | "annual" | null;
 }) {
   const [loading, setLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
@@ -58,7 +69,29 @@ export default function SubscriptionCard({
               <div>
                 <span className={LABEL}>Current Plan</span>
                 <p className="text-[#0f172a] font-semibold">
-                  {isPaid ? "Premium" : "Free"}
+                  {subscriptionPlan === "gold" ? (
+                    <>
+                      Gold
+                      {billingFrequency && (
+                        <span className="block text-xs font-normal text-[#64748b] mt-0.5">
+                          {formatFrequency(billingFrequency)}
+                        </span>
+                      )}
+                    </>
+                  ) : subscriptionPlan === "silver" ? (
+                    <>
+                      Silver
+                      {billingFrequency && (
+                        <span className="block text-xs font-normal text-[#64748b] mt-0.5">
+                          {formatFrequency(billingFrequency)}
+                        </span>
+                      )}
+                    </>
+                  ) : isPaid ? (
+                    "Premium"
+                  ) : (
+                    "Free"
+                  )}
                 </p>
               </div>
             </div>
@@ -74,7 +107,11 @@ export default function SubscriptionCard({
             <div className="border-t border-gray-100 my-5" />
 
             <p className="text-sm text-[#64748b]">
-              {isPaid
+              {subscriptionPlan === "gold"
+                ? "You're on the Gold plan — you have access to all features and benefits."
+                : subscriptionPlan === "silver"
+                ? "You're on the Silver plan. Upgrade to Gold anytime for additional benefits."
+                : isPaid
                 ? "You're on the Premium plan. Manage your billing details or update your subscription anytime."
                 : "You're on the Free plan. Upgrade anytime to unlock more features and additional benefits."}
             </p>
