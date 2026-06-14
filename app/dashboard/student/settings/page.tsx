@@ -105,14 +105,22 @@ export default async function StudentSettingsPage() {
         <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-10">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-[#0f172a]">Account Settings</h1>
-              <p className="text-[#64748b] text-sm md:text-base">
+              <div className="flex items-center justify-between gap-3 sm:block">
+                <h1 className="text-2xl font-bold text-[#0f172a]">Account Settings</h1>
+                <Link
+                  href="/dashboard/student"
+                  className="sm:hidden border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
+                >
+                  Back
+                </Link>
+              </div>
+              <p className="mt-2 sm:mt-0 text-[#64748b] text-sm md:text-base">
                 Manage your password and subscription preferences.
               </p>
             </div>
             <Link
               href="/dashboard/student"
-              className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 self-end w-fit"
+              className="hidden sm:block border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 self-end w-fit"
             >
               Back
             </Link>
