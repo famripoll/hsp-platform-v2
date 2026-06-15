@@ -32,6 +32,14 @@ const ACCOUNT_CARDS: {
 
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
 const DIVISIONS = ["NCAA D1", "NCAA D2", "NCAA D3", "NAIA", "NJCAA"];
+const PARENT_RELATIONSHIPS = ["Mother", "Father", "Grandparent", "Guardian", "Sibling", "Other"];
+
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
 
 function InputField({
   label,
@@ -82,6 +90,7 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
     high_school: "", city: "", state: "", grade: "", parent_email: "", parent_name: "",
+    parent_phone: "", parent_relationship: "", parent_relationship_other: "",
     phone: "", university: "", division: "",
   });
   const [loading, setLoading] = useState(false);
@@ -127,6 +136,11 @@ export default function SignUpPage() {
     }
 
     try {
+      const resolvedParentRelationship =
+        formData.parent_relationship === "Other"
+          ? formData.parent_relationship_other.trim()
+          : formData.parent_relationship;
+
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -143,6 +157,8 @@ export default function SignUpPage() {
             graduation_year: graduationYear,
             parent_email: formData.parent_email,
             parent_name: formData.parent_name,
+            parent_phone: formData.parent_phone,
+            parent_relationship: resolvedParentRelationship,
           }),
           ...(accountType === "coach" && {
             phone: formData.phone,
@@ -338,6 +354,34 @@ export default function SignUpPage() {
                   value={formData.parent_email}
                   onChange={handleChange}
                 />
+                <InputField
+                  label="Parent / Guardian Phone"
+                  type="text"
+                  name="parent_phone"
+                  required
+                  placeholder="239-123-4567"
+                  value={formData.parent_phone}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, parent_phone: formatPhone(e.target.value) }))}
+                />
+                <SelectField
+                  label="Relationship to Student"
+                  options={PARENT_RELATIONSHIPS}
+                  required
+                  name="parent_relationship"
+                  value={formData.parent_relationship}
+                  onChange={handleChange}
+                />
+                {formData.parent_relationship === "Other" && (
+                  <InputField
+                    label="Please specify"
+                    type="text"
+                    name="parent_relationship_other"
+                    required
+                    placeholder="e.g. Aunt, Family Friend"
+                    value={formData.parent_relationship_other}
+                    onChange={handleChange}
+                  />
+                )}
               </>
             )}
 

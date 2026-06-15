@@ -219,7 +219,7 @@ export default function FamilyTab({
           <div className="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
             <div>
               <p className="font-semibold text-[#0f172a]">{parentName}</p>
-              <p className="text-sm text-[#64748b]">Parent/Guardian</p>
+              <p className="text-sm text-[#64748b]">{parentRelationship || "Parent/Guardian"}</p>
             </div>
             <div className="text-sm text-[#64748b] sm:text-right">
               <p>{parentEmail || "—"}</p>

@@ -12,7 +12,7 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { email, password, full_name, role, high_school, city, state, grade, graduation_year, parent_email, parent_name, athlete_email, relationship, phone, university, division } = await request.json();
+  const { email, password, full_name, role, high_school, city, state, grade, graduation_year, parent_email, parent_name, parent_phone, parent_relationship, athlete_email, relationship, phone, university, division } = await request.json();
   console.log("[signup] received:", { email, full_name, role });
 
   if (!email || !password || !full_name || !role) {
@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
       graduation_year,
       parent_email,
       parent_name,
+      parent_phone,
+      parent_relationship,
     });
     console.log("[signup] students.insert error:", studentError);
 
@@ -134,7 +136,7 @@ export async function POST(request: NextRequest) {
         const parentsInsert = await supabaseAdmin.from("parents").insert({
           profile_id: parentAuthData.user.id,
           student_id: studentRow.id,
-          relationship: "Guardian",
+          relationship: parent_relationship || "Guardian",
         });
         console.log("Parents table insert result:", parentsInsert);
       }
