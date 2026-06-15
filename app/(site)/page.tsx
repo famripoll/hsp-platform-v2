@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BarChart2, PlaySquare, Globe, GraduationCap, User } from "lucide-react";
+import { BarChart2, PlaySquare, Share2, GraduationCap, User } from "lucide-react";
 
 const steps = [
   {
@@ -52,7 +52,7 @@ export default function Home() {
               </span>
               <span className="text-hsp-gray text-sm">+</span>
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
-                <Globe className="w-4 h-4" style={{ color: "#d93025" }} />
+                <Share2 className="w-4 h-4" style={{ color: "#d93025" }} />
                 Socials
               </span>
               <span className="text-hsp-gray text-sm">+</span>
