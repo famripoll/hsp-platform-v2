@@ -40,6 +40,7 @@ type Student = {
   tiktok_url?: string | null;
   x_url?: string | null;
   parent_name?: string | null;
+  parent_relationship?: string | null;
   parent_phone?: string | null;
   coach_name?: string | null;
   coach_email?: string | null;
@@ -422,7 +423,10 @@ export default async function StudentDashboardPage({
                     Parent / Guardian
                   </p>
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
-                    {student.parent_name ?? DASH}
+                    {student.parent_name || DASH}
+                    {student.parent_name && student.parent_relationship ? (
+                      <span className="font-normal" style={{ color: "#64748b" }}> — {student.parent_relationship}</span>
+                    ) : null}
                   </p>
                   {student.parent_email ? (
                     <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
