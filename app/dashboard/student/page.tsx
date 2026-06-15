@@ -170,6 +170,7 @@ export default async function StudentDashboardPage({
   const initialTab =
     params.tab === "search" ? "search" :
     params.tab === "target" ? "target" :
+    params.tab === "media" ? "media" :
     params.tab === "notifications" ? "notifications" :
     "overview";
   const initialStatsTab = params.stats === "pitcher" ? "pitcher" : "position";
