@@ -25,6 +25,7 @@ type StudentData = {
   parent_name?: string | null;
   parent_email?: string | null;
   parent_phone?: string | null;
+  parent_relationship?: string | null;
   coach_name?: string | null;
   coach_email?: string | null;
   coach_phone?: string | null;
@@ -55,6 +56,7 @@ type StudentData = {
 };
 
 const POSITIONS = ["P", "C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
+const FIXED_RELATIONSHIPS = ["Mother", "Father", "Grandparent", "Guardian", "Sibling"];
 
 const INPUT = "border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent";
 const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
@@ -74,6 +76,9 @@ export default function EditProfileForm({
   const [error, setError] = useState<string | null>(null);
   const [satError, setSatError] = useState<string | null>(null);
   const [actError, setActError] = useState<string | null>(null);
+
+  const initialRelationship = initialData.parent_relationship ?? "";
+  const isFixedRelationship = FIXED_RELATIONSHIPS.includes(initialRelationship);
 
   const [form, setForm] = useState({
     full_name: initialFullName,
@@ -97,6 +102,8 @@ export default function EditProfileForm({
     parent_name: initialData.parent_name ?? "",
     parent_email: initialData.parent_email ?? "",
     parent_phone: initialData.parent_phone ?? "",
+    parent_relationship: isFixedRelationship ? initialRelationship : (initialRelationship ? "Other" : ""),
+    parent_relationship_other: isFixedRelationship ? "" : initialRelationship,
     coach_name: initialData.coach_name ?? "",
     coach_email: initialData.coach_email ?? "",
     coach_phone: initialData.coach_phone ?? "",
@@ -167,6 +174,11 @@ export default function EditProfileForm({
       return;
     }
 
+    const resolvedParentRelationship =
+      form.parent_relationship === "Other"
+        ? form.parent_relationship_other.trim()
+        : form.parent_relationship;
+
     const { error: studentErr } = await supabase
       .from("students")
       .update({
@@ -190,6 +202,7 @@ export default function EditProfileForm({
         parent_name: form.parent_name || null,
         parent_email: form.parent_email || null,
         parent_phone: form.parent_phone || null,
+        parent_relationship: resolvedParentRelationship || null,
         coach_name: form.coach_name || null,
         coach_email: form.coach_email || null,
         coach_phone: form.coach_phone || null,
@@ -412,6 +425,36 @@ export default function EditProfileForm({
                 placeholder="239-123-4567"
               />
             </div>
+            <div>
+              <label className={LABEL}>Relationship to Student</label>
+              <select
+                className={INPUT}
+                value={form.parent_relationship}
+                onChange={(e) => setForm((prev) => ({ ...prev, parent_relationship: e.target.value, parent_relationship_other: e.target.value === "Other" ? prev.parent_relationship_other : "" }))}
+              >
+                <option value="">Please select</option>
+                <option value="Mother">Mother</option>
+                <option value="Father">Father</option>
+                <option value="Grandparent">Grandparent</option>
+                <option value="Guardian">Guardian</option>
+                <option value="Sibling">Sibling</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            {form.parent_relationship === "Other" ? (
+              <div>
+                <label className={LABEL}>Please specify</label>
+                <input
+                  type="text"
+                  className={INPUT}
+                  placeholder="e.g. Aunt, Family Friend"
+                  value={form.parent_relationship_other}
+                  onChange={(e) => setForm((prev) => ({ ...prev, parent_relationship_other: e.target.value }))}
+                />
+              </div>
+            ) : (
+              <div />
+            )}
           </div>
         </div>
 
