@@ -31,7 +31,7 @@ export default function SettingsTabs({
   parentEmail: string | null;
   parentPhone: string | null;
   parentRelationship: string | null;
-  familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[];
+  familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null; show_on_profile: boolean }[];
   studentId: string | null;
 }) {
   const [activeTab, setActiveTab] = useState<TabValue>("security");

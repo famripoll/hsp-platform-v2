@@ -13,7 +13,28 @@ type FamilyMember = {
   relationship: string;
   email: string | null;
   phone: string | null;
+  show_on_profile: boolean;
 };
+
+function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: () => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={onChange}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
+        checked ? "bg-[#d93025]" : "bg-gray-300"
+      }`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+          checked ? "translate-x-6" : "translate-x-1"
+        }`}
+      />
+    </button>
+  );
+}
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 10);
@@ -101,6 +122,16 @@ export default function FamilyTab({
     const { error } = await supabase.from("family_members").delete().eq("id", memberId);
     if (!error) {
       setMembers((prev) => prev.filter((m) => m.id !== memberId));
+    }
+  }
+
+  async function handleToggleShowOnProfile(memberId: string, current: boolean) {
+    const newValue = !current;
+    setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, show_on_profile: newValue } : m)));
+    const supabase = createClient();
+    const { error } = await supabase.from("family_members").update({ show_on_profile: newValue }).eq("id", memberId);
+    if (error) {
+      setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, show_on_profile: current } : m)));
     }
   }
 
@@ -214,6 +245,10 @@ export default function FamilyTab({
 
       <p className="text-sm font-semibold text-[#0f172a] mb-2">Your Family Members</p>
 
+      <p className="text-sm text-[#64748b] mb-3">
+        The Parent/Guardian account above is always shown on your dashboard. For any additional family member, use the toggle to choose whether their name and contact info appear in the &apos;Family Contacts&apos; section of your dashboard profile.
+      </p>
+
       <div className="flex flex-col gap-3">
         {parentName && (
           <div className="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
@@ -239,14 +274,20 @@ export default function FamilyTab({
                 <p>{member.email || "—"}</p>
                 <p>{member.phone || "—"}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => handleDelete(member.id)}
-                aria-label="Remove family member"
-                className="text-gray-400 hover:text-[#d93025] transition-colors"
-              >
-                <Trash2 size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                <ToggleSwitch
+                  checked={member.show_on_profile}
+                  onChange={() => handleToggleShowOnProfile(member.id, member.show_on_profile)}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDelete(member.id)}
+                  aria-label="Remove family member"
+                  className="text-gray-400 hover:text-[#d93025] transition-colors"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             </div>
           </div>
         ))}

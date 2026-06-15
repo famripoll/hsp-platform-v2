@@ -104,6 +104,7 @@ export default async function StudentDashboardPage({
   const isParentViewer = profile.role === "parent";
   let studentRaw: Record<string, unknown> | null = null;
   let displayProfile = { full_name: profile.full_name, email: profile.email };
+  let familyContacts: { full_name: string; relationship: string; email: string | null; phone: string | null }[] = [];
 
   if (isParentViewer) {
     const { data: parentRow } = await supabase
@@ -121,6 +122,16 @@ export default async function StudentDashboardPage({
       .single();
 
     studentRaw = studentData;
+
+    if (studentData?.id) {
+      const { data: fcData } = await supabase
+        .from("family_members")
+        .select("full_name, relationship, email, phone")
+        .eq("student_id", studentData.id)
+        .eq("show_on_profile", true)
+        .order("created_at", { ascending: true });
+      familyContacts = fcData ?? [];
+    }
 
     if (studentData?.profile_id) {
       const { data: studentProfile } = await supabase
@@ -140,6 +151,16 @@ export default async function StudentDashboardPage({
       .eq("profile_id", user.id)
       .single();
     studentRaw = data;
+
+    if (data?.id) {
+      const { data: fcData } = await supabase
+        .from("family_members")
+        .select("full_name, relationship, email, phone")
+        .eq("student_id", data.id)
+        .eq("show_on_profile", true)
+        .order("created_at", { ascending: true });
+      familyContacts = fcData ?? [];
+    }
   }
 
   const student = (studentRaw ?? {}) as unknown as Student;
@@ -465,6 +486,41 @@ export default async function StudentDashboardPage({
                     </div>
                   )}
                 </div>
+
+                {familyContacts.length > 0 && (
+                  <div className="border-t border-gray-100 pt-4">
+                    <p
+                      className="text-xs font-semibold uppercase mb-1.5"
+                      style={{ color: "#d93025" }}
+                    >
+                      Family Contacts
+                    </p>
+                    {familyContacts.map((contact, idx) => (
+                      <div key={idx} className={idx > 0 ? "mt-3" : ""}>
+                        <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
+                          {contact.full_name}
+                          <span className="font-normal" style={{ color: "#64748b" }}> — {contact.relationship}</span>
+                        </p>
+                        {contact.email ? (
+                          <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                            <Mail className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">{contact.email}</span>
+                          </div>
+                        ) : null}
+                        {contact.phone ? (
+                          <a
+                            href={`tel:${contact.phone}`}
+                            className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
+                            style={{ color: "#64748b" }}
+                          >
+                            <Phone className="w-3.5 h-3.5 shrink-0" />
+                            {contact.phone}
+                          </a>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
               </div>
             </div>

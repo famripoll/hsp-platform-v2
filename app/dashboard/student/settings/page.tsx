@@ -33,7 +33,7 @@ export default async function StudentSettingsPage() {
   let parentEmail: string | null = null;
   let parentPhone: string | null = null;
   let parentRelationship: string | null = null;
-  let familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null }[] = [];
+  let familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null; show_on_profile: boolean }[] = [];
 
   if (profile.role === "parent") {
     const { data: parentRow } = await supabase
@@ -89,7 +89,7 @@ export default async function StudentSettingsPage() {
 
     const { data: familyData } = await supabase
       .from("family_members")
-      .select("id, full_name, relationship, email, phone")
+      .select("id, full_name, relationship, email, phone, show_on_profile")
       .eq("student_id", studentId)
       .order("created_at", { ascending: true });
 
