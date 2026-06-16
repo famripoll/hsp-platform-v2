@@ -85,7 +85,7 @@ export default function Home() {
               src="/player-hero.webp"
               alt="Baseball player in action"
               fill
-              className="object-cover"
+              className="object-cover md:object-[70%_center]"
               priority
             />
           </div>
