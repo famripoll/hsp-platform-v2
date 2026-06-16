@@ -28,15 +28,15 @@ export default function Home() {
         <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
 
           {/* Left — content */}
-          <div className="flex-1 bg-hsp-card px-8 py-8 md:px-12 md:py-10 flex flex-col justify-center gap-6">
+          <div className="flex-1 bg-hsp-card px-8 py-8 md:px-12 md:py-10 flex flex-col justify-center gap-6 items-center md:items-start">
             <div className="inline-flex items-center gap-2 bg-hsp-red text-white text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-full w-fit">
               <User className="w-3.5 h-3.5" />
               All-In-One Player Profile
             </div>
-            <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight text-center md:text-left">
               Elevate Your Baseball Recruiting Journey
             </h1>
-            <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md">
+            <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md text-center md:text-left">
               Your future starts here. Join the fastest-growing network of
               student-athletes turning their college sports dreams into reality.
             </p>
