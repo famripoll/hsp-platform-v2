@@ -28,7 +28,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
 
           {/* Left — content */}
-          <div className="flex-1 bg-hsp-card px-8 py-12 md:px-12 md:py-16 flex flex-col justify-center gap-6">
+          <div className="flex-1 bg-hsp-card px-8 py-8 md:px-12 md:py-10 flex flex-col justify-center gap-6">
             <div className="inline-flex items-center gap-2 bg-hsp-red text-white text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-full w-fit">
               <User className="w-3.5 h-3.5" />
               All-In-One Player Profile
@@ -40,22 +40,19 @@ export default function Home() {
               Your future starts here. Join the fastest-growing network of
               student-athletes turning their college sports dreams into reality.
             </p>
-            <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-2 bg-white border border-gray-200 rounded-xl px-4 py-3 w-fit">
+            <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-items-center gap-x-4 gap-y-3 bg-white border border-gray-200 rounded-xl px-5 py-3 w-fit mx-auto md:mx-0">
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
                 <BarChart2 className="w-4 h-4" style={{ color: "#d93025" }} />
                 Stats
               </span>
-              <span className="text-hsp-gray text-sm">+</span>
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
                 <PlaySquare className="w-4 h-4" style={{ color: "#d93025" }} />
                 Highlights
               </span>
-              <span className="text-hsp-gray text-sm">+</span>
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
                 <Share2 className="w-4 h-4" style={{ color: "#d93025" }} />
                 Socials
               </span>
-              <span className="text-hsp-gray text-sm">+</span>
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
                 <GraduationCap className="w-4 h-4" style={{ color: "#d93025" }} />
                 Academics
