@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BarChart2, PlaySquare, Share2, GraduationCap, User } from "lucide-react";
+import { Link as LinkIcon, BarChart3, CircleUserRound, User } from "lucide-react";
 
 const steps = [
   {
@@ -28,35 +28,46 @@ export default function Home() {
         <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
 
           {/* Left — content */}
-          <div className="flex-1 bg-hsp-card px-8 py-8 md:px-12 md:py-10 flex flex-col justify-center gap-6 items-center md:items-start">
+          <div className="flex-1 bg-hsp-card px-8 py-8 md:px-12 md:py-10 flex flex-col justify-center gap-6 items-start">
             <div className="inline-flex items-center gap-2 bg-hsp-red text-white text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-full w-fit">
               <User className="w-3.5 h-3.5" />
               All-In-One Player Profile
             </div>
-            <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight text-center md:text-left">
+            <h1 className="text-3xl md:text-5xl font-black text-hsp-dark leading-tight">
               Elevate Your Baseball Recruiting Journey
             </h1>
-            <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md text-center md:text-left">
+            <p className="text-hsp-gray text-base md:text-lg leading-relaxed max-w-md">
               Your future starts here. Join the fastest-growing network of
               student-athletes turning their college sports dreams into reality.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-items-center gap-x-4 gap-y-3 bg-white border border-gray-200 rounded-xl px-5 py-3 w-fit mx-auto md:mx-0">
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
-                <BarChart2 className="w-4 h-4" style={{ color: "#d93025" }} />
-                Stats
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
-                <PlaySquare className="w-4 h-4" style={{ color: "#d93025" }} />
-                Highlights
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
-                <Share2 className="w-4 h-4" style={{ color: "#d93025" }} />
-                Socials
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-hsp-dark">
-                <GraduationCap className="w-4 h-4" style={{ color: "#d93025" }} />
-                Academics
-              </span>
+            <div className="w-full max-w-md flex flex-col">
+              {/* Row 1 */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
+                  <LinkIcon className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                </div>
+                <div className="flex-1 py-3 border-b border-gray-200">
+                  <span className="text-sm font-medium text-hsp-dark">Share your social links</span>
+                </div>
+              </div>
+              {/* Row 2 */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
+                  <BarChart3 className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                </div>
+                <div className="flex-1 py-3 border-b border-gray-200">
+                  <span className="text-sm font-medium text-hsp-dark">Highlight your stats and videos</span>
+                </div>
+              </div>
+              {/* Row 3 — no bottom border on the last row */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
+                  <CircleUserRound className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                </div>
+                <div className="flex-1 py-3">
+                  <span className="text-sm font-medium text-hsp-dark">Present your full profile in one place</span>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/signup" className="px-8 py-3 bg-hsp-red text-white font-semibold rounded-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center text-center">
