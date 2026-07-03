@@ -61,7 +61,7 @@ export default function LoginPage() {
       if (data === "parent") {
         const { error: otpError } = await supabase.auth.signInWithOtp({
           email,
-          options: { shouldCreateUser: false },
+          options: { shouldCreateUser: false, emailRedirectTo: undefined },
         });
 
         if (otpError) {
@@ -218,7 +218,7 @@ export default function LoginPage() {
       const supabase = createClient();
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
-        options: { shouldCreateUser: false },
+        options: { shouldCreateUser: false, emailRedirectTo: undefined },
       });
 
       if (otpError) {
