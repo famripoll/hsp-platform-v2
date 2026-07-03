@@ -146,11 +146,14 @@ export default async function StudentDashboardPage({
       };
     }
   } else {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("students")
       .select("*")
       .eq("profile_id", user.id)
       .single();
+    console.log("[dashboard] user.id:", user.id);
+    console.log("[dashboard] query error:", error);
+    console.log("[dashboard] query data:", data);
     studentRaw = data;
 
     if (data?.id) {
