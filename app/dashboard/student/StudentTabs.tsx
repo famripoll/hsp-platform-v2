@@ -310,9 +310,9 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               Recent Activity
             </h3>
             <div className="max-h-[420px] overflow-y-auto pr-1">
-              {SAMPLE_ACTIVITY.map((item) => (
+              {SAMPLE_ACTIVITY.map((item, index) => (
                 <div
-                  key={item.title}
+                  key={index}
                   className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-b-0"
                 >
                   <div
