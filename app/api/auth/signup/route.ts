@@ -13,10 +13,8 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   const { email, password, full_name, role, high_school, city, state, grade, graduation_year, parent_email, parent_name, parent_phone, parent_relationship, athlete_email, relationship, phone, university, division } = await request.json();
-  console.log("[signup] received:", { email, full_name, role });
 
   if (!email || !password || !full_name || !role) {
-    console.log("[signup] missing fields");
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
@@ -28,7 +26,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("email", athlete_email)
       .single();
-    console.log("[signup] student lookup:", { studentData, studentLookupError });
 
     if (studentLookupError || !studentData) {
       return NextResponse.json(
@@ -44,7 +41,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("student_id", student.id)
       .single();
-    console.log("[signup] existing parent lookup:", { existingParent, parentLookupError });
 
     if (existingParent) {
       return NextResponse.json(
@@ -58,7 +54,6 @@ export async function POST(request: NextRequest) {
     email,
     password,
   });
-  console.log("[signup] auth.signUp result:", { userId: authData?.user?.id, authError });
 
   if (authError || !authData.user) {
     return NextResponse.json({ error: authError?.message ?? "Sign up failed." }, { status: 400 });
@@ -73,7 +68,6 @@ export async function POST(request: NextRequest) {
     role,
     status,
   });
-  console.log("[signup] profiles.insert error:", profileError);
 
   if (profileError) {
     return NextResponse.json({ error: profileError.message }, { status: 500 });
@@ -94,7 +88,6 @@ export async function POST(request: NextRequest) {
       parent_phone,
       parent_relationship,
     });
-    console.log("[signup] students.insert error:", studentError);
 
     if (studentError) {
       return NextResponse.json({ error: studentError.message }, { status: 500 });
@@ -106,7 +99,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("profile_id", authData.user.id)
       .single();
-    console.log("Student ID found:", studentRow?.id);
 
     if (studentRow && parent_email && parent_name) {
       const tempPassword = crypto.randomUUID();
@@ -117,12 +109,8 @@ export async function POST(request: NextRequest) {
         user_metadata: { full_name: parent_name, role: "parent" },
       });
       const { data: parentAuthData, error: parentAuthError } = parentAuthUser;
-      console.log("[signup] parent auth.admin.createUser:", { userId: parentAuthData?.user?.id, parentAuthError });
 
       if (parentAuthData?.user && !parentAuthError) {
-        console.log("Parent auth user created:", parentAuthUser.data?.user?.id);
-        console.log("Parent temp password:", tempPassword);
-
         const profileInsert = await supabaseAdmin.from("profiles").insert({
           id: parentAuthData.user.id,
           email: parent_email,
@@ -130,15 +118,47 @@ export async function POST(request: NextRequest) {
           role: "parent",
           status: "active",
         });
-        console.log("Parent profile insert result:", profileInsert);
 
-        console.log("Inserting into parents table with:", { profile_id: parentAuthData.user.id, student_id: studentRow.id });
         const parentsInsert = await supabaseAdmin.from("parents").insert({
           profile_id: parentAuthData.user.id,
           student_id: studentRow.id,
           relationship: parent_relationship || "Guardian",
         });
-        console.log("Parents table insert result:", parentsInsert);
+
+        if (!parentsInsert.error) {
+          try {
+            const resendResponse = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: "High School Prospect <noreply@highschoolprospect.com>",
+                to: [parent_email],
+                subject: "Your child created an HSP account",
+                html: `
+                  <p>Hi ${parent_name},</p>
+                  <p><strong>${full_name}</strong> has created a profile on
+                  High School Prospect.</p>
+                  <p>To access your parent account and view their profile,
+                  click the link below:</p>
+                  <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
+                  Access My Account</a></p>
+                  <p>On the login page, enter your email address and the system
+                  will send you a secure access code.</p>
+                  <p>— The High School Prospect Team</p>
+                `,
+              }),
+            });
+
+            if (!resendResponse.ok) {
+              console.warn("[signup] Resend activation email failed:", await resendResponse.text());
+            }
+          } catch (resendError) {
+            console.warn("[signup] Resend activation email error:", resendError);
+          }
+        }
       }
     }
   }
@@ -149,7 +169,6 @@ export async function POST(request: NextRequest) {
       student_id: student!.id,
       relationship,
     });
-    console.log("[signup] parents.insert error:", parentError);
 
     if (parentError) {
       return NextResponse.json({ error: parentError.message }, { status: 500 });
@@ -165,13 +184,11 @@ export async function POST(request: NextRequest) {
       verified: false,
       phone: phone ?? "",
     });
-    console.log("[signup] coaches.insert error:", coachError);
 
     if (coachError) {
       return NextResponse.json({ error: coachError.message }, { status: 500 });
     }
   }
 
-  console.log("[signup] success for:", email);
   return NextResponse.json({ success: true });
 }
