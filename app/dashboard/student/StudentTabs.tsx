@@ -189,6 +189,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
   const [activeStatsTab, setActiveStatsTab] = useState(
     initialStatsTab === "pitcher" ? "pitcher" : "position"
   );
+  const [activeFeedTab, setActiveFeedTab] = useState<"recommended" | "activity">("recommended");
 
   return (
     <div className="md:col-span-2 flex flex-col gap-6">
@@ -304,34 +305,92 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
             )}
           </div>
 
-          {/* Recent Activity */}
+          {/* Student Feed */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-              Recent Activity
+              Student Feed
             </h3>
-            <div className="max-h-[420px] overflow-y-auto pr-1">
-              {SAMPLE_ACTIVITY.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-b-0"
+
+            <nav className="flex flex-wrap mb-5">
+              {(
+                [
+                  { label: "Recommended for You", value: "recommended" },
+                  { label: "Account Activity", value: "activity" },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setActiveFeedTab(tab.value)}
+                  className={`shrink-0 px-3 py-2 text-xs sm:text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
+                    activeFeedTab === tab.value
+                      ? "border-[#d93025] text-[#d93025] font-semibold"
+                      : "border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105"
+                  }`}
                 >
-                  <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: item.iconBg }}
-                  >
-                    <item.icon className="w-4 h-4" style={{ color: item.iconColor }} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>{item.title}</p>
-                    <p className="text-xs mb-1" style={{ color: "#64748b" }}>{item.time}</p>
-                    <p className="text-sm" style={{ color: "#64748b" }}>{item.description}</p>
-                  </div>
-                </div>
+                  {tab.label}
+                </button>
               ))}
-            </div>
-            <p className="text-xs text-center mt-2" style={{ color: "#cbd5e1" }}>
-              Sample activity — live updates coming soon.
-            </p>
+            </nav>
+
+            {activeFeedTab === "recommended" ? (
+              (student.subscription_status ?? "free") !== "paid" ? (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "#F2F3F3" }}
+                  >
+                    <Lock className="w-5 h-5" style={{ color: "#64748b" }} />
+                  </div>
+                  <div className="flex-1 flex flex-col gap-1">
+                    <p className="text-sm font-bold" style={{ color: "#0f172a" }}>
+                      Personalized Recruiting Feed
+                    </p>
+                    <p className="text-sm font-medium" style={{ color: "#0f172a" }}>
+                      Get personalized college recommendations, showcases, camps, and recruiting updates based on your position, graduation year, GPA, and target schools.
+                    </p>
+                  </div>
+                  <Link
+                    href="/pricing"
+                    className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
+                    style={{ backgroundColor: "#d93025" }}
+                  >
+                    Upgrade Now
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 gap-3">
+                  <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                    Recommendations coming soon.
+                  </p>
+                </div>
+              )
+            ) : (
+              <>
+                <div className="max-h-[420px] overflow-y-auto pr-1">
+                  {SAMPLE_ACTIVITY.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-b-0"
+                    >
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: item.iconBg }}
+                      >
+                        <item.icon className="w-4 h-4" style={{ color: item.iconColor }} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>{item.title}</p>
+                        <p className="text-xs mb-1" style={{ color: "#64748b" }}>{item.time}</p>
+                        <p className="text-sm" style={{ color: "#64748b" }}>{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-center mt-2" style={{ color: "#cbd5e1" }}>
+                  Sample activity — live updates coming soon.
+                </p>
+              </>
+            )}
           </div>
         </>
       )}

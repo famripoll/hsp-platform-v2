@@ -97,8 +97,12 @@ export default async function StudentDashboardPage({
     .eq("id", user.id)
     .single();
 
+  if (!profile) {
+    redirect("/login");
+  }
+
   const isAllowedRole = profile.role === "student" || profile.role === "parent";
-  if (!profile || !isAllowedRole || profile.status !== "active") {
+  if (!isAllowedRole || profile.status !== "active") {
     redirect("/login");
   }
 
