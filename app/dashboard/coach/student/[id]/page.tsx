@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import LogOutButton from "@/app/dashboard/student/LogOutButton";
+import StatsToggleCard from "./StatsToggleCard";
 import {
   ArrowLeft,
   Calendar,
@@ -179,7 +180,6 @@ export default async function CoachStudentProfilePage({
     );
   }
 
-  const pitcher = student.primary_position === "P";
   const initials = getInitials(student.full_name);
   const hasMedia = photos.length > 0 || videos.length > 0;
 
@@ -414,59 +414,7 @@ export default async function CoachStudentProfilePage({
           <div className="md:col-span-2 flex flex-col gap-6">
 
             {/* Stats Card */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="text-xl font-bold mb-4" style={{ color: "#0f172a" }}>
-                {pitcher ? "Pitching Stats" : "Batting Stats"}
-              </h3>
-
-              {pitcher ? (
-                <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
-                  {[
-                    { label: "ERA", value: student.stat_era ?? DASH },
-                    { label: "WHIP", value: student.stat_whip ?? DASH },
-                    { label: "IP", value: student.stat_ip ?? DASH },
-                    { label: "K", value: student.stat_k ?? DASH },
-                    { label: "BB", value: student.stat_bb ?? DASH },
-                    { label: "K/BB", value: student.stat_kbb ?? DASH },
-                    { label: "VELO mph", value: student.stat_velo ?? DASH },
-                  ].map((s) => (
-                    <div key={s.label} className="text-center">
-                      <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
-                        {s.value}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                        {s.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
-                  {[
-                    { label: "AB", value: student.stat_ab ?? DASH },
-                    { label: "H", value: student.stat_h ?? DASH },
-                    { label: "2B", value: student.stat_2b ?? DASH },
-                    { label: "3B", value: student.stat_3b ?? DASH },
-                    { label: "HR", value: student.stat_hr ?? DASH },
-                    { label: "AVG", value: student.stat_avg ? parseFloat(student.stat_avg).toFixed(3).replace(/^0/, "") : DASH },
-                    { label: "OBP", value: student.stat_obp ? parseFloat(student.stat_obp).toFixed(3).replace(/^0/, "") : DASH },
-                    { label: "SLG", value: student.stat_slg ? parseFloat(student.stat_slg).toFixed(3).replace(/^0/, "") : DASH },
-                    { label: "R", value: student.stat_r ?? DASH },
-                    { label: "RBI", value: student.stat_rbi ?? DASH },
-                    { label: "SB", value: student.stat_sb ?? DASH },
-                  ].map((s) => (
-                    <div key={s.label} className="text-center">
-                      <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
-                        {s.value}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                        {s.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <StatsToggleCard student={student} />
 
             {/* Media Card */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
