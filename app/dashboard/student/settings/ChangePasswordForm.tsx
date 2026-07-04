@@ -43,6 +43,27 @@ export default function ChangePasswordForm() {
     setSuccess(true);
     setNewPassword("");
     setConfirmPassword("");
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { data: studentRow } = await supabase
+        .from("students")
+        .select("id")
+        .eq("profile_id", user?.id)
+        .single();
+
+      await supabase.from("activity").insert({
+        student_id: studentRow?.id,
+        type: "password_change",
+        title: "Password changed",
+        description: "Your account password was updated.",
+      });
+    } catch (activityErr) {
+      console.error(activityErr);
+    }
   }
 
   return (

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
-import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar } from "lucide-react";
+import { createClient } from "@/lib/supabase-client";
+import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
 
 type Student = {
   id: string;
@@ -99,88 +100,14 @@ type Props = {
   initialStatsTab?: string;
 };
 
-const SAMPLE_ACTIVITY = [
-  {
-    icon: Briefcase,
-    iconBg: "#FDECEA",
-    iconColor: "#d93025",
-    title: "New recruiting needs posted",
-    time: "Yesterday at 10:59 AM",
-    description: "1 college posted a recruiting need this week.",
-  },
-  {
-    icon: TrendingUp,
-    iconBg: "#F2F3F3",
-    iconColor: "#64748b",
-    title: "Your profile rank is improving",
-    time: "Yesterday at 10:59 AM",
-    description: "You've earned 6 profile activity points.",
-  },
-  {
-    icon: Award,
-    iconBg: "#FDECEA",
-    iconColor: "#d93025",
-    title: "A college is following you",
-    time: "Yesterday at 9:23 AM",
-    description: "An NCAA D2 team in Pennsylvania now follows you.",
-  },
-  {
-    icon: Search,
-    iconBg: "#F2F3F3",
-    iconColor: "#64748b",
-    title: "You appeared in a search",
-    time: "Yesterday at 9:23 AM",
-    description: "You appeared in 1 coach search.",
-  },
-  {
-    icon: Calendar,
-    iconBg: "#FDECEA",
-    iconColor: "#d93025",
-    title: "New events posted",
-    time: "Jun 13 at 3:03 PM",
-    description: "Colleges posted new baseball camps and events.",
-  },
-  {
-    icon: Award,
-    iconBg: "#F2F3F3",
-    iconColor: "#64748b",
-    title: "Password updated",
-    time: "Jun 12 at 8:15 PM",
-    description: "Your account password was changed successfully.",
-  },
-  {
-    icon: Briefcase,
-    iconBg: "#FDECEA",
-    iconColor: "#d93025",
-    title: "Family member added",
-    time: "Jun 12 at 7:40 PM",
-    description: "You added a new family contact to your profile.",
-  },
-  {
-    icon: TrendingUp,
-    iconBg: "#F2F3F3",
-    iconColor: "#64748b",
-    title: "Profile viewed by a coach",
-    time: "Jun 11 at 2:10 PM",
-    description: "An NCAA D1 coach viewed your profile.",
-  },
-  {
-    icon: Calendar,
-    iconBg: "#FDECEA",
-    iconColor: "#d93025",
-    title: "New events posted",
-    time: "Jun 10 at 11:05 AM",
-    description: "Colleges posted new showcase events in your region.",
-  },
-  {
-    icon: Search,
-    iconBg: "#F2F3F3",
-    iconColor: "#64748b",
-    title: "Stats updated",
-    time: "Jun 9 at 9:30 AM",
-    description: "Your season stats were updated.",
-  },
-];
+type ActivityItem = {
+  id: string;
+  type: string;
+  title: string;
+  description: string | null;
+  link_url: string | null;
+  created_at: string;
+};
 
 export default function StudentTabs({ student, initialTab = "overview", initialStatsTab = "position" }: Props) {
   const [activeSection, setActiveSection] = useState<TabValue>(
@@ -190,6 +117,36 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
     initialStatsTab === "pitcher" ? "pitcher" : "position"
   );
   const [activeFeedTab, setActiveFeedTab] = useState<"recommended" | "activity">("recommended");
+  const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchActivity() {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("activity")
+        .select("id, type, title, description, link_url, created_at")
+        .or(`student_id.eq.${student.id},student_id.is.null`)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("Activity fetch error:", error.message, error.code, error.details, error.hint);
+      }
+      setActivityItems(data ?? []);
+      setActivityLoading(false);
+    }
+
+    fetchActivity();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
 
   return (
     <div className="md:col-span-2 flex flex-col gap-6">
@@ -364,32 +321,43 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   </p>
                 </div>
               )
-            ) : (
-              <>
-                <div className="max-h-[420px] overflow-y-auto pr-1">
-                  {SAMPLE_ACTIVITY.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-b-0"
-                    >
-                      <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: item.iconBg }}
-                      >
-                        <item.icon className="w-4 h-4" style={{ color: item.iconColor }} />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>{item.title}</p>
-                        <p className="text-xs mb-1" style={{ color: "#64748b" }}>{item.time}</p>
-                        <p className="text-sm" style={{ color: "#64748b" }}>{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-center mt-2" style={{ color: "#cbd5e1" }}>
-                  Sample activity — live updates coming soon.
+            ) : activityLoading ? (
+              <div className="flex flex-col items-center justify-center py-16">
+                <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                  Loading...
                 </p>
-              </>
+              </div>
+            ) : activityItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
+                  No activity yet — actions like editing your profile or updating your family contacts will show up here.
+                </p>
+              </div>
+            ) : (
+              <div className="max-h-[420px] overflow-y-auto pr-1">
+                {activityItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-b-0"
+                  >
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: "#F2F3F3" }}
+                    >
+                      <Activity className="w-4 h-4" style={{ color: "#64748b" }} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>{item.title}</p>
+                      <p className="text-xs mb-1" style={{ color: "#64748b" }}>
+                        {new Date(item.created_at).toLocaleString()}
+                      </p>
+                      {item.description ? (
+                        <p className="text-sm" style={{ color: "#64748b" }}>{item.description}</p>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </>

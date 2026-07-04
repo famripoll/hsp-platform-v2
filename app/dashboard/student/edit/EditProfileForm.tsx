@@ -239,6 +239,23 @@ export default function EditProfileForm({
       return;
     }
 
+    try {
+      const { data: studentRow } = await supabase
+        .from("students")
+        .select("id")
+        .eq("profile_id", userId)
+        .single();
+
+      await supabase.from("activity").insert({
+        student_id: studentRow?.id,
+        type: "profile_update",
+        title: "Profile updated",
+        description: "You updated your profile information.",
+      });
+    } catch (activityErr) {
+      console.error(activityErr);
+    }
+
     router.push("/dashboard/student");
   }
 

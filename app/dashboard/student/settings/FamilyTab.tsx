@@ -115,13 +115,38 @@ export default function FamilyTab({
     setEmail("");
     setPhone("");
     setSaveMessage("Family member added.");
+
+    try {
+      await supabase.from("activity").insert({
+        student_id: studentId,
+        type: "family_member_added",
+        title: "Family member added",
+        description: `${data.full_name} was added as a ${data.relationship}.`,
+      });
+    } catch (activityErr) {
+      console.error(activityErr);
+    }
   }
 
   async function handleDelete(memberId: string) {
+    const deletedMember = members.find((m) => m.id === memberId);
     const supabase = createClient();
     const { error } = await supabase.from("family_members").delete().eq("id", memberId);
     if (!error) {
       setMembers((prev) => prev.filter((m) => m.id !== memberId));
+
+      if (deletedMember) {
+        try {
+          await supabase.from("activity").insert({
+            student_id: studentId,
+            type: "family_member_removed",
+            title: "Family member removed",
+            description: `${deletedMember.full_name} was removed as a ${deletedMember.relationship}.`,
+          });
+        } catch (activityErr) {
+          console.error(activityErr);
+        }
+      }
     }
   }
 
