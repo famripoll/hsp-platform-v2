@@ -261,7 +261,7 @@ function ProspectCard({
         ) : (
           <p className="flex items-center gap-1 text-xs text-[#64748b] mt-0.5">
             <Lock className="w-3 h-3 shrink-0" />
-            Upgrade required to view school
+            School locked by student
           </p>
         )}
 
@@ -307,7 +307,7 @@ function ProspectCard({
         {!isPaid ? (
           <p className="hidden sm:flex items-center gap-1 text-xs text-[#64748b] mt-1">
             <Lock className="w-3 h-3 shrink-0" />
-            Upgrade required to view stats
+            Stats locked by student
           </p>
         ) : (
         <div
