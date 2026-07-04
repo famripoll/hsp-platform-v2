@@ -109,12 +109,13 @@ type ActivityItem = {
   created_at: string;
 };
 
-export default function StudentTabs({ student, initialTab = "overview", initialStatsTab = "position" }: Props) {
+export default function StudentTabs({ student, initialTab = "overview", initialStatsTab }: Props) {
   const [activeSection, setActiveSection] = useState<TabValue>(
     VALID_TABS.includes(initialTab) ? (initialTab as TabValue) : "overview"
   );
+  const isPitcher = student.primary_position === "P" || student.secondary_position === "P";
   const [activeStatsTab, setActiveStatsTab] = useState(
-    initialStatsTab === "pitcher" ? "pitcher" : "position"
+    initialStatsTab === "pitcher" ? "pitcher" : initialStatsTab === "position" ? "position" : (isPitcher ? "pitcher" : "position")
   );
   const [activeFeedTab, setActiveFeedTab] = useState<"recommended" | "activity">("recommended");
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);

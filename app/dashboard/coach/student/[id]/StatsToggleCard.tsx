@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 type StatsStudent = {
+  primary_position?: string | null;
+  secondary_position?: string | null;
   stat_ab?: string | null;
   stat_h?: string | null;
   stat_2b?: string | null;
@@ -26,7 +28,8 @@ type StatsStudent = {
 const DASH = "—";
 
 export default function StatsToggleCard({ student }: { student: StatsStudent }) {
-  const [activeStatsTab, setActiveStatsTab] = useState<"position" | "pitcher">("position");
+  const isPitcher = student.primary_position === "P" || student.secondary_position === "P";
+  const [activeStatsTab, setActiveStatsTab] = useState<"position" | "pitcher">(isPitcher ? "pitcher" : "position");
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
