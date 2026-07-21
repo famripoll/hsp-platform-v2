@@ -15,9 +15,9 @@ export default function ContactPage() {
 
         {/* Left — Form */}
         <div className="flex-1 flex flex-col justify-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-8 text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-8 text-center md:text-left">
             Send us a <span className="text-hsp-red">message.</span>
-          </h2>
+          </h1>
           <ContactForm />
         </div>
 
