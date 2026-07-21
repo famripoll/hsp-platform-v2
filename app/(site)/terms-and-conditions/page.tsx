@@ -938,7 +938,7 @@ export default function TermsAndConditionsPage() {
     <div className="pb-16">
       {/* Page header */}
       <div className="mb-8 md:mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-3">
           Terms and <span className="text-hsp-red">Conditions</span>
         </h1>
         <p className="text-hsp-gray text-sm pl-3">Effective Date: {EFFECTIVE_DATE}</p>

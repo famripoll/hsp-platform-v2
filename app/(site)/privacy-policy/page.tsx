@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
 
       {/* Page header */}
       <div className="mb-10 md:mb-14">
-        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-3">
           Privacy <span className="text-hsp-red">Policy</span>
         </h1>
         <p className="text-hsp-gray text-sm">Effective Date: May 10, 2026</p>
