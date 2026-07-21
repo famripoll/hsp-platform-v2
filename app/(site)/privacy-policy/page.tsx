@@ -48,9 +48,9 @@ const PRIVACY_SECTIONS: PrivacySection[] = [
   {
     number: 1,
     title: "Introduction",
-    body: `Welcome to High School Prospect ("High School Prospect," "we," "our," or "us"), a recruiting platform owned and operated by Ripoll Services, LLC.
+    body: `Welcome to High School Prospect ("High School Prospect," "we," "our," or "us"), an online platform operated by Ripoll Services, LLC, a Florida limited liability company doing business as High School Prospect.
 
-Your privacy is important to us. This Privacy Policy explains how we collect, use, store, disclose, and protect your personal information when you access or use our website, mobile applications, and related services (collectively, the "Platform").
+This Privacy Policy explains how we collect, use, disclose, store, protect, and otherwise process your personal information when you access or use our website, mobile applications, and related services (collectively, the "Platform").
 
 By accessing or using the Platform, you acknowledge that you have read and understood this Privacy Policy and consent to the practices described herein. If you do not agree with this Privacy Policy, you should not use the Platform.
 
@@ -153,7 +153,7 @@ Examples include:
 
 - Creating and managing user accounts
 - Displaying recruiting profiles
-- Connecting student-athletes with verified coaches and professional scouts
+- Providing verified college coaches and professional scouts with tools to discover, evaluate, and connect with student-athletes.
 - Processing subscriptions
 - Providing customer support
 - Sending account notifications
@@ -434,7 +434,7 @@ To exercise your privacy rights, please contact us using the information provide
   {
     number: 15,
     title: "International Users",
-    body: `High School Prospect is owned and operated in the United States.
+    body: `High School Prospect is owned and operated in the United States. Although High School Prospect welcomes users from around the world, the Platform is primarily designed to facilitate recruiting opportunities within the United States.
 
 If you access the Platform from outside the United States, you understand that your information may be transferred to, processed, and stored in the United States or in other jurisdictions where our authorized service providers operate.
 
@@ -530,9 +530,9 @@ function renderRichText(body: string): ReactNode[] {
 
     if (isSubHeading) {
       return (
-        <h3 key={i} className="text-base md:text-lg font-semibold text-hsp-dark mt-2">
+        <p key={i} className="text-hsp-gray text-sm md:text-base leading-relaxed">
           {renderInline(lines[0].slice(4))}
-        </h3>
+        </p>
       );
     }
 
