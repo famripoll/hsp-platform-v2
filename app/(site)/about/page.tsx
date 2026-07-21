@@ -14,6 +14,27 @@ const paragraphs = [
   "At High School Prospect, we believe that opportunity should never be limited by geography, visibility, or access. Our mission is to provide every student-athlete with a trusted platform to showcase their potential while helping coaches discover the next generation of talented athletes.",
 ];
 
+const featureCards = [
+  {
+    icon: "🏆",
+    title: "Showcase Your Talent",
+    description:
+      "Create one professional profile with your academics, athletics, photos, videos, and social media.",
+  },
+  {
+    icon: "🎯",
+    title: "Be Easier to Discover",
+    description:
+      "Help verified college coaches and professional scouts find your complete recruiting information in one place.",
+  },
+  {
+    icon: "🔒",
+    title: "Built with Trust and Privacy",
+    description:
+      "Designed with student safety, parental involvement, and secure data protection as core priorities.",
+  },
+];
+
 const commitmentParagraphs = [
   "High School Prospect is an independent technology platform designed to help student-athletes gain visibility during the recruiting process. We are not a recruiting agency, sports agent, or scholarship provider, and we do not guarantee athletic scholarships, roster positions, or college admissions.",
   "Protecting student-athletes is one of our highest priorities. Verified college coaches and professional scouts must complete our verification process before accessing recruiting features, and parental or guardian consent is required for users under the age of 18. We are committed to maintaining strong privacy, security, and data protection practices designed to safeguard our users and their information.",
@@ -34,6 +55,20 @@ export default function AboutPage() {
           <p key={index} className="text-hsp-gray text-base md:text-lg leading-relaxed">
             {text}
           </p>
+        ))}
+      </div>
+
+      {/* Feature cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 md:mb-16">
+        {featureCards.map((card) => (
+          <div
+            key={card.title}
+            className="bg-hsp-card rounded-xl p-8 flex flex-col gap-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            <div className="text-4xl mb-2">{card.icon}</div>
+            <h3 className="text-xl font-black text-hsp-dark">{card.title}</h3>
+            <p className="text-hsp-gray leading-relaxed">{card.description}</p>
+          </div>
         ))}
       </div>
 
