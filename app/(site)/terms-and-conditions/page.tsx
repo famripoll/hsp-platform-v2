@@ -48,9 +48,11 @@ const TERMS_SECTIONS: TermsSection[] = [
   {
     number: 1,
     title: "Introduction",
-    body: `Welcome to High School Prospect ("High School Prospect," "we," "our," or "us"), a recruiting platform owned and operated by Ripoll Services, LLC, a Florida limited liability company doing business as High School Prospect.
+    body: `Welcome to High School Prospect ("High School Prospect," "we," "our," or "us"), an online platform operated by Ripoll Services, LLC, a Florida limited liability company doing business as High School Prospect.
 
-These Terms and Conditions ("Terms") govern your access to and use of the High School Prospect website, mobile applications (if applicable), services, software, databases, communications, content, features, and any future products or services we make available (collectively, the "Platform").
+The Platform enables student-athletes to showcase their athletic and academic profiles while providing verified college coaches and professional scouts with tools to discover, evaluate, and connect with prospective athletes.
+
+These Terms and Conditions ("Terms") govern your access to and use of the High School Prospect website, mobile applications (if applicable), software, databases, communications, content, features, services, and any future products or services we may offer (collectively, the "Platform").
 
 By accessing, browsing, creating an account, subscribing, or otherwise using the Platform, you acknowledge that you have read, understood, and agree to be legally bound by these Terms, our Privacy Policy, and any additional policies that may be incorporated by reference.
 
@@ -59,9 +61,9 @@ If you do not agree with these Terms, you must discontinue use of the Platform i
   {
     number: 2,
     title: "About High School Prospect",
-    body: `High School Prospect is an online recruiting platform designed primarily for high school student-athletes and recent graduates who continue to participate in the recruiting process, connecting them with verified college coaches and verified professional scouts.
+    body: `High School Prospect is an online platform designed primarily for high school student-athletes and recent graduates who continue to participate in the recruiting process.
 
-The Platform is intended to help student-athletes showcase their academic and athletic achievements while providing coaches and scouts with tools to discover recruiting prospects.
+The Platform enables student-athletes to showcase their academic and athletic achievements while providing verified college coaches and professional scouts with tools to discover, evaluate, and connect with prospective athletes.
 
 Features may include, but are not limited to:
 
@@ -78,7 +80,7 @@ Features may include, but are not limited to:
 
 High School Prospect serves solely as a technology platform.
 
-We are **not**:
+We are not:
 
 - a university;
 - a college;
@@ -132,7 +134,7 @@ We reserve the right to refuse registration or terminate any account at our sole
   {
     number: 5,
     title: "Minimum Age and Parental Consent",
-    body: `High School Prospect is **not intended for children under the age of 13.**
+    body: `High School Prospect is **not intended for children under the age of 14.**
 
 Student-athletes who are **14 years of age or older** may create and maintain a recruiting profile on the Platform.
 
@@ -631,7 +633,16 @@ To the maximum extent permitted by applicable law, High School Prospect disclaim
 - security; and
 - continuous operation.
 
-We do not warrant that: the Platform will always be available; communications will always be delivered; uploaded information will never be lost; errors will never occur; defects will always be corrected; or the Platform will meet every user's expectations. Users assume all risks associated with their use of the Platform.`,
+We do not warrant that:
+
+- the Platform will always be available;
+- communications will always be delivered;
+- uploaded information will never be lost;
+- errors will never occur;
+- defects will always be corrected; or
+- the Platform will meet every user's expectations.
+
+Users assume all risks associated with their use of the Platform.`,
   },
   {
     number: 31,
