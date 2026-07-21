@@ -27,7 +27,7 @@ export default function PricingPage() {
 
       {/* Header */}
       <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-3xl md:text-4xl font-bold text-hsp-dark mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-hsp-dark mb-3">
           Choose your <span className="text-hsp-red">plan</span>
         </h1>
         <p className="text-hsp-gray text-base md:text-lg">
