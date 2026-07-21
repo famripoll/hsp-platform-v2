@@ -196,7 +196,7 @@ export default function SignUpPage() {
     <div>
       {/* Hero */}
       <section className="text-center mb-10 md:mb-14">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
           <span className="text-hsp-red">Start</span>{" "}
           <span className="text-hsp-dark">Your Recruiting Journey</span>
         </h1>
