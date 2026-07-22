@@ -18,6 +18,14 @@ const drawerLinks = [
   { label: "Sign Up", href: "/signup" },
 ];
 
+// Two-value hysteresis (not a single threshold): pinning the header to fixed
+// shifts the spacer in/out, which can nudge scrollY by a few px on its own —
+// with only one threshold that feedback loop can re-trigger the opposite
+// transition and flip-flop indefinitely. A dead zone between OFF and ON
+// absorbs that jitter since no transition can fire while scrollY sits inside it.
+const PIN_ON_THRESHOLD = 16; // px — scrollY must exceed this to become fixed
+const PIN_OFF_THRESHOLD = 4; // px — scrollY must drop below this to become static again
+
 /**
  * Native CSS position:sticky on this header was unreliable on long pages
  * (visually disappeared partway down the page and didn't reliably reappear
@@ -37,6 +45,7 @@ function useFixedHeader() {
     if (!header) return;
 
     let raf = 0;
+    let wasFixed = false;
 
     const measure = () => {
       setHeight(header.getBoundingClientRect().height);
@@ -44,7 +53,32 @@ function useFixedHeader() {
 
     const update = () => {
       raf = 0;
-      setFixed(window.scrollY > 0);
+      const scrollY = window.scrollY;
+      // Only change state when crossing the threshold relevant to the current
+      // state. While scrollY sits inside the OFF..ON dead zone, leave `fixed`
+      // exactly as it is — this is what breaks the flip-flop feedback loop.
+      let shouldPin = wasFixed;
+      if (!wasFixed && scrollY > PIN_ON_THRESHOLD) {
+        shouldPin = true;
+      } else if (wasFixed && scrollY < PIN_OFF_THRESHOLD) {
+        shouldPin = false;
+      }
+      // Re-measure right as the header first pins, so the spacer's held height
+      // is fresh even if the header's true height shifted since mount (font
+      // swap, image load reflow, etc.) rather than relying solely on the
+      // mount/resize measurement.
+      if (shouldPin && !wasFixed) {
+        measure();
+      }
+      // TODO(debug): remove this logging block once the bounce is diagnosed
+      if (shouldPin !== wasFixed) {
+        console.log(
+          `[header-debug] fixed: ${wasFixed} -> ${shouldPin} at scrollY=${window.scrollY} t=${performance.now().toFixed(0)}`
+        );
+      }
+      // TODO(debug): remove this logging block once the bounce is diagnosed
+      wasFixed = shouldPin;
+      setFixed(shouldPin);
     };
 
     const scheduleUpdate = () => {
@@ -53,6 +87,11 @@ function useFixedHeader() {
     };
 
     measure();
+    // TODO(debug): remove this logging block once the bounce is diagnosed
+    console.log(
+      `[header-debug] mounted, initial scrollY=${window.scrollY}, height=${header.getBoundingClientRect().height.toFixed(0)}`
+    );
+    // TODO(debug): remove this logging block once the bounce is diagnosed
     update();
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", measure);
