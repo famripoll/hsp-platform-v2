@@ -119,8 +119,10 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Spacer — holds the header's height in the document flow, since the header is always position:fixed */}
-      <div style={{ height }} aria-hidden="true" />
+      {/* Spacer — holds the header's height in the document flow, since the header is always position:fixed.
+          shrink-0 is required: body is a flex column taller than 100vh on most pages, and without it the
+          flexbox shrink algorithm crushes this empty div to 0px regardless of its inline height. */}
+      <div className="shrink-0" style={{ height }} aria-hidden="true" />
 
       {/* Overlay */}
       <div
