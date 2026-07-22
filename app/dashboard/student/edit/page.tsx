@@ -1,9 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
-import LogOutButton from "../LogOutButton";
 import EditProfileForm from "./EditProfileForm";
-import { Settings } from "lucide-react";
 
 export default async function StudentEditPage() {
   const supabase = await createServerClient();
@@ -72,26 +69,6 @@ export default async function StudentEditPage() {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <span className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none cursor-pointer transition-transform duration-200 hover:scale-105 shrink-0">
-            <span className="text-hsp-red">High</span>
-            <span className="text-hsp-dark">School</span>
-            <span className="text-hsp-dark">Prospect</span>
-          </span>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/dashboard/student/settings"
-              className="flex items-center gap-1 text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </Link>
-            <LogOutButton />
-          </div>
-        </div>
-      </nav>
-
       <EditProfileForm
         initialFullName={editFullName}
         initialData={student ?? {}}

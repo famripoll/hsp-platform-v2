@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
-import LogOutButton from "../LogOutButton";
 import SettingsTabs from "./SettingsTabs";
-import { Settings } from "lucide-react";
 
 export default async function StudentSettingsPage() {
   const supabase = await createServerClient();
@@ -98,29 +96,6 @@ export default async function StudentSettingsPage() {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <Link
-            href="/dashboard/student"
-            className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 shrink-0"
-          >
-            <span className="text-hsp-red">High</span>
-            <span className="text-hsp-dark">School</span>
-            <span className="text-hsp-dark">Prospect</span>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/dashboard/student/settings"
-              className="flex items-center gap-1 text-sm text-[#d93025] transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </Link>
-            <LogOutButton />
-          </div>
-        </div>
-      </nav>
-
       <div className="px-4 py-8">
         <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-10">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
