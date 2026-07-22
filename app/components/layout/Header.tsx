@@ -18,103 +18,50 @@ const drawerLinks = [
   { label: "Sign Up", href: "/signup" },
 ];
 
-// Two-value hysteresis (not a single threshold): pinning the header to fixed
-// shifts the spacer in/out, which can nudge scrollY by a few px on its own —
-// with only one threshold that feedback loop can re-trigger the opposite
-// transition and flip-flop indefinitely. A dead zone between OFF and ON
-// absorbs that jitter since no transition can fire while scrollY sits inside it.
-const PIN_ON_THRESHOLD = 16; // px — scrollY must exceed this to become fixed
-const PIN_OFF_THRESHOLD = 4; // px — scrollY must drop below this to become static again
-
 /**
  * Native CSS position:sticky on this header was unreliable on long pages
  * (visually disappeared partway down the page and didn't reliably reappear
  * on scroll-up — root cause not isolated despite clean CSS ancestry and no
- * JS mutating the header). This mirrors the JS-driven pin technique already
- * used for the TOC sidebar in TermsTableOfContents.tsx/PrivacyTableOfContents.tsx
- * (usePinnedSidebar): measure + toggle position:fixed via getBoundingClientRect,
- * recalculated on scroll via requestAnimationFrame, instead of relying on sticky.
+ * JS mutating the header). A JS-driven scroll-based fixed/static toggle was
+ * tried next, but the transition itself produced a one-time visible jump at
+ * the start of every scroll. Since the header is meant to stay pinned as
+ * soon as any scrolling happens anyway, it's simplest and most robust to
+ * render it position:fixed unconditionally, at all times — no toggle, no
+ * transition, no jump. This hook only measures the header's real height so
+ * a permanent spacer below it can hold that space in the document flow.
  */
-function useFixedHeader() {
+function useHeaderHeight() {
   const headerRef = useRef<HTMLElement>(null);
-  const [fixed, setFixed] = useState(false);
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
 
-    let raf = 0;
-    let wasFixed = false;
-
     const measure = () => {
       setHeight(header.getBoundingClientRect().height);
     };
 
-    const update = () => {
-      raf = 0;
-      const scrollY = window.scrollY;
-      // Only change state when crossing the threshold relevant to the current
-      // state. While scrollY sits inside the OFF..ON dead zone, leave `fixed`
-      // exactly as it is — this is what breaks the flip-flop feedback loop.
-      let shouldPin = wasFixed;
-      if (!wasFixed && scrollY > PIN_ON_THRESHOLD) {
-        shouldPin = true;
-      } else if (wasFixed && scrollY < PIN_OFF_THRESHOLD) {
-        shouldPin = false;
-      }
-      // Re-measure right as the header first pins, so the spacer's held height
-      // is fresh even if the header's true height shifted since mount (font
-      // swap, image load reflow, etc.) rather than relying solely on the
-      // mount/resize measurement.
-      if (shouldPin && !wasFixed) {
-        measure();
-      }
-      // TODO(debug): remove this logging block once the bounce is diagnosed
-      if (shouldPin !== wasFixed) {
-        console.log(
-          `[header-debug] fixed: ${wasFixed} -> ${shouldPin} at scrollY=${window.scrollY} t=${performance.now().toFixed(0)}`
-        );
-      }
-      // TODO(debug): remove this logging block once the bounce is diagnosed
-      wasFixed = shouldPin;
-      setFixed(shouldPin);
-    };
-
-    const scheduleUpdate = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(update);
-    };
-
     measure();
-    // TODO(debug): remove this logging block once the bounce is diagnosed
-    console.log(
-      `[header-debug] mounted, initial scrollY=${window.scrollY}, height=${header.getBoundingClientRect().height.toFixed(0)}`
-    );
-    // TODO(debug): remove this logging block once the bounce is diagnosed
-    update();
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", measure);
     return () => {
-      window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", measure);
-      if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
-  return { headerRef, fixed, height };
+  return { headerRef, height };
 }
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
-  const { headerRef, fixed, height } = useFixedHeader();
+  const { headerRef, height } = useHeaderHeight();
 
   return (
     <>
       <header
         ref={headerRef}
-        className={`${fixed ? "fixed top-0 left-0" : "static"} z-40 w-full bg-white border-b border-gray-200`}
+        className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200"
       >
         <div className="max-w-[1200px] mx-auto px-4 md:px-8 flex flex-col md:flex-row md:items-center md:justify-between md:h-16 py-3 md:py-0">
 
@@ -172,8 +119,8 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Spacer — holds the header's natural height in the document flow while it's pinned via position:fixed */}
-      {fixed && <div style={{ height }} aria-hidden="true" />}
+      {/* Spacer — holds the header's height in the document flow, since the header is always position:fixed */}
+      <div style={{ height }} aria-hidden="true" />
 
       {/* Overlay */}
       <div
