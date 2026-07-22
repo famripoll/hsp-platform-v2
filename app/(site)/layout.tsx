@@ -1,5 +1,6 @@
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import BackToTopButton from "../components/ui/BackToTopButton";
 
 export default function SiteLayout({
   children,
@@ -18,6 +19,8 @@ export default function SiteLayout({
       </main>
 
       <Footer />
+
+      <BackToTopButton />
     </>
   );
 }
