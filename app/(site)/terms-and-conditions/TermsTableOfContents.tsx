@@ -135,6 +135,15 @@ function usePinnedSidebar() {
       if (window.innerWidth < 768) {
         setMode((prev) => (prev.type === "static" ? prev : { type: "static" }));
 
+        // Safety net: at (or above) the very top of the page, always force static,
+        // regardless of the column-relative math below. A fast/instant scroll-to-top
+        // (scrollbar drag, momentum fling) can otherwise leave the panel stuck in
+        // fixed mode if the settling scroll position races the column measurement.
+        if (window.scrollY <= 0) {
+          setMobileMode((prev) => (prev.type === "static" ? prev : { type: "static" }));
+          return;
+        }
+
         const mobileColumnRect = mobileColumn.getBoundingClientRect();
         const docBottom = document.documentElement.scrollHeight;
         const viewportBottom = window.scrollY + window.innerHeight;

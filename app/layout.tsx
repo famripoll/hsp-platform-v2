@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full flex flex-col bg-white text-hsp-dark antialiased overflow-y-scroll">
+      <body className="h-full flex flex-col bg-white text-hsp-dark antialiased [scrollbar-gutter:stable]">
         {children}
       </body>
     </html>
