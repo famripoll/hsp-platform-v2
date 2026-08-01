@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
 import CoachMessages from './CoachMessages'
 import NotificationsList from '@/app/components/dashboard/NotificationsList'
+import { useUnreadNotifications } from '@/app/hooks/useUnreadNotifications'
 import {
   Bell,
   Eye,
@@ -503,6 +504,7 @@ function CoachDashboardContent() {
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set())
   const [watchlistStudents, setWatchlistStudents] = useState<ProspectStudent[]>([])
   const [watchlistLoading, setWatchlistLoading] = useState(false)
+  const { unreadCount, refresh: refreshUnreadCount } = useUnreadNotifications()
 
   useEffect(() => {
     const tab = searchParams.get('tab')
@@ -813,6 +815,21 @@ function CoachDashboardContent() {
                     }`}
                   >
                     {tab.label}
+                    {tab.value === 'notifications' && unreadCount > 0 && (
+                      <span
+                        className="inline-flex items-center justify-center ml-2.5 rounded-full text-white align-middle shrink-0"
+                        style={{
+                          backgroundColor: '#d93025',
+                          minWidth: '18px',
+                          height: '18px',
+                          fontSize: '11px',
+                          lineHeight: '18px',
+                          padding: '0 4px',
+                        }}
+                      >
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
                   </button>
                 ))}
               </nav>
@@ -1194,7 +1211,7 @@ function CoachDashboardContent() {
 
             {/* ── NOTIFICATIONS TAB ── */}
             {activeTab === 'notifications' && (
-              <NotificationsList />
+              <NotificationsList onReadChange={refreshUnreadCount} />
             )}
 
           </div>

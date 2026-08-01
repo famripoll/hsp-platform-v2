@@ -7,6 +7,7 @@ import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
 import StudentMessages from "./StudentMessages";
 import NotificationsList from "@/app/components/dashboard/NotificationsList";
+import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 import { createClient } from "@/lib/supabase-client";
 import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
 
@@ -118,6 +119,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
   const [activeSection, setActiveSection] = useState<TabValue>(
     VALID_TABS.includes(initialTab) ? (initialTab as TabValue) : "overview"
   );
+  const { unreadCount, refresh: refreshUnreadCount } = useUnreadNotifications();
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -207,6 +209,21 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               }`}
             >
               {tab.label}
+              {tab.value === "notifications" && unreadCount > 0 && (
+                <span
+                  className="inline-flex items-center justify-center ml-2.5 rounded-full text-white align-middle shrink-0"
+                  style={{
+                    backgroundColor: "#d93025",
+                    minWidth: "18px",
+                    height: "18px",
+                    fontSize: "11px",
+                    lineHeight: "18px",
+                    padding: "0 4px",
+                  }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -529,7 +546,9 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
       {activeSection === "messages" && <StudentMessages canReply={canReply} />}
 
       {/* ── NOTIFICATIONS TAB ── */}
-      {activeSection === "notifications" && <NotificationsList />}
+      {activeSection === "notifications" && (
+        <NotificationsList onReadChange={refreshUnreadCount} />
+      )}
 
     </div>
   );

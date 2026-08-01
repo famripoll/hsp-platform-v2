@@ -35,7 +35,11 @@ function iconForType(type: string) {
   return Bell;
 }
 
-export default function NotificationsList() {
+type Props = {
+  onReadChange?: () => void;
+};
+
+export default function NotificationsList({ onReadChange }: Props = {}) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -85,6 +89,8 @@ export default function NotificationsList() {
           n.id === notification.id ? { ...n, read_at: new Date().toISOString() } : n
         )
       );
+
+      onReadChange?.();
     }
 
     if (notification.link_url) {
@@ -103,6 +109,7 @@ export default function NotificationsList() {
       .is("read_at", null);
 
     await fetchNotifications();
+    onReadChange?.();
   }
 
   if (loading) {
