@@ -2,6 +2,15 @@ const FROM_ADDRESS = "High School Prospect <noreply@highschoolprospect.com>";
 
 const FONT_STACK = "Helvetica, Arial, sans-serif";
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function renderEmail(params: {
   preheader: string;
   firstName: string;
@@ -11,7 +20,17 @@ export function renderEmail(params: {
   ctaUrl: string;
   note?: string;
 }): string {
-  const { preheader, firstName, headline, subline, ctaLabel, ctaUrl, note } = params;
+  const preheader = escapeHtml(params.preheader);
+  const firstName = escapeHtml(params.firstName);
+  const headline = escapeHtml(params.headline);
+  const subline = escapeHtml(params.subline);
+  const ctaLabel = escapeHtml(params.ctaLabel);
+  const note = params.note !== undefined ? escapeHtml(params.note) : undefined;
+
+  const safeCtaUrl = params.ctaUrl.startsWith("https://") || params.ctaUrl.startsWith("http://")
+    ? params.ctaUrl
+    : `${process.env.NEXT_PUBLIC_APP_URL}/login`;
+  const ctaUrl = safeCtaUrl.replace(/"/g, "&quot;");
 
   const noteRow = note
     ? `

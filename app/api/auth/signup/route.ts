@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -126,37 +127,22 @@ export async function POST(request: NextRequest) {
         });
 
         if (!parentsInsert.error) {
-          try {
-            const resendResponse = await fetch("https://api.resend.com/emails", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                from: "High School Prospect <noreply@highschoolprospect.com>",
-                to: [parent_email],
-                subject: "Your child created an HSP account",
-                html: `
-                  <p>Hi ${parent_name},</p>
-                  <p><strong>${full_name}</strong> has created a profile on
-                  High School Prospect.</p>
-                  <p>To access your parent account and view their profile,
-                  click the link below:</p>
-                  <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
-                  Access My Account</a></p>
-                  <p>On the login page, enter your email address and the system
-                  will send you a secure access code.</p>
-                  <p>— The High School Prospect Team</p>
-                `,
-              }),
-            });
+          const sent = await sendEmail({
+            to: parent_email,
+            subject: "Your child created an HSP account",
+            html: renderEmail({
+              preheader: "Your child created a profile on High School Prospect.",
+              firstName: parent_name,
+              headline: `${full_name} has created a profile on High School Prospect.`,
+              subline: "Log in to view their profile and choose a plan.",
+              ctaLabel: "Access my account",
+              ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+              note: "On the login page, enter your email address and we'll send you a secure access code. You don't need a password.",
+            }),
+          });
 
-            if (!resendResponse.ok) {
-              console.warn("[signup] Resend activation email failed:", await resendResponse.text());
-            }
-          } catch (resendError) {
-            console.warn("[signup] Resend activation email error:", resendError);
+          if (!sent) {
+            console.warn("[signup] Resend activation email failed.");
           }
         }
       }
