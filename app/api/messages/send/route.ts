@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         type: "new_message",
         title: "New message from a college coach",
         body: "A college coach sent you a message. Log in to read it.",
-        link_url: "/dashboard/student?tab=messages",
+        link_url: `/dashboard/student?tab=messages&coach=${coachRow.id}`,
       }));
 
       await supabaseAdmin.from("notifications").insert(notifications);

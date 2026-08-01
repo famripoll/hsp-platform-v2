@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
         type: "new_message",
         title: "New reply from a prospect",
         body: "A prospect replied to your message. Log in to read it.",
-        link_url: "/dashboard/coach?tab=messages",
+        link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
       });
     }
 

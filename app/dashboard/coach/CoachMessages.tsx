@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 
@@ -57,6 +58,7 @@ function formatRelativeTime(iso: string): string {
 }
 
 export default function CoachMessages() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [coachId, setCoachId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -66,6 +68,8 @@ export default function CoachMessages() {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const autoOpenedStudentRef = useRef<string | null>(null);
 
   const fetchData = useCallback(async () => {
     const supabase = createClient();
@@ -166,6 +170,17 @@ export default function CoachMessages() {
     return list;
   }, [messages, studentNames, studentPhotos]);
 
+  useEffect(() => {
+    const studentParam = searchParams.get("student");
+    if (!studentParam || autoOpenedStudentRef.current === studentParam) return;
+
+    const match = conversations.find((c) => c.studentId === studentParam);
+    if (match) {
+      autoOpenedStudentRef.current = studentParam;
+      setSelectedStudentId(studentParam);
+    }
+  }, [searchParams, conversations]);
+
   const threadMessages = useMemo(() => {
     if (!selectedStudentId) return [];
     return messages
@@ -173,6 +188,22 @@ export default function CoachMessages() {
       .slice()
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
   }, [messages, selectedStudentId]);
+
+  useEffect(() => {
+    if (loading || !selectedStudentId) return;
+
+    let rafId2 = 0;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
+  }, [threadMessages, selectedStudentId, loading]);
 
   async function handleReply() {
     const trimmed = replyText.trim();
@@ -297,6 +328,7 @@ export default function CoachMessages() {
               </div>
             );
           })}
+          <div ref={bottomRef} />
         </div>
 
         <div className="mt-4 pt-4 border-t border-gray-100">
