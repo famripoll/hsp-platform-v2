@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
+import CoachMessages from './CoachMessages'
 import {
   Bell,
   Eye,
@@ -1174,17 +1175,7 @@ export default function CoachDashboardPage() {
 
             {/* ── MESSAGES TAB ── */}
             {activeTab === 'messages' && (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h3 className="text-xl font-bold mb-5" style={{ color: '#0f172a' }}>
-                  Messages
-                </h3>
-                <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <MessageSquare className="w-10 h-10" style={{ color: '#d1d5db' }} />
-                  <p className="text-sm text-center" style={{ color: '#64748b' }}>
-                    Coach messaging will appear here in a future release.
-                  </p>
-                </div>
-              </div>
+              <CoachMessages />
             )}
 
             {/* ── NOTIFICATIONS TAB ── */}

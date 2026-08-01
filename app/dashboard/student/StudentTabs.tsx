@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
+import StudentMessages from "./StudentMessages";
 import { createClient } from "@/lib/supabase-client";
 import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
 
@@ -87,12 +88,13 @@ const TABS = [
   { label: "Search Colleges", value: "search" },
   { label: "Your Target Schools", value: "target" },
   { label: "Media", value: "media" },
+  { label: "Messages", value: "messages" },
   { label: "Notifications", value: "notifications" },
 ] as const;
 
 type TabValue = typeof TABS[number]["value"];
 
-const VALID_TABS: string[] = ["overview", "search", "target", "media", "notifications"];
+const VALID_TABS: string[] = ["overview", "search", "target", "media", "messages", "notifications"];
 
 type Props = {
   student: Student;
@@ -120,6 +122,35 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
   const [activeFeedTab, setActiveFeedTab] = useState<"recommended" | "activity">("recommended");
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
+  const [canReply, setCanReply] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchRole() {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (cancelled) return;
+      setCanReply(profile?.role === "student");
+    }
+
+    fetchRole();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -483,6 +514,9 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
           )}
         </>
       )}
+
+      {/* ── MESSAGES TAB ── */}
+      {activeSection === "messages" && <StudentMessages canReply={canReply} />}
 
       {/* ── NOTIFICATIONS TAB ── */}
       {activeSection === "notifications" && (
