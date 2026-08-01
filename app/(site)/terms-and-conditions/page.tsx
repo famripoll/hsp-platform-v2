@@ -22,9 +22,9 @@ type TermsSection = {
 const CONTACT_CARD = (
   <div className="bg-hsp-card rounded-xl px-6 py-5 flex flex-col gap-1">
     <p className="text-sm font-semibold text-hsp-dark">Ripoll Services, LLC</p>
-    <p className="text-sm text-hsp-gray">401 East Jackson Street</p>
-    <p className="text-sm text-hsp-gray">Suite 2340-N83</p>
-    <p className="text-sm text-hsp-gray">Tampa, Florida 33602</p>
+    <p className="text-sm text-hsp-gray">261 N University Dr</p>
+    <p className="text-sm text-hsp-gray">Suite 500-1027</p>
+    <p className="text-sm text-hsp-gray">Plantation, FL 33324</p>
     <p className="text-sm text-hsp-gray mb-2">United States</p>
     <p className="text-sm text-hsp-gray">
       Email:{" "}
