@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import LogOutButton from "@/app/dashboard/student/LogOutButton";
 import SettingsLink from "@/app/dashboard/student/SettingsLink";
+import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 
 /**
  * Same pattern as app/components/layout/Header.tsx's useHeaderHeight: the nav
@@ -40,6 +41,7 @@ export default function DashboardNav() {
   const isCoach = pathname.startsWith("/dashboard/coach");
   const isSettingsActive = pathname.endsWith("/settings");
   const { navRef, height } = useNavHeight();
+  const { unreadCount } = useUnreadNotifications();
 
   return (
     <>
@@ -56,7 +58,29 @@ export default function DashboardNav() {
             <span className="text-hsp-dark">School</span>
             <span className="text-hsp-dark">Prospect</span>
           </Link>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2 shrink-0 ml-3 sm:ml-0">
+            <Link
+              href={isCoach ? "/dashboard/coach?tab=notifications" : "/dashboard/student?tab=notifications"}
+              className="relative flex items-center justify-center w-5 h-5 shrink-0 text-[#0f172a] hover:text-[#d93025] transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span
+                  className="absolute top-0.5 right-0.5 inline-flex items-center justify-center rounded-full text-white"
+                  style={{
+                    backgroundColor: "#d93025",
+                    minWidth: "16px",
+                    height: "16px",
+                    fontSize: "10px",
+                    lineHeight: "16px",
+                    padding: "0 3px",
+                  }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Link>
             {isCoach ? (
               <Link
                 href="/dashboard/coach/settings"
