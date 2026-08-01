@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
-import { sendEmail } from "@/lib/sendEmail";
+import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -107,14 +107,15 @@ export async function POST(request: NextRequest) {
           await sendEmail({
             to: coachProfile.email,
             subject: "New reply on High School Prospect",
-            html: `
-              <p>Hi ${firstName || "there"},</p>
-              <p>A prospect has replied to your message on High School
-              Prospect. Log in to read it.</p>
-              <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
-              Log In</a></p>
-              <p>— The High School Prospect Team</p>
-            `,
+            html: renderEmail({
+              preheader: "Log in to read the new reply.",
+              firstName: firstName || "there",
+              headline: "A prospect has replied to your message on High School Prospect.",
+              subline: "Log in to read it and reply.",
+              ctaLabel: "Log in to read",
+              ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+              note: "For your safety, we never include message contents in email. All conversations stay on the platform.",
+            }),
           });
         }
       }

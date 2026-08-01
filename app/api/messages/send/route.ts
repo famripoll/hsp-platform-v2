@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
-import { sendEmail } from "@/lib/sendEmail";
+import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -65,9 +65,11 @@ export async function POST(request: NextRequest) {
 
     const { data: studentRow } = await supabaseAdmin
       .from("students")
-      .select("profile_id")
+      .select("profile_id, full_name")
       .eq("id", studentId)
       .single();
+
+    const studentFirstName = studentRow?.full_name?.trim().split(/\s+/)[0] || null;
 
     const { data: parentRows } = await supabaseAdmin
       .from("parents")
@@ -114,27 +116,35 @@ export async function POST(request: NextRequest) {
       if (!notificationsError) {
         const { data: recipientProfiles } = await supabaseAdmin
           .from("profiles")
-          .select("email, full_name")
+          .select("id, email, full_name")
           .in("id", recipientProfileIds);
 
         await Promise.all(
           (recipientProfiles ?? [])
-            .filter((recipient): recipient is { email: string; full_name: string | null } =>
+            .filter((recipient): recipient is { id: string; email: string; full_name: string | null } =>
               Boolean(recipient.email)
             )
             .map((recipient) => {
               const firstName = recipient.full_name?.split(" ")[0];
+              const isStudent = recipient.id === studentRow?.profile_id;
               return sendEmail({
                 to: recipient.email,
                 subject: "New message on High School Prospect",
-                html: `
-                  <p>Hi ${firstName || "there"},</p>
-                  <p>A college coach has sent you a message on High School
-                  Prospect. Log in to read it.</p>
-                  <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
-                  Log In</a></p>
-                  <p>— The High School Prospect Team</p>
-                `,
+                html: renderEmail({
+                  preheader: isStudent
+                    ? "Log in to read your new message."
+                    : "Log in to view the new message.",
+                  firstName: firstName || "there",
+                  headline: isStudent
+                    ? "A college coach has sent you a message on High School Prospect."
+                    : studentFirstName
+                    ? `A college coach has sent ${studentFirstName} a message on High School Prospect.`
+                    : "A college coach has sent you a message on High School Prospect.",
+                  subline: "Log in to read it and reply.",
+                  ctaLabel: "Log in to read",
+                  ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+                  note: "For your safety, we never include message contents in email. All conversations stay on the platform, where a parent or guardian can review them.",
+                }),
               });
             })
         );
