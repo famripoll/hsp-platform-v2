@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useMemo, useCallback, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
 import CoachMessages from './CoachMessages'
+import NotificationsList from '@/app/components/dashboard/NotificationsList'
 import {
   Bell,
   Eye,
@@ -478,8 +479,9 @@ function ProspectCard({
   )
 }
 
-export default function CoachDashboardPage() {
+function CoachDashboardContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = useMemo(() => createClient(), [])
 
   const [authLoading, setAuthLoading] = useState(true)
@@ -492,11 +494,23 @@ export default function CoachDashboardPage() {
   const [videoProfileIds, setVideoProfileIds] = useState<Set<string>>(new Set())
   const [searching, setSearching] = useState(false)
   const [searched, setSearched] = useState(false)
-  const [activeTab, setActiveTab] = useState<CoachTabValue>('prospects')
+  const [activeTab, setActiveTab] = useState<CoachTabValue>(() => {
+    const tab = searchParams.get('tab')
+    const match = COACH_TABS.find((t) => t.value === tab)
+    return match ? match.value : 'prospects'
+  })
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({})
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set())
   const [watchlistStudents, setWatchlistStudents] = useState<ProspectStudent[]>([])
   const [watchlistLoading, setWatchlistLoading] = useState(false)
+
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    const match = COACH_TABS.find((t) => t.value === tab)
+    if (match) {
+      setActiveTab(match.value)
+    }
+  }, [searchParams])
 
   const runSearch = useCallback(
     async (activeFilters: Filters, activeAdvanced: AdvancedFilters) => {
@@ -1180,22 +1194,26 @@ export default function CoachDashboardPage() {
 
             {/* ── NOTIFICATIONS TAB ── */}
             {activeTab === 'notifications' && (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h3 className="text-xl font-bold mb-5" style={{ color: '#0f172a' }}>
-                  Notifications
-                </h3>
-                <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <Bell className="w-10 h-10" style={{ color: '#d1d5db' }} />
-                  <p className="text-sm text-center" style={{ color: '#64748b' }}>
-                    Recruiting alerts and account updates will appear here.
-                  </p>
-                </div>
-              </div>
+              <NotificationsList />
             )}
 
           </div>
         </div>
       </div>
     </>
+  )
+}
+
+export default function CoachDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <CoachDashboardContent />
+    </Suspense>
   )
 }

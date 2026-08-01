@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
 import StudentMessages from "./StudentMessages";
+import NotificationsList from "@/app/components/dashboard/NotificationsList";
 import { createClient } from "@/lib/supabase-client";
 import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
 
@@ -112,9 +114,17 @@ type ActivityItem = {
 };
 
 export default function StudentTabs({ student, initialTab = "overview", initialStatsTab }: Props) {
+  const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<TabValue>(
     VALID_TABS.includes(initialTab) ? (initialTab as TabValue) : "overview"
   );
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && VALID_TABS.includes(tab)) {
+      setActiveSection(tab as TabValue);
+    }
+  }, [searchParams]);
   const isPitcher = student.primary_position === "P" || student.secondary_position === "P";
   const [activeStatsTab, setActiveStatsTab] = useState(
     initialStatsTab === "pitcher" ? "pitcher" : initialStatsTab === "position" ? "position" : (isPitcher ? "pitcher" : "position")
@@ -519,19 +529,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
       {activeSection === "messages" && <StudentMessages canReply={canReply} />}
 
       {/* ── NOTIFICATIONS TAB ── */}
-      {activeSection === "notifications" && (
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-            Notifications
-          </h3>
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Bell className="w-10 h-10" style={{ color: "#d1d5db" }} />
-            <p className="text-sm text-center" style={{ color: "#64748b" }}>
-              No notifications yet.
-            </p>
-          </div>
-        </div>
-      )}
+      {activeSection === "notifications" && <NotificationsList />}
 
     </div>
   );
