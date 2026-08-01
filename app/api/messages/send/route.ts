@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
+import { sendEmail } from "@/lib/sendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -106,7 +107,38 @@ export async function POST(request: NextRequest) {
         link_url: `/dashboard/student?tab=messages&coach=${coachRow.id}`,
       }));
 
-      await supabaseAdmin.from("notifications").insert(notifications);
+      const { error: notificationsError } = await supabaseAdmin
+        .from("notifications")
+        .insert(notifications);
+
+      if (!notificationsError) {
+        const { data: recipientProfiles } = await supabaseAdmin
+          .from("profiles")
+          .select("email, full_name")
+          .in("id", recipientProfileIds);
+
+        await Promise.all(
+          (recipientProfiles ?? [])
+            .filter((recipient): recipient is { email: string; full_name: string | null } =>
+              Boolean(recipient.email)
+            )
+            .map((recipient) => {
+              const firstName = recipient.full_name?.split(" ")[0];
+              return sendEmail({
+                to: recipient.email,
+                subject: "New message on High School Prospect",
+                html: `
+                  <p>Hi ${firstName || "there"},</p>
+                  <p>A college coach has sent you a message on High School
+                  Prospect. Log in to read it.</p>
+                  <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
+                  Log In</a></p>
+                  <p>— The High School Prospect Team</p>
+                `,
+              });
+            })
+        );
+      }
     }
 
     return NextResponse.json({ success: true });

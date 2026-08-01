@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
+import { sendEmail } from "@/lib/sendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,13 +85,39 @@ export async function POST(request: NextRequest) {
         ? `New reply from ${studentFullName}`
         : "New reply from a prospect";
 
-      await supabaseAdmin.from("notifications").insert({
-        user_id: coachRow.profile_id,
-        type: "new_message",
-        title: notificationTitle,
-        body: "A prospect replied to your message. Log in to read it.",
-        link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
-      });
+      const { error: notificationError } = await supabaseAdmin
+        .from("notifications")
+        .insert({
+          user_id: coachRow.profile_id,
+          type: "new_message",
+          title: notificationTitle,
+          body: "A prospect replied to your message. Log in to read it.",
+          link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
+        });
+
+      if (!notificationError) {
+        const { data: coachProfile } = await supabaseAdmin
+          .from("profiles")
+          .select("email, full_name")
+          .eq("id", coachRow.profile_id)
+          .single();
+
+        if (coachProfile?.email) {
+          const firstName = coachProfile.full_name?.split(" ")[0];
+          await sendEmail({
+            to: coachProfile.email,
+            subject: "New reply on High School Prospect",
+            html: `
+              <p>Hi ${firstName || "there"},</p>
+              <p>A prospect has replied to your message on High School
+              Prospect. Log in to read it.</p>
+              <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/login">
+              Log In</a></p>
+              <p>— The High School Prospect Team</p>
+            `,
+          });
+        }
+      }
     }
 
     return NextResponse.json({ success: true });
