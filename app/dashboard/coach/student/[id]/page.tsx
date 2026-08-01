@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import StatsToggleCard from "./StatsToggleCard";
+import SendMessageCard from "./SendMessageCard";
 import {
   ArrowLeft,
   Calendar,
@@ -386,6 +387,9 @@ export default async function CoachStudentProfilePage({
 
           {/* ── RIGHT COLUMN: Stats + Media ── */}
           <div className="md:col-span-2 flex flex-col gap-6">
+
+            {/* Send Message Card */}
+            <SendMessageCard studentId={id} studentName={student.full_name ?? "this student"} />
 
             {/* Stats Card */}
             <StatsToggleCard student={student} />
