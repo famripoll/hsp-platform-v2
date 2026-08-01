@@ -72,10 +72,22 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (coachRow?.profile_id) {
+      const { data: studentNameRow } = await supabaseAdmin
+        .from("students")
+        .select("full_name")
+        .eq("id", studentRow.id)
+        .single();
+
+      const studentFullName = studentNameRow?.full_name ?? null;
+
+      const notificationTitle = studentFullName
+        ? `New reply from ${studentFullName}`
+        : "New reply from a prospect";
+
       await supabaseAdmin.from("notifications").insert({
         user_id: coachRow.profile_id,
         type: "new_message",
-        title: "New reply from a prospect",
+        title: notificationTitle,
         body: "A prospect replied to your message. Log in to read it.",
         link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
       });

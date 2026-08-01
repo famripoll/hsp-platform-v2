@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     const { data: coachRow } = await supabase
       .from("coaches")
-      .select("id")
+      .select("id, profile_id")
       .eq("profile_id", user.id)
       .single();
 
@@ -83,11 +83,25 @@ export async function POST(request: NextRequest) {
       )
     );
 
+    let coachFullName: string | null = null;
+    if (coachRow.profile_id) {
+      const { data: coachProfile } = await supabaseAdmin
+        .from("profiles")
+        .select("full_name")
+        .eq("id", coachRow.profile_id)
+        .single();
+      coachFullName = coachProfile?.full_name ?? null;
+    }
+
+    const notificationTitle = coachFullName
+      ? `New message from ${coachFullName}`
+      : "New message from a college coach";
+
     if (recipientProfileIds.length > 0) {
       const notifications = recipientProfileIds.map((recipientId) => ({
         user_id: recipientId,
         type: "new_message",
-        title: "New message from a college coach",
+        title: notificationTitle,
         body: "A college coach sent you a message. Log in to read it.",
         link_url: `/dashboard/student?tab=messages&coach=${coachRow.id}`,
       }));
