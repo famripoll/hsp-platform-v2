@@ -178,7 +178,7 @@ export default function SignUpPage() {
 
       if (accountType === "student") {
         setSuccessMessage(
-          "Account created successfully! Please log in to continue."
+          "We sent a confirmation link to your email. Please click it to confirm your address — then you can log in."
         );
         setStep(3);
       } else if (accountType === "coach") {

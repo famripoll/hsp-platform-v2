@@ -103,10 +103,10 @@ export async function POST(request: NextRequest) {
       to: email,
       subject: "Welcome to High School Prospect",
       html: renderEmail({
-        preheader: "Your profile is ready. Log in and start building it.",
+        preheader: "Confirm your email address to finish setting up your profile.",
         firstName: studentFirstName,
-        headline: "Your profile has been created on High School Prospect.",
-        subline: "You can log in and start building it right now.",
+        headline: "Confirm your email to finish setting up your profile.",
+        subline: "Tap the button below so we know we can reach you. It only takes a second.",
         ctaLabel: "Verify my email",
         ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${verificationToken}`,
         bulletsHeading: "Here's what you can do:",
