@@ -3,6 +3,7 @@ import { createServerClient } from "@/lib/supabase-server";
 import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import StudentTabs from "./StudentTabs";
 import EditProfileButton from "./EditProfileButton";
+import VerifyEmailBanner from "./VerifyEmailBanner";
 import {
   MapPin,
   Mail,
@@ -66,6 +67,7 @@ type Student = {
   act_score?: string | null;
   intended_major?: string | null;
   subscription_status?: string | null;
+  email_verified_at?: string | null;
 };
 
 const DASH = "—";
@@ -184,6 +186,9 @@ export default async function StudentDashboardPage({
     <>
       {/* Page Content */}
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6">
+        {!isParentViewer && !student.email_verified_at && (
+          <VerifyEmailBanner email={displayProfile.email ?? ""} />
+        )}
         <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
           {/* ── LEFT COLUMN: Player Profile Card ── */}
