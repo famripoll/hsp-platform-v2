@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto">
 
         {/* Three Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10 justify-items-start md:justify-items-center w-fit mx-auto md:w-full md:mx-0">
 
           {/* Column 1: COMPANY */}
           <div>
