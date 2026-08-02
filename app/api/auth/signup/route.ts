@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
   }
 
   if (role === "student") {
+    const verificationToken = crypto.randomUUID();
+
     const { error: studentError } = await supabaseAdmin.from("students").insert({
       profile_id: authData.user.id,
       email,
@@ -88,6 +90,8 @@ export async function POST(request: NextRequest) {
       parent_name,
       parent_phone,
       parent_relationship,
+      email_verification_token: verificationToken,
+      email_verification_sent_at: new Date().toISOString(),
     });
 
     if (studentError) {
@@ -103,8 +107,8 @@ export async function POST(request: NextRequest) {
         firstName: studentFirstName,
         headline: "Your profile has been created on High School Prospect.",
         subline: "You can log in and start building it right now.",
-        ctaLabel: "Start building my profile",
-        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+        ctaLabel: "Verify my email",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${verificationToken}`,
         bulletsHeading: "Here's what you can do:",
         bullets: [
           "Bring your stats, video, and social links together in one complete profile",
