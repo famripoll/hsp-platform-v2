@@ -106,13 +106,13 @@ export function renderEmail(params: {
             </td>
           </tr>
           <tr>
-            <td bgcolor="#0f172a" style="background-color:#0f172a; padding: 26px 32px;">
-              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #94a3b8; line-height: 1.6; margin: 0 0 3px;">Ripoll Services, LLC</p>
-              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #94a3b8; line-height: 1.6; margin: 0 0 3px;">261 N University Dr</p>
-              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #94a3b8; line-height: 1.6; margin: 0 0 3px;">Suite 500-1027</p>
-              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #94a3b8; line-height: 1.6; margin: 0 0 16px;">Plantation, FL 33324</p>
-              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #94a3b8; line-height: 1.6; margin: 0;">
-                <a href="https://www.facebook.com/high.school.prospect/" style="color:#ffffff; text-decoration:underline;">Facebook</a><span style="color:#475569; padding:0 10px;">&middot;</span><a href="https://www.instagram.com/high.school.prospect/" style="color:#ffffff; text-decoration:underline;">Instagram</a>
+            <td bgcolor="#e2e8f0" style="background-color:#e2e8f0; border-top: 1px solid #cbd5e1; padding: 26px 32px;">
+              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">Ripoll Services, LLC</p>
+              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">261 N University Dr</p>
+              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">Suite 500-1027</p>
+              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 16px;">Plantation, FL 33324</p>
+              <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0;">
+                <a href="https://www.facebook.com/high.school.prospect/" style="color:#0f172a; text-decoration:underline;">Facebook</a><span style="color:#94a3b8; padding:0 10px;">&middot;</span><a href="https://www.instagram.com/high.school.prospect/" style="color:#0f172a; text-decoration:underline;">Instagram</a>
               </p>
             </td>
           </tr>

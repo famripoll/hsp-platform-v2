@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
           user_id: coachRow.profile_id,
           type: "new_message",
           title: notificationTitle,
-          body: "A prospect replied to your message. Log in to read it.",
+          body: "A prospect replied to your message.",
           link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
         });
 

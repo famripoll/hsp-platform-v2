@@ -105,7 +105,10 @@ export async function POST(request: NextRequest) {
         user_id: recipientId,
         type: "new_message",
         title: notificationTitle,
-        body: "A college coach sent you a message. Log in to read it.",
+        body:
+          recipientId === studentRow?.profile_id
+            ? "A college coach sent you a message."
+            : `A college coach sent ${studentFirstName || "your athlete"} a message.`,
         link_url: `/dashboard/student?tab=messages&coach=${coachRow.id}`,
       }));
 
