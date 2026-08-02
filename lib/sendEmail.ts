@@ -69,10 +69,10 @@ export function renderEmail(params: {
 <html>
 <body style="margin:0; padding:0;">
   <div style="display:none; font-size:1px; color:#f1f5f9; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">${preheader}</div>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f1f5f9" style="width:100%; background-color:#f1f5f9; padding:24px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:100%; background-color:#ffffff; padding:24px 0;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" align="center" bgcolor="#ffffff" style="width:600px; background-color:#ffffff; border-radius:8px;">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" align="center" bgcolor="#ffffff" style="width:600px; background-color:#ffffff; border-radius:8px; border:1px solid #e2e8f0;">
           <tr>
             <td style="padding: 28px 32px 22px; border-bottom: 3px solid #d93025;">
               <span style="color:#d93025; font-family: ${FONT_STACK}; font-size:26px; font-weight:600; letter-spacing:-0.3px;">High</span><span style="color:#0f172a; font-family: ${FONT_STACK}; font-size:26px; font-weight:600; letter-spacing:-0.3px;">&nbsp;School Prospect</span>
@@ -106,7 +106,7 @@ export function renderEmail(params: {
             </td>
           </tr>
           <tr>
-            <td bgcolor="#e2e8f0" style="background-color:#e2e8f0; border-top: 1px solid #cbd5e1; padding: 26px 32px;">
+            <td bgcolor="#f1f5f9" style="background-color:#f1f5f9; border-top: 1px solid #cbd5e1; padding: 26px 32px;">
               <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">Ripoll Services, LLC</p>
               <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">261 N University Dr</p>
               <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #475569; line-height: 1.6; margin: 0 0 3px;">Suite 500-1027</p>
