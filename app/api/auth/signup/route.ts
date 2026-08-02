@@ -94,6 +94,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: studentError.message }, { status: 500 });
     }
 
+    const studentFirstName = full_name.trim().split(/\s+/)[0] || "there";
+    const welcomeSent = await sendEmail({
+      to: email,
+      subject: "Welcome to High School Prospect",
+      html: renderEmail({
+        preheader: "Your profile is ready. Log in and start building it.",
+        firstName: studentFirstName,
+        headline: "Your profile has been created on High School Prospect.",
+        subline: "You can log in and start building it right now.",
+        ctaLabel: "Start building my profile",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+        bulletsHeading: "Here's what you can do:",
+        bullets: [
+          "Bring your stats, video, and social links together in one complete profile",
+          "Explore college programs across the United States",
+          "Get discovered by college coaches looking for players like you",
+        ],
+        note: "Coaches verify what they see. Make sure your stats, GPA, and grad year are accurate — an honest profile is what earns their trust. We've also emailed your parent or guardian; some features unlock once they choose a plan.",
+      }),
+    });
+
+    if (!welcomeSent) {
+      console.warn("[signup] Welcome email failed.");
+    }
+
     // Auto-create parent auth account
     const { data: studentRow } = await supabase
       .from("students")
@@ -134,7 +159,7 @@ export async function POST(request: NextRequest) {
               preheader: "Your child created a profile on High School Prospect.",
               firstName: parent_name,
               headline: `${full_name} has created a profile on High School Prospect.`,
-              subline: "Log in to view their profile and choose a plan.",
+              subline: "Log in to view their profile.",
               ctaLabel: "Access my account",
               ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
               note: "On the login page, enter your email address and we'll send you a secure access code. You don't need a password.",

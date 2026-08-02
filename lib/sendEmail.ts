@@ -19,6 +19,8 @@ export function renderEmail(params: {
   ctaLabel: string;
   ctaUrl: string;
   note?: string;
+  bullets?: string[];
+  bulletsHeading?: string;
 }): string {
   const preheader = escapeHtml(params.preheader);
   const firstName = escapeHtml(params.firstName);
@@ -26,11 +28,33 @@ export function renderEmail(params: {
   const subline = escapeHtml(params.subline);
   const ctaLabel = escapeHtml(params.ctaLabel);
   const note = params.note !== undefined ? escapeHtml(params.note) : undefined;
+  const bulletsHeading =
+    params.bulletsHeading !== undefined ? escapeHtml(params.bulletsHeading) : undefined;
+  const bullets = params.bullets?.map((bullet) => escapeHtml(bullet));
 
   const safeCtaUrl = params.ctaUrl.startsWith("https://") || params.ctaUrl.startsWith("http://")
     ? params.ctaUrl
     : `${process.env.NEXT_PUBLIC_APP_URL}/login`;
   const ctaUrl = safeCtaUrl.replace(/"/g, "&quot;");
+
+  const bulletsSection =
+    bullets && bullets.length > 0
+      ? `
+                <tr>
+                  <td>
+                    ${bulletsHeading ? `<p style="font-family: ${FONT_STACK}; font-size: 15px; color: #0f172a; font-weight: 600; line-height: 1.6; margin: 0 0 12px;">${bulletsHeading}</p>` : ""}
+                    ${bullets
+                      .map(
+                        (bullet) =>
+                          `<p style="font-family: ${FONT_STACK}; font-size: 15px; color: #64748b; line-height: 1.6; margin: 0 0 8px;"><span style="color:#d93025;">&bull;</span>&nbsp;&nbsp;${bullet}</p>`
+                      )
+                      .join("\n                    ")}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 28px;"></td>
+                </tr>`
+      : "";
 
   const noteRow = note
     ? `
@@ -77,7 +101,7 @@ export function renderEmail(params: {
                 </tr>
                 <tr>
                   <td style="padding-top: 28px;"></td>
-                </tr>${noteRow}
+                </tr>${bulletsSection}${noteRow}
               </table>
             </td>
           </tr>
