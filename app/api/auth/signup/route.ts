@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
   const status = role === "coach" ? "pending" : "active";
 
-  const { error: profileError } = await supabase.from("profiles").insert({
+  const { error: profileError } = await supabaseAdmin.from("profiles").insert({
     id: authData.user.id,
     email,
     full_name,
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (role === "student") {
-    const { error: studentError } = await supabase.from("students").insert({
+    const { error: studentError } = await supabaseAdmin.from("students").insert({
       profile_id: authData.user.id,
       email,
       full_name,
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (role === "parent") {
-    const { error: parentError } = await supabase.from("parents").insert({
+    const { error: parentError } = await supabaseAdmin.from("parents").insert({
       profile_id: authData.user.id,
       student_id: student!.id,
       relationship,
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (role === "coach") {
-    const { error: coachError } = await supabase.from("coaches").insert({
+    const { error: coachError } = await supabaseAdmin.from("coaches").insert({
       profile_id: authData.user.id,
       university,
       division,
