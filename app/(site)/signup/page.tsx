@@ -43,15 +43,44 @@ function formatPhone(value: string) {
 
 function InputField({
   label,
+  showToggle,
+  onToggle,
   ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  label: string;
+  showToggle?: boolean;
+  onToggle?: () => void;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  if (showToggle === undefined) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-semibold text-hsp-dark">{label}</label>
+        <input
+          {...props}
+          className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-hsp-dark">{label}</label>
-      <input
-        {...props}
-        className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
-      />
+      <div className="relative">
+        <input
+          {...props}
+          type={props.type === "password" ? (showToggle ? "text" : "password") : props.type}
+          className="w-full bg-hsp-card rounded-lg px-4 py-3 pr-12 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
+        />
+        <button
+          type="button"
+          onClick={onToggle}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-hsp-gray hover:text-hsp-dark transition-colors duration-150 text-xs font-semibold select-none"
+          aria-label={showToggle ? "Hide password" : "Show password"}
+        >
+          {showToggle ? "Hide" : "Show"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -86,6 +115,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [accountType, setAccountType] = useState<AccountType | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
@@ -300,6 +330,8 @@ export default function SignUpPage() {
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
+                  showToggle={showPassword}
+                  onToggle={() => setShowPassword((v) => !v)}
                 />
                 <SelectField
                   label="Grade"
@@ -424,6 +456,8 @@ export default function SignUpPage() {
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
+                  showToggle={showPassword}
+                  onToggle={() => setShowPassword((v) => !v)}
                 />
                 <InputField
                   label="University Name"
