@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "High School Prospect | HSP",
   description: "Baseball recruiting platform for high school prospects",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
