@@ -274,7 +274,7 @@ export default function SignUpPage() {
           <h2 className="text-xl font-bold text-hsp-dark text-center mb-8">
             I am a…
           </h2>
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
             {ACCOUNT_CARDS.map((card) => (
               <button
                 key={card.id}
