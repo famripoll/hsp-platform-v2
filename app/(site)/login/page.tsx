@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-client";
 
@@ -16,7 +15,6 @@ const RESEND_DELAY_MS = 30000;
 type Phase = "email" | "password" | "otp";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [phase, setPhase] = useState<Phase>("email");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -122,7 +120,7 @@ export default function LoginPage() {
           return;
         }
 
-        router.push("/dashboard/coach");
+        window.location.href = "/dashboard/coach";
         return;
       }
 
@@ -144,7 +142,7 @@ export default function LoginPage() {
         }
 
         localStorage.setItem("viewerRole", "parent");
-        router.push("/dashboard/student");
+        window.location.href = "/dashboard/student";
         return;
       }
 
@@ -157,7 +155,7 @@ export default function LoginPage() {
         coach: "/dashboard/coach",
       };
 
-      router.push(dashboardMap[profile.role] ?? "/");
+      window.location.href = dashboardMap[profile.role] ?? "/";
     } catch {
       setError("Invalid email or password");
     } finally {
@@ -201,7 +199,7 @@ export default function LoginPage() {
       }
 
       localStorage.setItem("viewerRole", "parent");
-      router.push("/dashboard/student");
+      window.location.href = "/dashboard/student";
     } catch {
       setError(OTP_ERROR_MSG);
     } finally {

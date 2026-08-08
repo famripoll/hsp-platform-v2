@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/dashboard/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
     ];
   },
 };
