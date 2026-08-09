@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { useActiveThread } from "@/app/hooks/useActiveThread";
 
 const BACK_TO_TOP_THRESHOLD = 400; // px — scroll distance before the back-to-top button appears
 
@@ -38,6 +39,12 @@ function useBackToTop() {
 
 export default function BackToTopButton() {
   const backToTopVisible = useBackToTop();
+  const threadOpen = useActiveThread();
+
+  // The button only overlaps the message thread's reply bar on mobile, so
+  // the thread-open condition is applied to the base (mobile) classes only;
+  // sm: and above always mirror backToTopVisible, restoring desktop behavior.
+  const visible = backToTopVisible && !threadOpen;
 
   return (
     <button
@@ -45,9 +52,13 @@ export default function BackToTopButton() {
       onClick={scrollToTop}
       aria-label="Back to top"
       className={`fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-hsp-red text-white shadow-lg transition-all duration-300 hover:opacity-90 ${
-        backToTopVisible
+        visible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-2 pointer-events-none"
+      } ${
+        backToTopVisible
+          ? "sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
+          : "sm:opacity-0 sm:translate-y-2 sm:pointer-events-none"
       }`}
     >
       <ArrowUp className="h-5 w-5" />

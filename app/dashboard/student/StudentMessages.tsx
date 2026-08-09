@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import { setThreadOpen } from "@/app/hooks/useActiveThread";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 
 type Message = {
@@ -181,6 +182,13 @@ export default function StudentMessages({ canReply }: Props) {
 
     return list;
   }, [messages, coachInfo]);
+
+  useEffect(() => {
+    setThreadOpen(!!selectedCoachId);
+    return () => {
+      setThreadOpen(false);
+    };
+  }, [selectedCoachId]);
 
   useEffect(() => {
     const coachParam = searchParams.get("coach");
