@@ -93,6 +93,8 @@ export async function POST(request: NextRequest) {
           title: notificationTitle,
           body: "A prospect replied to your message.",
           link_url: `/dashboard/coach?tab=messages&student=${studentRow.id}`,
+          conversation_key: studentRow.id,
+          sender_name: studentFullName ?? null,
         });
 
       if (!notificationError) {

@@ -110,6 +110,8 @@ export async function POST(request: NextRequest) {
             ? "A college coach sent you a message."
             : `A college coach sent ${studentFirstName || "your athlete"} a message.`,
         link_url: `/dashboard/student?tab=messages&coach=${coachRow.id}`,
+        conversation_key: coachRow.id,
+        sender_name: coachFullName ?? null,
       }));
 
       const { error: notificationsError } = await supabaseAdmin
