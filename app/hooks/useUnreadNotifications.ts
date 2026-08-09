@@ -33,9 +33,9 @@ async function performRefresh(): Promise<void> {
       return;
     }
 
-    const { count, error } = await supabase
+    const { data, error } = await supabase
       .from("notifications")
-      .select("id", { count: "exact", head: true })
+      .select("id, type, conversation_key")
       .eq("user_id", user.id)
       .is("read_at", null);
 
@@ -44,7 +44,18 @@ async function performRefresh(): Promise<void> {
       return;
     }
 
-    setSharedUnreadCount(count ?? 0);
+    const conversationKeys = new Set<string>();
+    let individualCount = 0;
+
+    for (const row of data ?? []) {
+      if (row.type === "new_message" && row.conversation_key !== null) {
+        conversationKeys.add(row.conversation_key);
+      } else {
+        individualCount += 1;
+      }
+    }
+
+    setSharedUnreadCount(conversationKeys.size + individualCount);
   } catch {
     setSharedUnreadCount(0);
   }
