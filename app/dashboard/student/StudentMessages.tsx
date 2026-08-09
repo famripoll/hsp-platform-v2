@@ -70,6 +70,7 @@ export default function StudentMessages({ canReply }: Props) {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
+  const [sentCount, setSentCount] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -232,7 +233,7 @@ export default function StudentMessages({ canReply }: Props) {
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
     };
-  }, [selectedCoachId, loading]);
+  }, [selectedCoachId, loading, sentCount]);
 
   async function handleReply() {
     const trimmed = replyText.trim();
@@ -257,6 +258,7 @@ export default function StudentMessages({ canReply }: Props) {
 
       setReplyText("");
       await fetchData();
+      setSentCount((c) => c + 1);
     } catch {
       setReplyError("Failed to send message.");
     } finally {
