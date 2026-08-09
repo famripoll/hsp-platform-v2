@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { Bell, MessageSquare } from "lucide-react";
@@ -14,6 +14,16 @@ type Notification = {
   link_url: string | null;
   read_at: string | null;
   created_at: string;
+  conversation_key: string | null;
+  sender_name: string | null;
+};
+
+type NotificationGroup = {
+  key: string;
+  items: Notification[];
+  latest: Notification;
+  unreadCount: number;
+  isUnread: boolean;
 };
 
 function formatRelativeTime(iso: string): string {
@@ -61,7 +71,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
 
     const { data } = await supabase
       .from("notifications")
-      .select("id, user_id, type, title, body, link_url, read_at, created_at")
+      .select("id, user_id, type, title, body, link_url, read_at, created_at, conversation_key, sender_name")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
@@ -76,25 +86,63 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
 
   const unreadCount = notifications.filter((n) => !n.read_at).length;
 
-  async function handleRowClick(notification: Notification) {
-    if (!notification.read_at) {
+  const groups = useMemo<NotificationGroup[]>(() => {
+    const map = new Map<string, Notification[]>();
+
+    for (const n of notifications) {
+      const groupable = n.type === "new_message" && n.conversation_key !== null;
+      const key = groupable ? n.conversation_key! : n.id;
+      const existing = map.get(key);
+      if (existing) {
+        existing.push(n);
+      } else {
+        map.set(key, [n]);
+      }
+    }
+
+    const result: NotificationGroup[] = Array.from(map.entries()).map(([key, items]) => {
+      const latest = items.reduce((a, b) =>
+        new Date(b.created_at).getTime() > new Date(a.created_at).getTime() ? b : a
+      );
+      const groupUnreadCount = items.filter((n) => !n.read_at).length;
+
+      return {
+        key,
+        items,
+        latest,
+        unreadCount: groupUnreadCount,
+        isUnread: groupUnreadCount > 0,
+      };
+    });
+
+    result.sort(
+      (a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime()
+    );
+
+    return result;
+  }, [notifications]);
+
+  async function handleRowClick(group: NotificationGroup) {
+    const unreadIds = group.items.filter((n) => !n.read_at).map((n) => n.id);
+
+    if (unreadIds.length > 0) {
       const supabase = createClient();
       await supabase
         .from("notifications")
         .update({ read_at: new Date().toISOString() })
-        .eq("id", notification.id);
+        .in("id", unreadIds);
 
       setNotifications((prev) =>
         prev.map((n) =>
-          n.id === notification.id ? { ...n, read_at: new Date().toISOString() } : n
+          unreadIds.includes(n.id) ? { ...n, read_at: new Date().toISOString() } : n
         )
       );
 
       onReadChange?.();
     }
 
-    if (notification.link_url) {
-      router.push(notification.link_url);
+    if (group.latest.link_url) {
+      router.push(group.latest.link_url);
     }
   }
 
@@ -162,15 +210,19 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
       </div>
 
       <div className="flex flex-col">
-        {notifications.map((n) => {
-          const Icon = iconForType(n.type);
-          const isUnread = !n.read_at;
+        {groups.map((group) => {
+          const Icon = iconForType(group.latest.type);
+          const isUnread = group.isUnread;
+          const showGroupTitle = group.unreadCount > 1 && group.latest.sender_name !== null;
+          const titleText = showGroupTitle
+            ? `${group.latest.sender_name} · ${group.unreadCount} new messages`
+            : group.latest.title;
 
           return (
             <button
-              key={n.id}
+              key={group.key}
               type="button"
-              onClick={() => handleRowClick(n)}
+              onClick={() => handleRowClick(group)}
               className="flex items-start gap-3 py-3 px-2 -mx-2 rounded-lg text-left border-b border-gray-100 last:border-0 transition-colors hover:bg-gray-50"
               style={{ backgroundColor: isUnread ? "#fef2f2" : "transparent" }}
             >
@@ -191,15 +243,15 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
                       />
                     )}
                     <span className="font-bold text-sm truncate" style={{ color: "#0f172a" }}>
-                      {n.title}
+                      {titleText}
                     </span>
                   </div>
                   <span className="text-[10px] shrink-0" style={{ color: "#64748b" }}>
-                    {formatRelativeTime(n.created_at)}
+                    {formatRelativeTime(group.latest.created_at)}
                   </span>
                 </div>
                 <p className="text-sm mt-0.5" style={{ color: "#64748b" }}>
-                  {n.body}
+                  {group.latest.body}
                 </p>
               </div>
             </button>
