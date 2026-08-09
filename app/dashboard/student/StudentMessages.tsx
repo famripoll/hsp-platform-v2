@@ -71,6 +71,7 @@ export default function StudentMessages({ canReply }: Props) {
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedCoachRef = useRef<string | null>(null);
 
@@ -205,7 +206,9 @@ export default function StudentMessages({ canReply }: Props) {
     let rafId2 = 0;
     const rafId1 = requestAnimationFrame(() => {
       rafId2 = requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+        if (listRef.current) {
+          listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
       });
     });
 
@@ -330,7 +333,7 @@ export default function StudentMessages({ canReply }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 pt-2 pb-56 sm:pb-44">
+        <div ref={listRef} className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 pt-2 pb-56 sm:pb-44">
           {threadMessages.map((m) => {
             const isStudent = m.sender_role === "student";
             return (
