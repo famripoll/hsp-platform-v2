@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import { setThreadOpen } from "@/app/hooks/useActiveThread";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 
 type Message = {
@@ -68,7 +69,10 @@ export default function CoachMessages() {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
+  const [sentCount, setSentCount] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedStudentRef = useRef<string | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -171,6 +175,13 @@ export default function CoachMessages() {
   }, [messages, studentNames, studentPhotos]);
 
   useEffect(() => {
+    setThreadOpen(!!selectedStudentId);
+    return () => {
+      setThreadOpen(false);
+    };
+  }, [selectedStudentId]);
+
+  useEffect(() => {
     const studentParam = searchParams.get("student");
     if (!studentParam || autoOpenedStudentRef.current === studentParam) return;
 
@@ -195,7 +206,9 @@ export default function CoachMessages() {
     let rafId2 = 0;
     const rafId1 = requestAnimationFrame(() => {
       rafId2 = requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        if (listRef.current) {
+          listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
       });
     });
 
@@ -204,6 +217,22 @@ export default function CoachMessages() {
       cancelAnimationFrame(rafId2);
     };
   }, [threadMessages, selectedStudentId, loading]);
+
+  useEffect(() => {
+    if (loading || !selectedStudentId) return;
+
+    let rafId2 = 0;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
+  }, [selectedStudentId, loading, sentCount]);
 
   async function handleReply() {
     const trimmed = replyText.trim();
@@ -228,6 +257,7 @@ export default function CoachMessages() {
 
       setReplyText("");
       await fetchData();
+      setSentCount((c) => c + 1);
     } catch {
       setReplyError("Failed to send message.");
     } finally {
@@ -270,7 +300,7 @@ export default function CoachMessages() {
     const activeConversation = conversations.find((c) => c.studentId === selectedStudentId);
 
     return (
-      <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col">
+      <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col scroll-mt-20 sm:scroll-mt-24">
         <button
           type="button"
           onClick={() => {
@@ -305,7 +335,7 @@ export default function CoachMessages() {
           </h3>
         </div>
 
-        <div className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 py-2">
+        <div ref={listRef} className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 pt-2 pb-56 sm:pb-44">
           {threadMessages.map((m) => {
             const isCoach = m.sender_role === "coach";
             return (
@@ -331,7 +361,7 @@ export default function CoachMessages() {
           <div ref={bottomRef} />
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">
           <textarea
             value={replyText}
             onChange={(e) => {
@@ -341,7 +371,7 @@ export default function CoachMessages() {
             maxLength={MAX_REPLY_LENGTH}
             rows={3}
             placeholder="Write your message..."
-            className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
+            className="border border-gray-200 rounded-lg px-3 py-2 w-full text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
           />
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
