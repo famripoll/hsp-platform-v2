@@ -351,7 +351,7 @@ export default function StudentMessages({ canReply }: Props) {
                 maxLength={MAX_REPLY_LENGTH}
                 rows={3}
                 placeholder="Write your message..."
-                className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
+                className="border border-gray-200 rounded-lg px-3 py-2 w-full text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
               />
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
