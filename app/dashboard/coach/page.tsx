@@ -812,7 +812,7 @@ function CoachDashboardContent() {
                       const params = new URLSearchParams(searchParams.toString())
                       params.set('tab', tab.value)
                       params.delete('student')
-                      router.replace(`?${params.toString()}`)
+                      router.replace(`?${params.toString()}`, { scroll: false })
                     }}
                     className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                       activeTab === tab.value
