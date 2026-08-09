@@ -296,7 +296,7 @@ export default function StudentMessages({ canReply }: Props) {
     const activeConversation = conversations.find((c) => c.coachId === selectedCoachId);
 
     return (
-      <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col">
+      <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col scroll-mt-20 sm:scroll-mt-24">
         <button
           type="button"
           onClick={() => {
