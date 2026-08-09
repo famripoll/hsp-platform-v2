@@ -71,6 +71,7 @@ export default function StudentMessages({ canReply }: Props) {
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedCoachRef = useRef<string | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -214,6 +215,22 @@ export default function StudentMessages({ canReply }: Props) {
     };
   }, [threadMessages, selectedCoachId, loading]);
 
+  useEffect(() => {
+    if (loading || !selectedCoachId) return;
+
+    let rafId2 = 0;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
+  }, [selectedCoachId, loading]);
+
   async function handleReply() {
     const trimmed = replyText.trim();
     if (!trimmed || !selectedCoachId || sending) return;
@@ -279,7 +296,7 @@ export default function StudentMessages({ canReply }: Props) {
     const activeConversation = conversations.find((c) => c.coachId === selectedCoachId);
 
     return (
-      <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col">
+      <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col">
         <button
           type="button"
           onClick={() => {
