@@ -330,7 +330,7 @@ export default function StudentMessages({ canReply }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 py-2">
+        <div className="flex flex-col gap-3 max-h-[420px] overflow-y-auto px-1 pt-2 pb-56 sm:pb-44">
           {threadMessages.map((m) => {
             const isStudent = m.sender_role === "student";
             return (
@@ -353,7 +353,7 @@ export default function StudentMessages({ canReply }: Props) {
               </div>
             );
           })}
-          <div ref={bottomRef} />
+          <div ref={bottomRef} className="scroll-mb-56 sm:scroll-mb-44" />
         </div>
 
         <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">
