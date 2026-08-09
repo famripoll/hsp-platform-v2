@@ -339,7 +339,7 @@ export default function StudentMessages({ canReply }: Props) {
           <div ref={bottomRef} />
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">
           {canReply ? (
             <>
               <textarea
