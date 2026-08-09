@@ -205,7 +205,7 @@ export default function StudentMessages({ canReply }: Props) {
     let rafId2 = 0;
     const rafId1 = requestAnimationFrame(() => {
       rafId2 = requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        bottomRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
       });
     });
 
