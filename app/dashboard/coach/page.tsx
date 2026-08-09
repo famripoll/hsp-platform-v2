@@ -807,7 +807,13 @@ function CoachDashboardContent() {
                 {COACH_TABS.map((tab) => (
                   <button
                     key={tab.value}
-                    onClick={() => setActiveTab(tab.value)}
+                    onClick={() => {
+                      setActiveTab(tab.value)
+                      const params = new URLSearchParams(searchParams.toString())
+                      params.set('tab', tab.value)
+                      params.delete('student')
+                      router.replace(`?${params.toString()}`)
+                    }}
                     className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                       activeTab === tab.value
                         ? 'border-[#d93025] text-[#d93025] font-semibold'

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
@@ -115,6 +115,7 @@ type ActivityItem = {
 };
 
 export default function StudentTabs({ student, initialTab = "overview", initialStatsTab }: Props) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<TabValue>(
     VALID_TABS.includes(initialTab) ? (initialTab as TabValue) : "overview"
@@ -201,7 +202,13 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
           {TABS.map((tab) => (
             <button
               key={tab.value}
-              onClick={() => setActiveSection(tab.value)}
+              onClick={() => {
+                setActiveSection(tab.value);
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("tab", tab.value);
+                params.delete("coach");
+                router.replace(`?${params.toString()}`);
+              }}
               className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                 activeSection === tab.value
                   ? "border-[#d93025] text-[#d93025] font-semibold"
