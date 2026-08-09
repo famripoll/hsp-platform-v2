@@ -70,7 +70,6 @@ export default function CoachMessages() {
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
   const [sentCount, setSentCount] = useState(0);
-  const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedStudentRef = useRef<string | null>(null);
@@ -358,7 +357,6 @@ export default function CoachMessages() {
               </div>
             );
           })}
-          <div ref={bottomRef} />
         </div>
 
         <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">

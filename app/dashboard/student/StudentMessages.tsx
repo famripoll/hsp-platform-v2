@@ -72,7 +72,6 @@ export default function StudentMessages({ canReply }: Props) {
   const [sending, setSending] = useState(false);
   const [replyError, setReplyError] = useState("");
   const [sentCount, setSentCount] = useState(0);
-  const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedCoachRef = useRef<string | null>(null);
@@ -366,7 +365,6 @@ export default function StudentMessages({ canReply }: Props) {
               </div>
             );
           })}
-          <div ref={bottomRef} className="scroll-mb-56 sm:scroll-mb-44" />
         </div>
 
         <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">
