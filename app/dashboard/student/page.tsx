@@ -4,6 +4,7 @@ import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import StudentTabs from "./StudentTabs";
 import EditProfileButton from "./EditProfileButton";
 import VerifyEmailBanner from "./VerifyEmailBanner";
+import CollapsibleContacts from "./CollapsibleContacts";
 import {
   MapPin,
   Mail,
@@ -340,6 +341,7 @@ export default async function StudentDashboardPage({
                   </p>
                 </div>
 
+                <CollapsibleContacts>
                 {/* Student */}
                 <div className="border-t border-gray-100 pt-4">
                   <p
@@ -518,6 +520,7 @@ export default async function StudentDashboardPage({
                     ))}
                   </div>
                 )}
+                </CollapsibleContacts>
 
               </div>
             </div>
