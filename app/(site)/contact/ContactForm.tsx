@@ -16,6 +16,7 @@ declare global {
         options: Record<string, unknown>
       ) => string;
       reset: (widgetId?: string) => void;
+      remove: (widgetId?: string) => void;
       getResponse: (widgetId?: string) => string | undefined;
     };
   }
@@ -39,7 +40,11 @@ export default function ContactForm() {
 
   useEffect(() => {
     if (status === "success") {
-      successRef.current?.scrollIntoView({ block: "start" });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          successRef.current?.scrollIntoView({ block: "start" });
+        });
+      });
     }
   }, [status]);
 
@@ -54,12 +59,14 @@ export default function ContactForm() {
     });
   };
 
-  const safeResetTurnstile = () => {
+  const teardownTurnstile = () => {
     try {
-      window.turnstile?.reset(widgetIdRef.current);
+      window.turnstile?.remove(widgetIdRef.current);
     } catch {
-      // widget container may already be gone (e.g. success view unmounted it)
+      // widget id may already be stale — nothing to clean up
     }
+    widgetIdRef.current = undefined;
+    tokenRef.current = "";
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -85,21 +92,20 @@ export default function ContactForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        tokenRef.current = "";
         setErrorMessage(data.error || "Something went wrong. Please try again later.");
         setStatus("error");
-        safeResetTurnstile();
+        teardownTurnstile();
+        renderTurnstile();
         return;
       }
 
-      tokenRef.current = "";
       setStatus("success");
-      safeResetTurnstile();
+      teardownTurnstile();
     } catch {
-      tokenRef.current = "";
       setErrorMessage("Something went wrong. Please try again later.");
       setStatus("error");
-      safeResetTurnstile();
+      teardownTurnstile();
+      renderTurnstile();
     }
   };
 
