@@ -486,6 +486,27 @@ Your continued use of the Platform after any updated Privacy Policy becomes effe
   },
   {
     number: 18,
+    title: "Cloudflare Turnstile",
+    body: `Our contact form is protected by Cloudflare Turnstile, a security service that helps us verify that form submissions are coming from a real person rather than an automated bot.
+
+When you submit the contact form, Cloudflare may collect certain information about your browser and device, such as your IP address and technical characteristics of your device, in order to perform this verification.
+
+This information is used solely for security and abuse-prevention purposes and is not used by us for advertising or profiling.`,
+    extra: (
+      <p className="text-hsp-gray text-sm md:text-base leading-relaxed">
+        For more information about how Cloudflare processes this information, please review the{" "}
+        <a
+          href="https://www.cloudflare.com/application-services/terms/turnstile-privacy-addendum/"
+          className="text-hsp-red hover:underline"
+        >
+          Cloudflare Turnstile Privacy Policy Addendum
+        </a>
+        .
+      </p>
+    ),
+  },
+  {
+    number: 19,
     title: "Contact Information",
     body: `If you have any questions, concerns, or requests regarding this Privacy Policy or our privacy practices, please contact us:`,
     extra: (

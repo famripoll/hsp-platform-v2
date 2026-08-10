@@ -128,10 +128,12 @@ export async function sendEmail({
   to,
   subject,
   html,
+  replyTo,
 }: {
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
 }): Promise<boolean> {
   try {
     const response = await fetch("https://api.resend.com/emails", {
@@ -145,6 +147,7 @@ export async function sendEmail({
         to: [to],
         subject,
         html,
+        ...(replyTo !== undefined ? { reply_to: [replyTo] } : {}),
       }),
     });
 
