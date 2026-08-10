@@ -40,13 +40,19 @@ export default function ContactForm() {
   const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (status === "success") {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          successRef.current?.scrollIntoView({ block: "start" });
-        });
+    if (status !== "success") return;
+
+    let rafId2 = 0;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        successRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
-    }
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
   }, [status]);
 
   const renderTurnstile = () => {
@@ -153,6 +159,15 @@ export default function ContactForm() {
     }
   };
 
+  const handleSendAnother = () => {
+    setStatus("idle");
+    setFullName("");
+    setEmail("");
+    setSchool("");
+    setMessage("");
+    setErrorMessage("");
+  };
+
   if (status === "success") {
     return (
       <div
@@ -163,6 +178,13 @@ export default function ContactForm() {
           Thanks for reaching out! We&apos;ve received your message and someone from our team
           will get back to you shortly.
         </p>
+        <button
+          type="button"
+          onClick={handleSendAnother}
+          className="w-full sm:w-auto self-start border border-hsp-red text-hsp-red py-3 px-6 rounded-xl font-semibold text-sm hover:bg-hsp-red hover:text-white transition-colors duration-200 cursor-pointer"
+        >
+          Send another message
+        </button>
       </div>
     );
   }
