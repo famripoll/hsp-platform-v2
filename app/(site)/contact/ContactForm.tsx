@@ -37,7 +37,6 @@ export default function ContactForm() {
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | undefined>(undefined);
   const tokenResolveRef = useRef<((token: string) => void) | null>(null);
-  const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status !== "success") return;
@@ -45,7 +44,7 @@ export default function ContactForm() {
     let rafId2 = 0;
     const rafId1 = requestAnimationFrame(() => {
       rafId2 = requestAnimationFrame(() => {
-        successRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     });
 
@@ -170,10 +169,7 @@ export default function ContactForm() {
 
   if (status === "success") {
     return (
-      <div
-        ref={successRef}
-        className="flex flex-col gap-5 scroll-mt-20 sm:scroll-mt-24 w-full min-w-0"
-      >
+      <div className="flex flex-col gap-5 scroll-mt-20 sm:scroll-mt-24 w-full min-w-0">
         <p className="text-sm text-hsp-dark break-words">
           Thanks for reaching out! We&apos;ve received your message and someone from our team
           will get back to you shortly.
