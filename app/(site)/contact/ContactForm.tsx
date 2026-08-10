@@ -6,7 +6,7 @@ import Script from "next/script";
 const MAX_CHARS = 300;
 
 const inputClass =
-  "w-full bg-hsp-card text-hsp-dark placeholder:text-hsp-gray rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-hsp-red";
+  "w-full bg-hsp-card text-hsp-dark placeholder:text-hsp-gray rounded-xl px-4 py-3 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-hsp-red";
 
 declare global {
   interface Window {
@@ -54,6 +54,14 @@ export default function ContactForm() {
     });
   };
 
+  const safeResetTurnstile = () => {
+    try {
+      window.turnstile?.reset(widgetIdRef.current);
+    } catch {
+      // widget container may already be gone (e.g. success view unmounted it)
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("submitting");
@@ -77,21 +85,21 @@ export default function ContactForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        window.turnstile?.reset(widgetIdRef.current);
         tokenRef.current = "";
         setErrorMessage(data.error || "Something went wrong. Please try again later.");
         setStatus("error");
+        safeResetTurnstile();
         return;
       }
 
-      window.turnstile?.reset(widgetIdRef.current);
       tokenRef.current = "";
       setStatus("success");
+      safeResetTurnstile();
     } catch {
-      window.turnstile?.reset(widgetIdRef.current);
       tokenRef.current = "";
       setErrorMessage("Something went wrong. Please try again later.");
       setStatus("error");
+      safeResetTurnstile();
     }
   };
 
