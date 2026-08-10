@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Script from "next/script";
 
 const MAX_CHARS = 300;
@@ -35,6 +35,13 @@ export default function ContactForm() {
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | undefined>(undefined);
   const tokenRef = useRef("");
+  const successRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (status === "success") {
+      successRef.current?.scrollIntoView({ block: "start" });
+    }
+  }, [status]);
 
   const renderTurnstile = () => {
     if (!window.turnstile || !turnstileContainerRef.current) return;
@@ -90,8 +97,11 @@ export default function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="flex flex-col gap-5">
-        <p className="text-sm text-hsp-dark">
+      <div
+        ref={successRef}
+        className="flex flex-col gap-5 scroll-mt-20 sm:scroll-mt-24 w-full min-w-0"
+      >
+        <p className="text-sm text-hsp-dark break-words">
           Thanks for reaching out! We&apos;ve received your message and someone from our team
           will get back to you shortly.
         </p>

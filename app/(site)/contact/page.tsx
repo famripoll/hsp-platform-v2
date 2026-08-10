@@ -22,7 +22,7 @@ export default function ContactPage() {
         </div>
 
         {/* Right — Image panel (desktop only) */}
-        <div className="hidden md:block flex-1 relative rounded-2xl overflow-hidden bg-[url('/player-hero.webp')] bg-cover bg-center">
+        <div className="hidden md:block flex-1 relative rounded-2xl overflow-hidden bg-[url('/player-hero.webp')] bg-cover bg-center md:min-h-[620px] lg:min-h-[680px]">
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-hsp-dark/70" />
           {/* Phone mockup */}
