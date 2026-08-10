@@ -15,6 +15,7 @@ declare global {
         container: string | HTMLElement,
         options: Record<string, unknown>
       ) => string;
+      execute: (widgetId?: string) => void;
       reset: (widgetId?: string) => void;
       remove: (widgetId?: string) => void;
       getResponse: (widgetId?: string) => string | undefined;
@@ -35,7 +36,7 @@ export default function ContactForm() {
 
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | undefined>(undefined);
-  const tokenRef = useRef("");
+  const tokenResolveRef = useRef<((token: string) => void) | null>(null);
   const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,8 +54,15 @@ export default function ContactForm() {
     widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
       sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
       size: "invisible",
+      appearance: "execute",
       callback: (token: string) => {
-        tokenRef.current = token;
+        tokenResolveRef.current?.(token);
+      },
+      "error-callback": () => {
+        tokenResolveRef.current?.("");
+      },
+      "expired-callback": () => {
+        tokenResolveRef.current?.("");
       },
     });
   };
@@ -66,7 +74,35 @@ export default function ContactForm() {
       // widget id may already be stale — nothing to clean up
     }
     widgetIdRef.current = undefined;
-    tokenRef.current = "";
+  };
+
+  const getTurnstileToken = () => {
+    return new Promise<string>((resolve) => {
+      if (!window.turnstile) {
+        resolve("");
+        return;
+      }
+      if (!widgetIdRef.current) {
+        renderTurnstile();
+      }
+      if (!widgetIdRef.current) {
+        resolve("");
+        return;
+      }
+
+      let settled = false;
+      const settle = (token: string) => {
+        if (settled) return;
+        settled = true;
+        tokenResolveRef.current = null;
+        clearTimeout(timeoutId);
+        resolve(token);
+      };
+
+      tokenResolveRef.current = settle;
+      const timeoutId = setTimeout(() => settle(""), 15000);
+      window.turnstile.execute(widgetIdRef.current);
+    });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -75,7 +111,15 @@ export default function ContactForm() {
     setErrorMessage("");
 
     try {
-      const token = tokenRef.current || window.turnstile?.getResponse(widgetIdRef.current) || "";
+      const token = await getTurnstileToken();
+
+      if (!token) {
+        setErrorMessage("Verification failed. Please try again.");
+        setStatus("error");
+        teardownTurnstile();
+        renderTurnstile();
+        return;
+      }
 
       const response = await fetch("/api/contact", {
         method: "POST",
