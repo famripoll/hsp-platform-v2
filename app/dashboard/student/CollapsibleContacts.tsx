@@ -22,7 +22,7 @@ export default function CollapsibleContacts({ children }: { children: React.Reac
           style={{ color: "#d93025" }}
         />
       </button>
-      <div className={`${open ? "block" : "hidden"} sm:block`}>{children}</div>
+      <div className={`${open ? "flex" : "hidden"} sm:flex flex-col gap-4`}>{children}</div>
     </>
   );
 }
