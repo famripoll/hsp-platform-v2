@@ -373,7 +373,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                     </p>
                   </div>
                   <Link
-                    href="/pricing"
+                    href="/dashboard/upgrade"
                     className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
                     style={{ backgroundColor: "#d93025" }}
                   >
@@ -537,7 +537,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   Unlock full access — upgrade your plan to upload photos and videos.
                 </p>
                 <Link
-                  href="/pricing"
+                  href="/dashboard/upgrade"
                   className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
                   style={{ backgroundColor: "#d93025" }}
                 >
