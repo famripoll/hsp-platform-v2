@@ -13,7 +13,19 @@
 			// Self-reference service binding, the service name must match the worker name
 			// see https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "hsp-staging"
+			"service": "hsp-staging",
+			"environment": "production"
 		}
-	]
+	],
+	"routes": [
+		{
+			"pattern": "staging.highschoolprospect.com",
+			"zone_name": "highschoolprospect.com",
+			"custom_domain": true
+		}
+	],
+	"vars": {
+		"NEXT_PUBLIC_PADDLE_CLIENT_TOKEN": "",
+		"NEXT_PUBLIC_TURNSTILE_SITE_KEY": ""
+	}
 }
