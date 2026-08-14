@@ -550,7 +550,9 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
       )}
 
       {/* ── MESSAGES TAB ── */}
-      {activeSection === "messages" && <StudentMessages canReply={canReply} />}
+      {activeSection === "messages" && (
+        <StudentMessages canReply={canReply} subscriptionStatus={student.subscription_status ?? "free"} />
+      )}
 
       {/* ── NOTIFICATIONS TAB ── */}
       {activeSection === "notifications" && (

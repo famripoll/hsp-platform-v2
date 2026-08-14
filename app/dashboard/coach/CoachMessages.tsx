@@ -20,17 +20,22 @@ type StudentInfo = {
   id: string;
   full_name: string | null;
   photo_url: string | null;
+  subscription_status: string | null;
 };
 
 type Conversation = {
   studentId: string;
   studentName: string;
   photoUrl: string | null;
+  subscriptionStatus: string | null;
   lastBody: string;
   lastCreatedAt: string;
 };
 
 const MAX_REPLY_LENGTH = 2000;
+
+const LOCKED_MSG =
+  "This student does not have an active subscription. Please wait for their Parent/Guardian to select a payment plan.";
 
 function getInitials(name: string | null): string {
   if (!name) return "?";
@@ -65,6 +70,7 @@ export default function CoachMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [studentNames, setStudentNames] = useState<Record<string, string>>({});
   const [studentPhotos, setStudentPhotos] = useState<Record<string, string>>({});
+  const [studentSubscriptions, setStudentSubscriptions] = useState<Record<string, string | null>>({});
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
@@ -113,16 +119,19 @@ export default function CoachMessages() {
     if (studentIds.length > 0) {
       const { data: studentRows } = await supabase
         .from("students")
-        .select("id, full_name, photo_url")
+        .select("id, full_name, photo_url, subscription_status")
         .in("id", studentIds);
 
       const studentList = (studentRows ?? []) as StudentInfo[];
 
       const nameMap: Record<string, string> = {};
+      const subscriptionMap: Record<string, string | null> = {};
       for (const s of studentList) {
         nameMap[s.id] = s.full_name ?? "Unknown Student";
+        subscriptionMap[s.id] = s.subscription_status;
       }
       setStudentNames(nameMap);
+      setStudentSubscriptions(subscriptionMap);
 
       const photoEntries = await Promise.all(
         studentList
@@ -145,6 +154,7 @@ export default function CoachMessages() {
     } else {
       setStudentNames({});
       setStudentPhotos({});
+      setStudentSubscriptions({});
     }
 
     setLoading(false);
@@ -165,13 +175,14 @@ export default function CoachMessages() {
         studentId: m.student_id,
         studentName: studentNames[m.student_id] ?? "Unknown Student",
         photoUrl: studentPhotos[m.student_id] ?? null,
+        subscriptionStatus: studentSubscriptions[m.student_id] ?? null,
         lastBody: m.body,
         lastCreatedAt: m.created_at,
       });
     }
 
     return list;
-  }, [messages, studentNames, studentPhotos]);
+  }, [messages, studentNames, studentPhotos, studentSubscriptions]);
 
   useEffect(() => {
     setThreadOpen(!!selectedStudentId);
@@ -236,6 +247,12 @@ export default function CoachMessages() {
   async function handleReply() {
     const trimmed = replyText.trim();
     if (!trimmed || !selectedStudentId || sending) return;
+
+    const isPaid = studentSubscriptions[selectedStudentId] === "paid";
+    if (!isPaid) {
+      setReplyError(LOCKED_MSG);
+      return;
+    }
 
     setSending(true);
     setReplyError("");

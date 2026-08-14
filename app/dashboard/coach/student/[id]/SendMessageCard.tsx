@@ -5,12 +5,17 @@ import { MessageSquare } from "lucide-react";
 
 const MAX_LENGTH = 2000;
 
+const LOCKED_MSG =
+  "This student does not have an active subscription. Please wait for their Parent/Guardian to select a payment plan.";
+
 type Props = {
   studentId: string;
   studentName: string;
+  subscriptionStatus: string;
 };
 
-export default function SendMessageCard({ studentId, studentName }: Props) {
+export default function SendMessageCard({ studentId, studentName, subscriptionStatus }: Props) {
+  const isPaid = subscriptionStatus === "paid";
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -21,6 +26,12 @@ export default function SendMessageCard({ studentId, studentName }: Props) {
 
   async function handleSend() {
     if (isDisabled) return;
+
+    if (!isPaid) {
+      setStatus("error");
+      setErrorMessage(LOCKED_MSG);
+      return;
+    }
 
     setSending(true);
     setStatus("idle");

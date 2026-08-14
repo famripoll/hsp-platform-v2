@@ -31,9 +31,13 @@ type Conversation = {
 
 type Props = {
   canReply: boolean;
+  subscriptionStatus: string;
 };
 
 const MAX_REPLY_LENGTH = 2000;
+
+const LOCKED_MSG =
+  "Upgrade to a paid subscription to send messages. Please ask your Parent/Guardian to select a payment plan.";
 
 function getInitials(name: string | null): string {
   if (!name) return "?";
@@ -61,7 +65,8 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString();
 }
 
-export default function StudentMessages({ canReply }: Props) {
+export default function StudentMessages({ canReply, subscriptionStatus }: Props) {
+  const isPaid = subscriptionStatus === "paid";
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [studentId, setStudentId] = useState<string | null>(null);
@@ -245,6 +250,11 @@ export default function StudentMessages({ canReply }: Props) {
   async function handleReply() {
     const trimmed = replyText.trim();
     if (!trimmed || !selectedCoachId || sending) return;
+
+    if (!isPaid) {
+      setReplyError(LOCKED_MSG);
+      return;
+    }
 
     setSending(true);
     setReplyError("");

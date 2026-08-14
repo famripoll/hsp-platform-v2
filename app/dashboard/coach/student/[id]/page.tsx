@@ -389,7 +389,11 @@ export default async function CoachStudentProfilePage({
           <div className="md:col-span-2 flex flex-col gap-6">
 
             {/* Send Message Card */}
-            <SendMessageCard studentId={id} studentName={student.full_name ?? "this student"} />
+            <SendMessageCard
+              studentId={id}
+              studentName={student.full_name ?? "this student"}
+              subscriptionStatus={student.subscription_status ?? "free"}
+            />
 
             {/* Stats Card */}
             <StatsToggleCard student={student} />
