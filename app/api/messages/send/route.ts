@@ -52,6 +52,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
 
+    const { data: student } = await supabase
+      .from("students")
+      .select("subscription_status")
+      .eq("id", studentId)
+      .single();
+
+    if (!student || student.subscription_status !== "paid") {
+      return NextResponse.json(
+        { error: "This student does not have an active subscription." },
+        { status: 403 }
+      );
+    }
+
     const { error: insertError } = await supabaseAdmin.from("messages").insert({
       coach_id: coachRow.id,
       student_id: studentId,

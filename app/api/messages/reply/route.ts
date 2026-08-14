@@ -47,12 +47,19 @@ export async function POST(request: NextRequest) {
 
     const { data: studentRow } = await supabase
       .from("students")
-      .select("id")
+      .select("id, subscription_status")
       .eq("profile_id", user.id)
       .single();
 
     if (!studentRow) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    }
+
+    if (studentRow.subscription_status !== "paid") {
+      return NextResponse.json(
+        { error: "This student does not have an active subscription." },
+        { status: 403 }
+      );
     }
 
     const { error: insertError } = await supabaseAdmin.from("messages").insert({
