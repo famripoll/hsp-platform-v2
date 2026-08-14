@@ -1,18 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Script from "next/script";
-
-declare global {
-  interface Window {
-    Paddle?: {
-      Initialize: (options: { token?: string }) => void;
-      Checkout: {
-        open: (options: Record<string, unknown>) => void;
-      };
-    };
-  }
-}
 
 type Plan = "silver" | "gold";
 type Frequency = "monthly" | "6months" | "annual";
@@ -34,19 +22,6 @@ const goldFeatures = [
 const prices: Record<Plan, Record<Frequency, number>> = {
   silver: { monthly: 30, "6months": 170, annual: 320 },
   gold: { monthly: 50, "6months": 290, annual: 580 },
-};
-
-const priceIds: Record<Plan, Record<Frequency, string>> = {
-  silver: {
-    monthly: "pri_01kzvmk8by0hz6jp1xhyrw5ecz",
-    "6months": "pri_01kzvmr3kbaybe7226dpcwy3re",
-    annual: "pri_01kzvmvfw58v6yqdyxan2e0hb7",
-  },
-  gold: {
-    monthly: "pri_01kzvn00ak6dk9fwtrp81b2x8b",
-    "6months": "pri_01kzvn1ps9p8pmbaf584b3q8y3",
-    annual: "pri_01kzvn35579f2k7s1wsc86zgyz",
-  },
 };
 
 const periodMonths: Record<Frequency, number> = { monthly: 1, "6months": 6, annual: 12 };
@@ -75,40 +50,6 @@ export default function UpgradeOptions({
   userEmail,
 }: UpgradeOptionsProps) {
   const [frequency, setFrequency] = useState<Frequency>("monthly");
-  const [paddleReady, setPaddleReady] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
-
-  const handlePaddleLoad = () => {
-    try {
-      window.Paddle?.Initialize({ token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN });
-      setPaddleReady(true);
-    } catch {
-      setCheckoutError("Checkout could not be opened. Please try again.");
-    }
-  };
-
-  const handleCheckout = (plan: Plan) => {
-    setCheckoutError("");
-    try {
-      window.Paddle?.Checkout.open({
-        items: [{ priceId: priceIds[plan][frequency], quantity: 1 }],
-        customer: { email: userEmail },
-        customData: {
-          student_id: studentId,
-          parent_profile_id: parentProfileId,
-          plan,
-          billing_frequency: frequency,
-        },
-        settings: {
-          displayMode: "overlay",
-          theme: "light",
-          successUrl: `${window.location.origin}/dashboard/student`,
-        },
-      });
-    } catch {
-      setCheckoutError("Checkout could not be opened. Please try again.");
-    }
-  };
 
   const savings = (plan: Plan): number | null => {
     if (frequency === "monthly") return null;
@@ -117,12 +58,6 @@ export default function UpgradeOptions({
 
   return (
     <>
-      <Script
-        src="https://cdn.paddle.com/paddle/v2/paddle.js"
-        strategy="afterInteractive"
-        onLoad={handlePaddleLoad}
-      />
-
       <h2 className="text-xl md:text-2xl font-bold text-hsp-dark text-center mb-6">
         Activate {studentFirstName}&apos;s profile
       </h2>
@@ -165,12 +100,11 @@ export default function UpgradeOptions({
           </ul>
           <button
             type="button"
-            disabled={!paddleReady}
-            onClick={() => handleCheckout("silver")}
+            disabled
             className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: "#d93025" }}
           >
-            Get Silver
+            Checkout coming soon
           </button>
         </div>
 
@@ -197,19 +131,14 @@ export default function UpgradeOptions({
           </ul>
           <button
             type="button"
-            disabled={!paddleReady}
-            onClick={() => handleCheckout("gold")}
+            disabled
             className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: "#d93025" }}
           >
-            Get Gold
+            Checkout coming soon
           </button>
         </div>
       </div>
-
-      {checkoutError && (
-        <p className="text-xs text-hsp-red text-center mt-4">{checkoutError}</p>
-      )}
     </>
   );
 }
