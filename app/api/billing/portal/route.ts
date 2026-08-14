@@ -1,5 +1,5 @@
-// Placeholder — pending Paddle billing-portal integration. The endpoint
-// should create a portal session via the Paddle API and return { url }
+// Placeholder — pending Stripe billing-portal integration. The endpoint
+// should create a portal session via the Stripe API and return { url }
 // pointing to the customer portal URL so the client can redirect there.
 
 import { NextResponse } from "next/server";
