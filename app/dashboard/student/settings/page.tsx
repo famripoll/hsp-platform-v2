@@ -34,20 +34,18 @@ export default async function StudentSettingsPage() {
   let familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null; show_on_profile: boolean }[] = [];
 
   if (profile.role === "parent") {
-    const { data: parentRow, error: parentError } = await supabase
+    const { data: parentRow } = await supabase
       .from("parents")
       .select("student_id")
       .eq("profile_id", user.id)
       .single();
-    console.error("DEBUG student/parent lookup error:", parentError);
 
     if (parentRow) {
-      const { data: studentData, error: studentError } = await supabase
+      const { data: studentData } = await supabase
         .from("students")
         .select("id, subscription_status, parent_name, parent_email, parent_phone, parent_relationship")
         .eq("id", parentRow.student_id)
         .single();
-      console.error("DEBUG student/parent lookup error:", studentError);
       subscriptionStatus = studentData?.subscription_status ?? null;
       studentId = studentData?.id ?? null;
       parentName = studentData?.parent_name ?? null;
@@ -56,12 +54,11 @@ export default async function StudentSettingsPage() {
       parentRelationship = studentData?.parent_relationship ?? null;
     }
   } else {
-    const { data: studentData, error: studentError } = await supabase
+    const { data: studentData } = await supabase
       .from("students")
       .select("id, subscription_status, parent_name, parent_email, parent_phone, parent_relationship")
       .eq("profile_id", user.id)
       .single();
-    console.error("DEBUG student/parent lookup error:", studentError);
     subscriptionStatus = studentData?.subscription_status ?? null;
     studentId = studentData?.id ?? null;
     parentName = studentData?.parent_name ?? null;
@@ -69,14 +66,13 @@ export default async function StudentSettingsPage() {
     parentPhone = studentData?.parent_phone ?? null;
     parentRelationship = studentData?.parent_relationship ?? null;
   }
-  console.error("DEBUG studentId:", studentId, "profile.role:", profile.role);
 
   let subscriptionPlan: "silver" | "gold" | null = null;
   let billingFrequency: "monthly" | "6months" | "annual" | null = null;
   let renewsOn: string | null = null;
 
   if (studentId) {
-    const { data: subData, error: subError } = await supabase
+    const { data: subData } = await supabase
       .from("subscriptions")
       .select("plan, billing_frequency, status, current_period_end")
       .eq("student_id", studentId)
@@ -84,7 +80,6 @@ export default async function StudentSettingsPage() {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    console.error("DEBUG subscriptions query:", { subData, subError });
 
     if (subData) {
       subscriptionPlan = subData.plan as "silver" | "gold";
