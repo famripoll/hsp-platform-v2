@@ -50,10 +50,41 @@ export default function UpgradeOptions({
   userEmail,
 }: UpgradeOptionsProps) {
   const [frequency, setFrequency] = useState<Frequency>("monthly");
+  const [loadingPlan, setLoadingPlan] = useState<Plan | null>(null);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const savings = (plan: Plan): number | null => {
     if (frequency === "monthly") return null;
     return prices[plan].monthly * periodMonths[frequency] - prices[plan][frequency];
+  };
+
+  const handleCheckout = async (plan: Plan) => {
+    setCheckoutError("");
+    setLoadingPlan(plan);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, frequency, studentId, parentProfileId, userEmail }),
+      });
+
+      if (!res.ok) {
+        setCheckoutError("Something went wrong. Please try again.");
+        setLoadingPlan(null);
+        return;
+      }
+
+      const data = await res.json();
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        setCheckoutError("Something went wrong. Please try again.");
+        setLoadingPlan(null);
+      }
+    } catch {
+      setCheckoutError("Something went wrong. Please try again.");
+      setLoadingPlan(null);
+    }
   };
 
   return (
@@ -100,11 +131,12 @@ export default function UpgradeOptions({
           </ul>
           <button
             type="button"
-            disabled
+            disabled={loadingPlan !== null}
+            onClick={() => handleCheckout("silver")}
             className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: "#d93025" }}
           >
-            Checkout coming soon
+            {loadingPlan === "silver" ? "Redirecting..." : "Get Silver"}
           </button>
         </div>
 
@@ -131,14 +163,19 @@ export default function UpgradeOptions({
           </ul>
           <button
             type="button"
-            disabled
+            disabled={loadingPlan !== null}
+            onClick={() => handleCheckout("gold")}
             className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: "#d93025" }}
           >
-            Checkout coming soon
+            {loadingPlan === "gold" ? "Redirecting..." : "Get Gold"}
           </button>
         </div>
       </div>
+
+      {checkoutError && (
+        <p className="text-xs text-hsp-red text-center mt-4">{checkoutError}</p>
+      )}
     </>
   );
 }
