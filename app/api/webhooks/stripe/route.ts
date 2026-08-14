@@ -37,6 +37,11 @@ function customerIdOf(customer: Stripe.Subscription["customer"]): string {
   return typeof customer === "string" ? customer : customer.id;
 }
 
+function currentPeriodEndOf(subscription: Stripe.Subscription): string | null {
+  const currentPeriodEnd = subscription.items.data[0]?.current_period_end;
+  return currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null;
+}
+
 function mapStripeStatus(status: Stripe.Subscription.Status): DbSubscriptionStatus | null {
   switch (status) {
     case "active":
@@ -124,6 +129,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
         provider_subscription_id: subscription.id,
         stripe_customer_id: customerIdOf(subscription.customer),
         status: "active",
+        current_period_end: currentPeriodEndOf(subscription),
       },
       { onConflict: "provider_subscription_id" }
     );
@@ -167,6 +173,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     .update({
       status: mappedStatus,
       stripe_customer_id: customerIdOf(subscription.customer),
+      current_period_end: currentPeriodEndOf(subscription),
     })
     .eq("id", subscriptionRow.id);
 

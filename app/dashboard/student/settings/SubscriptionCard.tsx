@@ -16,10 +16,12 @@ export default function SubscriptionCard({
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
+  renewsOn,
 }: {
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
+  renewsOn: string | null;
 }) {
   const [loading, setLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function SubscriptionCard({
               <Calendar size={18} className="text-gray-500 shrink-0" />
               <div>
                 <span className={LABEL}>Renews On</span>
-                <p className="text-[#0f172a] font-semibold">—</p>
+                <p className="text-[#0f172a] font-semibold">{renewsOn ?? "—"}</p>
               </div>
             </div>
 

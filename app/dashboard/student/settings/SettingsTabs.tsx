@@ -17,6 +17,7 @@ export default function SettingsTabs({
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
+  renewsOn,
   parentName,
   parentEmail,
   parentPhone,
@@ -27,6 +28,7 @@ export default function SettingsTabs({
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
+  renewsOn: string | null;
   parentName: string | null;
   parentEmail: string | null;
   parentPhone: string | null;
@@ -62,6 +64,7 @@ export default function SettingsTabs({
           subscriptionStatus={subscriptionStatus}
           subscriptionPlan={subscriptionPlan}
           billingFrequency={billingFrequency}
+          renewsOn={renewsOn}
         />
       )}
       {activeTab === "family" && <FamilyTab familyMembers={familyMembers} studentId={studentId} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} />}
