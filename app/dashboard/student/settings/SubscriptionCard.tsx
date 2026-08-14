@@ -119,6 +119,11 @@ export default function SubscriptionCard({
         </div>
 
         <div>
+          {(subscriptionPlan === "gold" || subscriptionPlan === "silver") && (
+            <p className="text-sm text-[#64748b] mb-3">
+              Cancel anytime — no long-term commitment.
+            </p>
+          )}
           <div className="pt-1">
             <button
               onClick={handleManageBilling}

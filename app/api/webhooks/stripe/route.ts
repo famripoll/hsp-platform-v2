@@ -17,6 +17,22 @@ const supabaseAdmin = createClient(
 
 type DbSubscriptionStatus = "active" | "canceled" | "past_due";
 
+type Plan = "silver" | "gold";
+type Frequency = "monthly" | "6months" | "annual";
+
+const PRICE_LABEL_MAP: Record<Plan, Record<Frequency, string>> = {
+  silver: {
+    monthly: "$30",
+    "6months": "$170",
+    annual: "$320",
+  },
+  gold: {
+    monthly: "$50",
+    "6months": "$290",
+    annual: "$580",
+  },
+};
+
 function customerIdOf(customer: Stripe.Subscription["customer"]): string {
   return typeof customer === "string" ? customer : customer.id;
 }
@@ -57,6 +73,10 @@ async function sendSubscriptionActiveEmail(parentProfileId: string, plan: string
         : frequency === "annual"
         ? "annual"
         : frequency;
+    const priceLabel =
+      PRICE_LABEL_MAP[plan === "gold" ? "gold" : "silver"][
+        frequency === "monthly" ? "monthly" : frequency === "6months" ? "6months" : "annual"
+      ];
 
     await sendEmail({
       to: parentProfile.email,
@@ -65,7 +85,7 @@ async function sendSubscriptionActiveEmail(parentProfileId: string, plan: string
         preheader: "Your subscription is now active.",
         firstName: parentProfile.full_name?.split(" ")[0] || "there",
         headline: `Your ${planLabel} subscription is now active.`,
-        subline: `You're billed ${frequencyLabel}. Head to the dashboard to get started.`,
+        subline: `You're billed ${priceLabel} ${frequencyLabel}. Cancel anytime — no long-term commitment. Head to the dashboard to get started.`,
         ctaLabel: "Go to dashboard",
         ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student`,
       }),
