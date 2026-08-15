@@ -116,7 +116,7 @@ export default function UpgradeOptions({
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
         {/* Silver Card */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           <h3 className="text-2xl font-bold text-hsp-dark mb-1">Silver</h3>
           <div className="mb-1">
             <span className="text-4xl font-bold text-hsp-dark">${prices.silver[frequency]}</span>
@@ -148,7 +148,7 @@ export default function UpgradeOptions({
         </div>
 
         {/* Gold Card */}
-        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red relative">
+        <div className="flex-1 bg-hsp-card rounded-2xl p-8 flex flex-col border-2 border-hsp-red relative transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer">
           <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-hsp-red text-white text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
             Most popular
           </span>
