@@ -137,8 +137,7 @@ export default function UpgradeOptions({
             type="button"
             disabled={loadingPlan !== null}
             onClick={() => handleCheckout("silver")}
-            className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#d93025" }}
+            className="w-full text-sm font-semibold rounded-xl px-6 py-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed border-2 border-hsp-red text-hsp-red bg-white hover:bg-hsp-red hover:text-white transition-colors duration-200"
           >
             {loadingPlan === "silver" ? "Redirecting..." : "Get Silver"}
           </button>
@@ -172,8 +171,7 @@ export default function UpgradeOptions({
             type="button"
             disabled={loadingPlan !== null}
             onClick={() => handleCheckout("gold")}
-            className="w-full text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#d93025" }}
+            className="w-full text-sm font-semibold rounded-xl px-6 py-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed border-2 border-hsp-red bg-hsp-red text-white hover:bg-white hover:text-hsp-red transition-colors duration-200"
           >
             {loadingPlan === "gold" ? "Redirecting..." : "Get Gold"}
           </button>
