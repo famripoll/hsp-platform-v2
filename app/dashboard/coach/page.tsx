@@ -194,12 +194,14 @@ function ProspectCard({
   hasVideo,
   isSaved,
   onToggleWatchlist,
+  onMessage,
 }: {
   student: ProspectStudent
   photoUrl?: string
   hasVideo: boolean
   isSaved: boolean
   onToggleWatchlist: (studentId: string) => void
+  onMessage: (student: ProspectStudent) => void
 }) {
   const pitcher = student.primary_position === 'P'
   const initials = getInitials(student.full_name)
@@ -468,13 +470,25 @@ function ProspectCard({
             <Eye className="w-4 h-4" />
           </button>
         )}
-        <button
-          type="button"
-          title="Message (coming soon)"
-          className="hidden sm:block p-1.5 rounded-lg transition-colors text-[#64748b] hover:bg-gray-100"
-        >
-          <MessageSquare className="w-4 h-4" />
-        </button>
+        {isPaid ? (
+          <button
+            type="button"
+            onClick={() => onMessage(student)}
+            title="Message"
+            className="hidden sm:block p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
+          >
+            <MessageSquare className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            title="Upgrade required to message"
+            disabled
+            className="hidden sm:block p-1.5 rounded-lg text-[#64748b] opacity-40 cursor-not-allowed"
+          >
+            <MessageSquare className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   )
@@ -504,6 +518,11 @@ function CoachDashboardContent() {
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set())
   const [watchlistStudents, setWatchlistStudents] = useState<ProspectStudent[]>([])
   const [watchlistLoading, setWatchlistLoading] = useState(false)
+  const [selectedMessageStudent, setSelectedMessageStudent] = useState<{
+    id: string
+    full_name: string | null
+    photo_url: string | null
+  } | null>(null)
   const { unreadCount, refresh: refreshUnreadCount } = useUnreadNotifications()
 
   useEffect(() => {
@@ -595,6 +614,22 @@ function CoachDashboardContent() {
       setWatchlistIds((prev) => new Set(prev).add(studentId))
     }
   }
+
+  const openMessagesFor = useCallback(
+    (student: ProspectStudent) => {
+      setSelectedMessageStudent({
+        id: student.id,
+        full_name: student.full_name,
+        photo_url: photoUrls[student.id] ?? student.photo_url,
+      })
+      setActiveTab('messages')
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('tab', 'messages')
+      params.delete('student')
+      router.replace(`?${params.toString()}`, { scroll: false })
+    },
+    [photoUrls, router, searchParams]
+  )
 
   const fetchWatchlistStudents = useCallback(async () => {
     if (watchlistIds.size === 0) {
@@ -1167,6 +1202,7 @@ function CoachDashboardContent() {
                             hasVideo={student.profile_id ? videoProfileIds.has(student.profile_id) : false}
                             isSaved={watchlistIds.has(student.id)}
                             onToggleWatchlist={toggleWatchlist}
+                            onMessage={openMessagesFor}
                           />
                         ))}
                       </div>
@@ -1203,6 +1239,7 @@ function CoachDashboardContent() {
                         hasVideo={student.profile_id ? videoProfileIds.has(student.profile_id) : false}
                         isSaved={watchlistIds.has(student.id)}
                         onToggleWatchlist={toggleWatchlist}
+                        onMessage={openMessagesFor}
                       />
                     ))}
                   </div>
@@ -1212,7 +1249,11 @@ function CoachDashboardContent() {
 
             {/* ── MESSAGES TAB ── */}
             {activeTab === 'messages' && (
-              <CoachMessages />
+              <CoachMessages
+                initialStudentId={selectedMessageStudent?.id}
+                initialStudentName={selectedMessageStudent?.full_name ?? null}
+                initialPhotoUrl={selectedMessageStudent?.photo_url ?? null}
+              />
             )}
 
             {/* ── NOTIFICATIONS TAB ── */}

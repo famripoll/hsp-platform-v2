@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { setThreadOpen } from "@/app/hooks/useActiveThread";
+import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 
 type Message = {
@@ -63,10 +64,22 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString();
 }
 
-export default function CoachMessages() {
+type Props = {
+  initialStudentId?: string;
+  initialStudentName?: string | null;
+  initialPhotoUrl?: string | null;
+};
+
+export default function CoachMessages({
+  initialStudentId,
+  initialStudentName,
+  initialPhotoUrl,
+}: Props = {}) {
   const searchParams = useSearchParams();
+  const { refresh: refreshUnreadNotifications } = useUnreadNotifications();
   const [loading, setLoading] = useState(true);
   const [coachId, setCoachId] = useState<string | null>(null);
+  const [coachProfileId, setCoachProfileId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [studentNames, setStudentNames] = useState<Record<string, string>>({});
   const [studentPhotos, setStudentPhotos] = useState<Record<string, string>>({});
@@ -91,6 +104,8 @@ export default function CoachMessages() {
       setLoading(false);
       return;
     }
+
+    setCoachProfileId(user.id);
 
     const { data: coachRow } = await supabase
       .from("coaches")
@@ -202,6 +217,28 @@ export default function CoachMessages() {
     }
   }, [searchParams, conversations]);
 
+  useEffect(() => {
+    if (initialStudentId) {
+      setSelectedStudentId(initialStudentId);
+    }
+  }, [initialStudentId]);
+
+  useEffect(() => {
+    if (!selectedStudentId || !coachProfileId) return;
+
+    (async () => {
+      const supabase = createClient();
+      await supabase
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("user_id", coachProfileId)
+        .eq("conversation_key", selectedStudentId)
+        .eq("type", "new_message")
+        .is("read_at", null);
+      refreshUnreadNotifications();
+    })();
+  }, [selectedStudentId, coachProfileId, refreshUnreadNotifications]);
+
   const threadMessages = useMemo(() => {
     if (!selectedStudentId) return [];
     return messages
@@ -248,7 +285,10 @@ export default function CoachMessages() {
     const trimmed = replyText.trim();
     if (!trimmed || !selectedStudentId || sending) return;
 
-    const isPaid = studentSubscriptions[selectedStudentId] === "paid";
+    const hasKnownSubscription = selectedStudentId in studentSubscriptions;
+    const isPaid = hasKnownSubscription
+      ? studentSubscriptions[selectedStudentId] === "paid"
+      : true;
     if (!isPaid) {
       setReplyError(LOCKED_MSG);
       return;
@@ -296,7 +336,7 @@ export default function CoachMessages() {
     );
   }
 
-  if (!coachId || conversations.length === 0) {
+  if (!coachId || (conversations.length === 0 && !selectedStudentId)) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6">
         <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
@@ -314,6 +354,12 @@ export default function CoachMessages() {
 
   if (selectedStudentId) {
     const activeConversation = conversations.find((c) => c.studentId === selectedStudentId);
+    const headerName =
+      activeConversation?.studentName ??
+      (selectedStudentId === initialStudentId ? initialStudentName : null);
+    const headerPhotoUrl =
+      activeConversation?.photoUrl ??
+      (selectedStudentId === initialStudentId ? initialPhotoUrl : null);
 
     return (
       <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col scroll-mt-20 sm:scroll-mt-24">
@@ -332,9 +378,9 @@ export default function CoachMessages() {
         </button>
 
         <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-          {activeConversation?.photoUrl ? (
+          {headerPhotoUrl ? (
             <img
-              src={activeConversation.photoUrl}
+              src={headerPhotoUrl}
               alt=""
               className="w-10 h-10 rounded-full object-cover shrink-0"
             />
@@ -343,11 +389,11 @@ export default function CoachMessages() {
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
               style={{ backgroundColor: "#d93025" }}
             >
-              {getInitials(activeConversation?.studentName ?? null)}
+              {getInitials(headerName ?? null)}
             </div>
           )}
           <h3 className="text-lg font-bold truncate" style={{ color: "#0f172a" }}>
-            {activeConversation?.studentName ?? "Conversation"}
+            {headerName ?? "Conversation"}
           </h3>
         </div>
 
