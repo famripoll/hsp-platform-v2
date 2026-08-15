@@ -7,16 +7,20 @@ type Frequency = "monthly" | "6months" | "annual";
 
 const silverFeatures = [
   "Full athlete profile",
-  "NCAA / NAIA / NJCAA program search",
-  "Direct messaging to college coaches",
+  "College baseball program search",
+  "Contact up to 5 college coaches/month",
   "Photo & video uploads",
+  "Standard profile visibility",
 ];
 
 const goldFeatures = [
   "Everything in Silver",
-  "Priority profile visibility",
-  "Advanced program filters",
-  "Monthly opportunity updates",
+  "Contact up to 20 college coaches/month",
+  "Priority visibility in coach searches",
+  "Advanced college search filters",
+  "Recruiting Opportunity Feed",
+  "Profile activity insights",
+  "Saved programs & watchlist",
 ];
 
 const prices: Record<Plan, Record<Frequency, number>> = {
@@ -138,6 +142,9 @@ export default function UpgradeOptions({
           >
             {loadingPlan === "silver" ? "Redirecting..." : "Get Silver"}
           </button>
+          <p className="text-sm text-[#64748b] text-center mt-3">
+            Cancel anytime — no long-term commitment.
+          </p>
         </div>
 
         {/* Gold Card */}
@@ -170,6 +177,9 @@ export default function UpgradeOptions({
           >
             {loadingPlan === "gold" ? "Redirecting..." : "Get Gold"}
           </button>
+          <p className="text-sm text-[#64748b] text-center mt-3">
+            Cancel anytime — no long-term commitment.
+          </p>
         </div>
       </div>
 
