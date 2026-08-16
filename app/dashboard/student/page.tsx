@@ -193,7 +193,7 @@ export default async function StudentDashboardPage({
         <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
           {/* ── LEFT COLUMN: Player Profile Card ── */}
-          <div className="md:col-span-1 w-full">
+          <div className="md:col-span-1 w-full min-w-0">
             <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 w-full">
 
               {/* Avatar + Name + Info + Edit Profile */}
@@ -221,9 +221,9 @@ export default async function StudentDashboardPage({
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1 mt-1">
+                    <div className="flex items-center gap-1 mt-1 min-w-0">
                       <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
-                      <span className="text-sm text-[#64748b] whitespace-nowrap">
+                      <span className="text-sm text-[#64748b] whitespace-nowrap truncate">
                         {student.graduation_year
                           ? `Class of ${student.graduation_year}`
                           : student.grade
