@@ -80,7 +80,7 @@ export default function PricingPage() {
             <span className="text-hsp-gray text-sm ml-1">/month</span>
           </div>
           <p className="text-hsp-gray text-sm mb-8">
-            $290 for 6 months · $580/year
+            $290 for 6 months · $560/year
           </p>
           <ul className="flex flex-col gap-3 mb-10 flex-1">
             {goldFeatures.map((feature) => (

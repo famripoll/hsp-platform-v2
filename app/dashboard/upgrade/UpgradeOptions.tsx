@@ -25,7 +25,7 @@ const goldFeatures = [
 
 const prices: Record<Plan, Record<Frequency, number>> = {
   silver: { monthly: 30, "6months": 170, annual: 320 },
-  gold: { monthly: 50, "6months": 290, annual: 580 },
+  gold: { monthly: 50, "6months": 290, annual: 560 },
 };
 
 const periodMonths: Record<Frequency, number> = { monthly: 1, "6months": 6, annual: 12 };

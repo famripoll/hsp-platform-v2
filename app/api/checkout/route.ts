@@ -18,7 +18,7 @@ const PRICE_MAP: Record<Plan, Record<Frequency, string>> = {
   gold: {
     monthly: "price_1U4AHZEqzeZZAr9ks4Xj8QOd",
     "6months": "price_1U4AIEEqzeZZAr9kAGz6MaGb",
-    annual: "price_1U4AIeEqzeZZAr9kM7fM5i1g",
+    annual: "price_1U5ApbEqzeZZAr9koGOV6E9y",
   },
 };
 
