@@ -52,6 +52,7 @@ const US_STATES: { code: string; name: string }[] = [
   { code: "OK", name: "Oklahoma" },
   { code: "OR", name: "Oregon" },
   { code: "PA", name: "Pennsylvania" },
+  { code: "PR", name: "Puerto Rico" },
   { code: "RI", name: "Rhode Island" },
   { code: "SC", name: "South Carolina" },
   { code: "SD", name: "South Dakota" },
@@ -64,7 +65,6 @@ const US_STATES: { code: string; name: string }[] = [
   { code: "WV", name: "West Virginia" },
   { code: "WI", name: "Wisconsin" },
   { code: "WY", name: "Wyoming" },
-  { code: "PR", name: "Puerto Rico" },
 ];
 
 // Confirmed against live data — do not alter or guess at other values.
