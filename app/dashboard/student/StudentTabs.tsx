@@ -9,7 +9,7 @@ import StudentMessages from "./StudentMessages";
 import NotificationsList from "@/app/components/dashboard/NotificationsList";
 import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 import { createClient } from "@/lib/supabase-client";
-import { Play, Lock, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
+import { Play, Lock, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity, Search } from "lucide-react";
 
 type Student = {
   id: string;
@@ -418,6 +418,14 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
             <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
               No target schools yet. Search colleges and save your favorites.
             </p>
+            <Link
+              href="/dashboard/student/colleges"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-white rounded-xl px-4 py-2 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
+              style={{ backgroundColor: "#d93025" }}
+            >
+              <Search className="w-4 h-4" />
+              Search Colleges
+            </Link>
           </div>
         </div>
       )}

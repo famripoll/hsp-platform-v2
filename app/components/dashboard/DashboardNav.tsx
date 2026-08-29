@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Bell, Settings } from "lucide-react";
-import LogOutButton from "@/app/dashboard/student/LogOutButton";
-import SettingsLink from "@/app/dashboard/student/SettingsLink";
+import { Bell } from "lucide-react";
+import AvatarMenu from "@/app/components/dashboard/AvatarMenu";
 import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 
 /**
@@ -39,7 +38,6 @@ function useNavHeight() {
 export default function DashboardNav() {
   const pathname = usePathname();
   const isCoach = pathname.startsWith("/dashboard/coach");
-  const isSettingsActive = pathname.endsWith("/settings");
   const { navRef, height } = useNavHeight();
   const { unreadCount } = useUnreadNotifications();
 
@@ -59,14 +57,6 @@ export default function DashboardNav() {
               <span className="text-hsp-dark">School</span>
               <span className="text-hsp-dark">Prospect</span>
             </Link>
-            {!isCoach && pathname !== "/dashboard/student" && (
-              <Link
-                href="/dashboard/student"
-                className="shrink-0 whitespace-nowrap text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
-              >
-                My Profile
-              </Link>
-            )}
           </div>
           <div className="flex items-center gap-2 sm:gap-2 shrink-0 ml-3 sm:ml-0">
             <Link
@@ -91,20 +81,7 @@ export default function DashboardNav() {
                 </span>
               )}
             </Link>
-            {isCoach ? (
-              <Link
-                href="/dashboard/coach/settings"
-                className={`flex items-center gap-1 text-sm transition-colors ${
-                  isSettingsActive ? "text-[#d93025]" : "text-[#0f172a] hover:text-[#d93025]"
-                }`}
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Settings</span>
-              </Link>
-            ) : (
-              <SettingsLink />
-            )}
-            <LogOutButton />
+            <AvatarMenu isCoach={isCoach} />
           </div>
         </div>
       </nav>

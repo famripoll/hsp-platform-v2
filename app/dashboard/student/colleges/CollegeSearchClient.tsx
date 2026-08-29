@@ -1,11 +1,25 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import { MapPin, Search, SlidersHorizontal } from "lucide-react";
 import { createClient } from "@/lib/supabase-client";
 import { getCollegeCardColor, getCollegeMonogram } from "@/lib/collegeCardStyle";
 import type { University } from "@/lib/types";
+
+const PAGE_SIZE = 20;
+
+// Windowed page list: first, last, current ±2, with "ellipsis" markers for gaps.
+function getPageWindow(current: number, total: number): (number | "ellipsis")[] {
+  const pages: (number | "ellipsis")[] = [1];
+  const left = Math.max(2, current - 2);
+  const right = Math.min(total - 1, current + 2);
+  if (left > 2) pages.push("ellipsis");
+  for (let i = left; i <= right; i++) pages.push(i);
+  if (right < total - 1) pages.push("ellipsis");
+  if (total > 1) pages.push(total);
+  return pages;
+}
 
 const LABEL_CLS = "text-[10px] font-semibold uppercase text-[#64748b] mb-1 block";
 const INPUT_CLS =
@@ -104,34 +118,55 @@ export default function CollegeSearchClient() {
   const [results, setResults] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
   const [searched, setSearched] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const resultsTopRef = useRef<HTMLDivElement>(null);
 
-  const runSearch = useCallback(async () => {
-    setLoading(true);
+  // targetPage defaults to 1 so any user-triggered search resets to the first
+  // page; page-number clicks pass an explicit page and keep the same filters.
+  const runSearch = useCallback(
+    async (targetPage: number = 1) => {
+      setLoading(true);
+      setPage(targetPage);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let q: any = supabase
-      .from("universities")
-      .select("*")
-      .order("institution_name", { ascending: true })
-      .limit(200);
+      const from = (targetPage - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
 
-    const trimmed = term.trim();
-    if (trimmed) q = q.ilike("institution_name", `%${trimmed}%`);
-    if (stateFilter) q = q.eq("state_cd", stateFilter);
-    if (levelFilter) q = q.eq("classification_name", levelFilter);
-    if (typeFilter) q = q.eq("sector_name", typeFilter);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("universities")
+        .select("*", { count: "exact" })
+        .order("institution_name", { ascending: true })
+        .range(from, to);
 
-    const { data } = await q;
-    setResults((data ?? []) as University[]);
-    setLoading(false);
-    setSearched(true);
-  }, [supabase, term, stateFilter, levelFilter, typeFilter]);
+      const trimmed = term.trim();
+      if (trimmed) q = q.ilike("institution_name", `%${trimmed}%`);
+      if (stateFilter) q = q.eq("state_cd", stateFilter);
+      if (levelFilter) q = q.eq("classification_name", levelFilter);
+      if (typeFilter) q = q.eq("sector_name", typeFilter);
 
-  // Initial load — ordered by name, no filters, capped at 200.
+      const { data, count } = await q;
+      setResults((data ?? []) as University[]);
+      setTotalCount(count ?? 0);
+      setLoading(false);
+      setSearched(true);
+    },
+    [supabase, term, stateFilter, levelFilter, typeFilter]
+  );
+
+  // Initial load — ordered by name, no filters, first page.
   useEffect(() => {
     runSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  function goToPage(p: number) {
+    if (loading || p < 1 || p > totalPages || p === page) return;
+    runSearch(p);
+    resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
@@ -225,7 +260,7 @@ export default function CollegeSearchClient() {
       <div className="flex items-center justify-between gap-3 mb-5">
         <button
           type="button"
-          onClick={runSearch}
+          onClick={() => runSearch()}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
           style={{ backgroundColor: "#d93025" }}
@@ -237,18 +272,23 @@ export default function CollegeSearchClient() {
           )}
           Search
         </button>
-        {searched && !loading && (
+        {searched && !loading && totalCount > 0 && (
           <span className="text-xs" style={{ color: "#64748b" }}>
             Showing{" "}
             <span className="font-semibold" style={{ color: "#0f172a" }}>
-              {results.length}
+              {(page - 1) * PAGE_SIZE + 1}&ndash;{(page - 1) * PAGE_SIZE + results.length}
             </span>{" "}
-            college{results.length !== 1 ? "s" : ""}
+            of{" "}
+            <span className="font-semibold" style={{ color: "#0f172a" }}>
+              {totalCount.toLocaleString()}
+            </span>{" "}
+            college{totalCount !== 1 ? "s" : ""}
           </span>
         )}
       </div>
 
       {/* Results */}
+      <div ref={resultsTopRef} aria-hidden="true" />
       {loading ? (
         <div className="flex justify-center py-16">
           <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
@@ -305,6 +345,54 @@ export default function CollegeSearchClient() {
               </span>
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Pagination — only when there's more than one page of matches */}
+      {searched && !loading && totalCount > PAGE_SIZE && (
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => goToPage(page - 1)}
+            disabled={page <= 1}
+            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#64748b] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+          >
+            Prev
+          </button>
+          {getPageWindow(page, totalPages).map((p, i) =>
+            p === "ellipsis" ? (
+              <span
+                key={`ellipsis-${i}`}
+                className="shrink-0 px-1.5 text-sm select-none"
+                style={{ color: "#64748b" }}
+              >
+                &hellip;
+              </span>
+            ) : (
+              <button
+                key={p}
+                type="button"
+                onClick={() => goToPage(p)}
+                aria-current={p === page ? "page" : undefined}
+                className={`shrink-0 min-w-[36px] px-2.5 py-1.5 text-sm rounded-lg transition-colors ${
+                  p === page
+                    ? "text-white font-semibold"
+                    : "border border-gray-200 text-[#64748b] hover:bg-gray-50"
+                }`}
+                style={p === page ? { backgroundColor: "#d93025" } : undefined}
+              >
+                {p}
+              </button>
+            )
+          )}
+          <button
+            type="button"
+            onClick={() => goToPage(page + 1)}
+            disabled={page >= totalPages}
+            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#64748b] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
