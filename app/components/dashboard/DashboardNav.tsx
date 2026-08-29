@@ -50,14 +50,24 @@ export default function DashboardNav() {
         className="fixed top-0 left-0 z-40 w-full bg-white border-b border-gray-200"
       >
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between min-w-0">
-          <Link
-            href={isCoach ? "/dashboard/coach" : "/dashboard/student"}
-            className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 min-w-0 truncate"
-          >
-            <span className="text-hsp-red">High</span>
-            <span className="text-hsp-dark">School</span>
-            <span className="text-hsp-dark">Prospect</span>
-          </Link>
+          <div className="flex items-baseline gap-3 sm:gap-4 min-w-0">
+            <Link
+              href={isCoach ? "/dashboard/coach" : "/dashboard/student"}
+              className="flex items-baseline gap-1 font-black text-xl sm:text-2xl md:text-3xl leading-none hover:opacity-80 hover:scale-105 transition-all duration-200 min-w-0 truncate"
+            >
+              <span className="text-hsp-red">High</span>
+              <span className="text-hsp-dark">School</span>
+              <span className="text-hsp-dark">Prospect</span>
+            </Link>
+            {!isCoach && pathname !== "/dashboard/student" && (
+              <Link
+                href="/dashboard/student"
+                className="shrink-0 whitespace-nowrap text-sm text-[#0f172a] hover:text-[#d93025] transition-colors"
+              >
+                My Profile
+              </Link>
+            )}
+          </div>
           <div className="flex items-center gap-2 sm:gap-2 shrink-0 ml-3 sm:ml-0">
             <Link
               href={isCoach ? "/dashboard/coach?tab=notifications" : "/dashboard/student?tab=notifications"}

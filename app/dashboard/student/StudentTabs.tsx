@@ -9,7 +9,7 @@ import StudentMessages from "./StudentMessages";
 import NotificationsList from "@/app/components/dashboard/NotificationsList";
 import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 import { createClient } from "@/lib/supabase-client";
-import { Play, Lock, Search, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
+import { Play, Lock, Target, Bell, Briefcase, TrendingUp, Award, Calendar, Activity } from "lucide-react";
 
 type Student = {
   id: string;
@@ -65,30 +65,8 @@ type Student = {
 
 const DASH = "—";
 
-const US_STATES = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
-  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
-  "New Hampshire", "New Jersey", "New Mexico", "New York",
-  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-  "West Virginia", "Wisconsin", "Wyoming", "Puerto Rico",
-];
-
-const DIVISIONS = [
-  "NCAA Division I",
-  "NCAA Division II",
-  "NCAA Division III",
-  "NAIA",
-  "NJCAA",
-];
-
 const TABS = [
   { label: "Overview", value: "overview" },
-  { label: "Search Colleges", value: "search" },
   { label: "Your Target Schools", value: "target" },
   { label: "Media", value: "media" },
   { label: "Messages", value: "messages" },
@@ -97,7 +75,7 @@ const TABS = [
 
 type TabValue = typeof TABS[number]["value"];
 
-const VALID_TABS: string[] = ["overview", "search", "target", "media", "messages", "notifications"];
+const VALID_TABS: string[] = ["overview", "target", "media", "messages", "notifications"];
 
 type Props = {
   student: Student;
@@ -427,70 +405,6 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
             )}
           </div>
         </>
-      )}
-
-      {/* ── SEARCH COLLEGES TAB ── */}
-      {activeSection === "search" && (
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
-            Search Colleges
-          </h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label
-                className="text-sm font-medium mb-1 block"
-                style={{ color: "#64748b" }}
-              >
-                State
-              </label>
-              <select
-                className="border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent text-sm"
-                style={{ color: "#0f172a" }}
-                defaultValue=""
-              >
-                <option value="">All States</option>
-                {US_STATES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                className="text-sm font-medium mb-1 block"
-                style={{ color: "#64748b" }}
-              >
-                Level
-              </label>
-              <select
-                className="border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent text-sm"
-                style={{ color: "#0f172a" }}
-                defaultValue=""
-              >
-                <option value="">Level</option>
-                {DIVISIONS.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="text-sm font-semibold text-white rounded-xl px-4 py-2 mb-8 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
-            style={{ backgroundColor: "#d93025" }}
-          >
-            Search
-          </button>
-
-          <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Search className="w-10 h-10" style={{ color: "#d1d5db" }} />
-            <p className="text-sm text-center" style={{ color: "#64748b" }}>
-              Search results will appear here
-            </p>
-          </div>
-        </div>
       )}
 
       {/* ── YOUR TARGET SCHOOLS TAB ── */}
