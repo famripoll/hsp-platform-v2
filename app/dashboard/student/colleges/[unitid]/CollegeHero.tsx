@@ -1,10 +1,6 @@
-"use client";
-
-import { useState } from "react";
 import { MapPin } from "lucide-react";
 import { getCollegeCardColor, getCollegeMonogram } from "@/lib/collegeCardStyle";
 import type { University } from "@/lib/types";
-import CollegeMapSection from "./CollegeMapSection";
 
 const formatUrl = (url: string) =>
   url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
@@ -41,8 +37,6 @@ export default function CollegeHero({
   university: University;
   mapAddress: string;
 }) {
-  const [mapOpen, setMapOpen] = useState(false);
-
   const hasAddress = mapAddress.length > 0;
   const hasLocationRow = Boolean(university.city_txt || university.state_cd || hasAddress);
   const hasActionRow = Boolean(
@@ -73,18 +67,20 @@ export default function CollegeHero({
           {hasLocationRow && (
             <div>
               {hasAddress ? (
-                <button
-                  type="button"
-                  onClick={() => setMapOpen((v) => !v)}
-                  aria-expanded={mapOpen}
-                  aria-label="View campus location on map"
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    mapAddress
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open location in Google Maps"
                   className="flex items-center gap-1.5 text-sm py-1 hover:underline"
                   style={{ color: "rgba(255,255,255,0.85)" }}
                 >
                   <MapPin className="w-4 h-4 shrink-0" />
                   {[university.city_txt, university.state_cd].filter(Boolean).join(", ") ||
                     "View on map"}
-                </button>
+                </a>
               ) : (
                 (university.city_txt || university.state_cd) && (
                   <span
@@ -156,18 +152,6 @@ export default function CollegeHero({
           )}
         </div>
       </div>
-
-      {/* Wrapper (and its spacing) only exists while open — CollegeMapSection
-          itself also renders null when collapsed. */}
-      {hasAddress && mapOpen && (
-        <div className="mb-6">
-          <CollegeMapSection
-            address={mapAddress}
-            open={mapOpen}
-            onToggle={() => setMapOpen((v) => !v)}
-          />
-        </div>
-      )}
     </>
   );
 }
