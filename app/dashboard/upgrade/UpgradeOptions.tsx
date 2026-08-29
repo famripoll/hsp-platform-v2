@@ -17,7 +17,7 @@ const goldFeatures = [
   "Everything in Silver",
   "Contact up to 20 college coaches/month",
   "Priority visibility in coach searches",
-  "Academic & admissions data — majors, acceptance rates, and more",
+  "Academic & admissions data — acceptance rates, and more",
   "Recruiting Opportunity Feed",
   "Profile activity insights",
   "Saved programs & watchlist",
