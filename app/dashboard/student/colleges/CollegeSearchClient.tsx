@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Search, SlidersHorizontal } from "lucide-react";
 import { createClient } from "@/lib/supabase-client";
 import { getCollegeCardColor, getCollegeMonogram } from "@/lib/collegeCardStyle";
@@ -106,13 +107,17 @@ const SECTOR_OPTIONS = [
   "Private nonprofit, 2-year",
 ];
 
-export default function CollegeSearchClient() {
+function CollegeSearchClientInner() {
   const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [term, setTerm] = useState("");
-  const [stateFilter, setStateFilter] = useState("");
-  const [levelFilter, setLevelFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  // Initial state comes from the URL query string (populated on every search
+  // below) so navigating to a college and back restores the prior view.
+  const [term, setTerm] = useState(() => searchParams.get("q") ?? "");
+  const [stateFilter, setStateFilter] = useState(() => searchParams.get("state") ?? "");
+  const [levelFilter, setLevelFilter] = useState(() => searchParams.get("level") ?? "");
+  const [typeFilter, setTypeFilter] = useState(() => searchParams.get("type") ?? "");
   const [showFilters, setShowFilters] = useState(false);
 
   const [results, setResults] = useState<University[]>([]);
@@ -125,9 +130,19 @@ export default function CollegeSearchClient() {
   // targetPage defaults to 1 so any user-triggered search resets to the first
   // page; page-number clicks pass an explicit page and keep the same filters.
   const runSearch = useCallback(
-    async (targetPage: number = 1) => {
+    async (
+      targetPage: number = 1,
+      overrides?: { term: string; state: string; level: string; type: string }
+    ) => {
       setLoading(true);
       setPage(targetPage);
+
+      // overrides let "Clear Filters" search with reset values without waiting
+      // for the state updates to flush into this callback's closure.
+      const activeTerm = (overrides?.term ?? term).trim();
+      const activeState = overrides?.state ?? stateFilter;
+      const activeLevel = overrides?.level ?? levelFilter;
+      const activeType = overrides?.type ?? typeFilter;
 
       const from = (targetPage - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
@@ -139,24 +154,33 @@ export default function CollegeSearchClient() {
         .order("institution_name", { ascending: true })
         .range(from, to);
 
-      const trimmed = term.trim();
-      if (trimmed) q = q.ilike("institution_name", `%${trimmed}%`);
-      if (stateFilter) q = q.eq("state_cd", stateFilter);
-      if (levelFilter) q = q.eq("classification_name", levelFilter);
-      if (typeFilter) q = q.eq("sector_name", typeFilter);
+      if (activeTerm) q = q.ilike("institution_name", `%${activeTerm}%`);
+      if (activeState) q = q.eq("state_cd", activeState);
+      if (activeLevel) q = q.eq("classification_name", activeLevel);
+      if (activeType) q = q.eq("sector_name", activeType);
 
       const { data, count } = await q;
       setResults((data ?? []) as University[]);
       setTotalCount(count ?? 0);
       setLoading(false);
       setSearched(true);
+
+      // Reflect the executed search in the URL (same pattern as StudentTabs.tsx).
+      const params = new URLSearchParams();
+      if (activeTerm) params.set("q", activeTerm);
+      if (activeState) params.set("state", activeState);
+      if (activeLevel) params.set("level", activeLevel);
+      if (activeType) params.set("type", activeType);
+      if (targetPage > 1) params.set("page", String(targetPage));
+      router.replace(`?${params.toString()}`, { scroll: false });
     },
-    [supabase, term, stateFilter, levelFilter, typeFilter]
+    [supabase, term, stateFilter, levelFilter, typeFilter, router]
   );
 
-  // Initial load — ordered by name, no filters, first page.
+  // Initial load — filters/page come from the URL (see state initializers).
   useEffect(() => {
-    runSearch();
+    const initialPage = Number(searchParams.get("page")) || 1;
+    runSearch(initialPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -166,6 +190,21 @@ export default function CollegeSearchClient() {
     if (loading || p < 1 || p > totalPages || p === page) return;
     runSearch(p);
     resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  const hasActiveFilters =
+    term !== "" ||
+    stateFilter !== "" ||
+    levelFilter !== "" ||
+    typeFilter !== "" ||
+    page > 1;
+
+  function clearFilters() {
+    setTerm("");
+    setStateFilter("");
+    setLevelFilter("");
+    setTypeFilter("");
+    runSearch(1, { term: "", state: "", level: "", type: "" });
   }
 
   return (
@@ -257,7 +296,7 @@ export default function CollegeSearchClient() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mb-5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-5">
         <button
           type="button"
           onClick={() => runSearch()}
@@ -272,8 +311,18 @@ export default function CollegeSearchClient() {
           )}
           Search
         </button>
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            disabled={loading}
+            className="text-sm text-[#64748b] hover:text-[#d93025] transition-colors disabled:opacity-60"
+          >
+            Clear Filters
+          </button>
+        )}
         {searched && !loading && totalCount > 0 && (
-          <span className="text-xs" style={{ color: "#64748b" }}>
+          <span className="text-xs ml-auto" style={{ color: "#64748b" }}>
             Showing{" "}
             <span className="font-semibold" style={{ color: "#0f172a" }}>
               {(page - 1) * PAGE_SIZE + 1}&ndash;{(page - 1) * PAGE_SIZE + results.length}
@@ -396,5 +445,21 @@ export default function CollegeSearchClient() {
         </div>
       )}
     </div>
+  );
+}
+
+// useSearchParams requires a Suspense boundary (same wrapping as
+// app/dashboard/coach/page.tsx's CoachDashboardContent).
+export default function CollegeSearchClient() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-white rounded-2xl shadow-sm p-6 flex justify-center py-16">
+          <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <CollegeSearchClientInner />
+    </Suspense>
   );
 }
