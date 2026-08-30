@@ -7,11 +7,11 @@ export const metadata: Metadata = {
 };
 
 const paragraphs = [
-  "Every student-athlete has a story worth sharing, but too often, that story is never seen by the people who matter most.",
-  "High School Prospect was created to help bridge that gap by providing a professional online platform where student-athletes can build a complete recruiting profile and showcase their academic achievements, athletic performance, photos, videos, and social media presence—all in one place.",
-  "Today's college coaches and professional scouts discover talent through many different channels. Some rely on recruiting websites, while others use Instagram, X, YouTube, TikTok, Hudl, GameChanger, or other platforms. High School Prospect helps simplify that process by giving student-athletes a centralized profile that brings together the information coaches need, making it easier to evaluate and connect with prospective athletes.",
-  "Our platform is designed to support student-athletes, parents, college coaches, and professional scouts throughout the recruiting journey. Student-athletes can present themselves professionally, parents can help manage their profiles, and verified coaches and scouts can efficiently discover and evaluate talent from across the country.",
-  "At High School Prospect, we believe that opportunity should never be limited by geography, visibility, or access. Our mission is to provide every student-athlete with a trusted platform to showcase their potential while helping coaches discover the next generation of talented athletes.",
+  "Every student-athlete deserves the opportunity to be seen, evaluated, and recognized for what they can bring to the next level.",
+  "High School Prospect was created to give student-athletes a professional place to showcase who they are—both academically and athletically. With one complete recruiting profile, athletes can organize their academic information, athletic achievements, statistics, photos, videos, and other important recruiting details in one place.",
+  "The recruiting process can involve many different websites, tools, and communication channels. High School Prospect helps make that process simpler by giving student-athletes a centralized profile they can use to present themselves professionally and making it easier for college coaches and professional scouts to find and evaluate relevant information.",
+  "Our platform is built for student-athletes and their families, while also providing coaches and scouts with an efficient way to discover and evaluate talent. Parents can help support and manage the recruiting process, while athletes can focus on building a strong profile that represents their abilities, accomplishments, and goals.",
+  "At High School Prospect, our mission is simple: help student-athletes present their potential and give coaches a better way to discover it.",
 ];
 
 const featureCards = [
