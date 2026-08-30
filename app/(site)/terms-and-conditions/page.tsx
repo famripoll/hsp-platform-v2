@@ -85,7 +85,7 @@ We are not:
 - a university;
 - a college;
 - an athletic conference;
-- the NCAA, NAIA, NJCAA, NFHS, or any governing body;
+- the NCAA, NJCAA, NAIA, or any other athletic conference, league, association, or governing body — collegiate, interscholastic, or otherwise;
 - a recruiting agency;
 - a sports agent;
 - a scholarship provider;
@@ -450,20 +450,10 @@ Nothing in these Terms should be interpreted as creating obligations beyond thos
   },
   {
     number: 21,
-    title: "NCAA, NAIA, NJCAA, and Eligibility Disclaimer",
+    title: "Athletic Eligibility Disclaimer",
     body: `High School Prospect is an independent technology platform.
 
-We do not determine, certify, monitor, or guarantee an athlete's eligibility under the rules of:
-
-- NCAA;
-- NAIA;
-- NJCAA;
-- NFHS;
-- state athletic associations;
-- conferences;
-- colleges;
-- universities;
-- or any other governing organization.
+We do not determine, certify, monitor, or guarantee an athlete's eligibility under the rules of the NCAA, NJCAA, NAIA, or any other athletic conference, league, association, or governing body — collegiate, interscholastic, or otherwise.
 
 Athletes are solely responsible for understanding and complying with all eligibility requirements established by the institutions and organizations with which they interact.
 
