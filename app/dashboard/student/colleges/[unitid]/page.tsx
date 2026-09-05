@@ -6,6 +6,15 @@ import CollegeHero from "./CollegeHero";
 import CollegeStatsCard from "./CollegeStatsCard";
 import BackToSearchLink from "./BackToSearchLink";
 
+type ProgramStaffPublic = {
+  id: string;
+  unitid: number;
+  institution_name: string | null;
+  first_name: string;
+  last_name: string | null;
+  title_txt: string | null;
+};
+
 export default async function CollegeDetailPage({
   params,
 }: {
@@ -38,6 +47,14 @@ export default async function CollegeDetailPage({
     .select("*")
     .eq("unitid", Number(unitid))
     .single();
+
+  const { data: staffData } = await supabase
+    .from("program_staff_public")
+    .select("id, unitid, institution_name, first_name, last_name, title_txt")
+    .eq("unitid", Number(unitid))
+    .order("last_name", { ascending: true });
+
+  const coaches = (staffData ?? []) as ProgramStaffPublic[];
 
   const university = universityData as University | null;
 
@@ -82,20 +99,49 @@ export default async function CollegeDetailPage({
               Baseball Program Contact
             </h3>
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center gap-3">
-            <Users className="w-10 h-10" style={{ color: "#d1d5db" }} />
-            <p className="text-sm text-center" style={{ color: "#64748b" }}>
-              Coach information coming soon
-            </p>
-            <button
-              type="button"
-              disabled
-              className="rounded-lg px-4 py-2 text-sm font-semibold cursor-not-allowed"
-              style={{ backgroundColor: "#F2F3F3", color: "#64748b" }}
-            >
-              Contact Coach
-            </button>
-          </div>
+          {coaches.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center gap-3">
+              <Users className="w-10 h-10" style={{ color: "#d1d5db" }} />
+              <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                Coach information coming soon
+              </p>
+              <button
+                type="button"
+                disabled
+                className="rounded-lg px-4 py-2 text-sm font-semibold cursor-not-allowed"
+                style={{ backgroundColor: "#F2F3F3", color: "#64748b" }}
+              >
+                Contact Coach
+              </button>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col gap-4">
+              <div className="flex flex-col divide-y divide-gray-100">
+                {coaches.map((coach) => {
+                  const fullName = `${coach.first_name} ${coach.last_name ?? ""}`.trim();
+                  const title = coach.title_txt ? coach.title_txt : "Coach";
+                  return (
+                    <div key={coach.id} className="py-3 first:pt-0">
+                      <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
+                        {fullName}
+                      </p>
+                      <p className="text-sm" style={{ color: "#64748b" }}>
+                        {title}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                disabled
+                className="rounded-lg px-4 py-2 text-sm font-semibold cursor-not-allowed"
+                style={{ backgroundColor: "#F2F3F3", color: "#64748b" }}
+              >
+                Contact Coach
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
