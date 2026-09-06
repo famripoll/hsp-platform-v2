@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       .from("coaches")
       .select("id, profile_id, verified")
       .eq("profile_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (!coachRow) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
