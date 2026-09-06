@@ -19,6 +19,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
+  if (role === "coach" && !email.trim().toLowerCase().endsWith(".edu")) {
+    return NextResponse.json(
+      { error: "Please use your official university email (.edu)" },
+      { status: 400 }
+    );
+  }
+
   let student: { id: string } | null = null;
 
   if (role === "parent") {
