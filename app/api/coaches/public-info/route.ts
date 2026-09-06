@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
     const { data: coachRows, error: coachError } = await supabaseAdmin
       .from("coaches")
       .select("id, university, profile_id")
-      .in("id", coachIds);
+      .in("id", coachIds)
+      .eq("verified", true);
 
     if (coachError) {
       return NextResponse.json({ error: "Failed to load coach info." }, { status: 500 });
