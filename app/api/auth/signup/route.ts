@@ -210,6 +210,33 @@ export async function POST(request: NextRequest) {
     if (coachError) {
       return NextResponse.json({ error: coachError.message }, { status: 500 });
     }
+
+    const token = crypto.randomUUID();
+
+    const { error: verificationError } = await supabaseAdmin
+      .from("coach_email_verification")
+      .insert({
+        profile_id: authData.user.id,
+        token,
+      });
+
+    if (verificationError) {
+      return NextResponse.json({ error: verificationError.message }, { status: 500 });
+    }
+
+    const coachFirstName = full_name.trim().split(/\s+/)[0] || "there";
+    await sendEmail({
+      to: email,
+      subject: "Verify your email address",
+      html: renderEmail({
+        preheader: "Confirm this email address to activate your High School Prospect coach account.",
+        firstName: coachFirstName,
+        headline: "Verify your email address",
+        subline: "Confirm this email address to activate your High School Prospect coach account.",
+        ctaLabel: "Verify Email Address",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/verify-coach-email?token=${token}`,
+      }),
+    });
   }
 
   return NextResponse.json({ success: true });
