@@ -475,7 +475,7 @@ function ProspectCard({
             type="button"
             onClick={() => onMessage(student)}
             title="Message"
-            className="hidden sm:block p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
+            className="p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
@@ -484,7 +484,7 @@ function ProspectCard({
             type="button"
             title="Upgrade required to message"
             disabled
-            className="hidden sm:block p-1.5 rounded-lg text-[#64748b] opacity-40 cursor-not-allowed"
+            className="p-1.5 rounded-lg text-[#64748b] opacity-40 cursor-not-allowed"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
