@@ -133,7 +133,7 @@ export default function CoachMessages({
 
     if (studentIds.length > 0) {
       const { data: studentRows } = await supabase
-        .from("students")
+        .from("coach_prospect_view")
         .select("id, full_name, photo_url, subscription_status")
         .in("id", studentIds);
 

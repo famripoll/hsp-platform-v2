@@ -121,10 +121,10 @@ export default async function CoachStudentProfilePage({
   }
 
   const { data: studentData } = await supabase
-    .from("students")
+    .from("coach_prospect_view")
     .select(STUDENT_SELECT)
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   const student = studentData as Student | null;
 

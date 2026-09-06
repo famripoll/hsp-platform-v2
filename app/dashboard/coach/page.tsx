@@ -557,9 +557,9 @@ function CoachDashboardContent() {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let q: any = supabase
-        .from('students')
-        .select(`${SAFE_SELECT}, profiles!inner(status)`)
-        .eq('profiles.status', 'active')
+        .from('coach_prospect_view')
+        .select(SAFE_SELECT)
+        .eq('status', 'active')
         .order('full_name', { ascending: true })
         .limit(200)
 
@@ -638,9 +638,9 @@ function CoachDashboardContent() {
     }
     setWatchlistLoading(true)
     const { data } = await supabase
-      .from('students')
-      .select(`${SAFE_SELECT}, profiles!inner(status)`)
-      .eq('profiles.status', 'active')
+      .from('coach_prospect_view')
+      .select(SAFE_SELECT)
+      .eq('status', 'active')
       .in('id', Array.from(watchlistIds))
     const results: ProspectStudent[] = data ?? []
     setWatchlistStudents(results)
