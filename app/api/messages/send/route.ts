@@ -44,12 +44,19 @@ export async function POST(request: NextRequest) {
 
     const { data: coachRow } = await supabase
       .from("coaches")
-      .select("id, profile_id")
+      .select("id, profile_id, verified")
       .eq("profile_id", user.id)
       .single();
 
     if (!coachRow) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    }
+
+    if (coachRow.verified !== true) {
+      return NextResponse.json(
+        { error: "Your coach account is pending verification." },
+        { status: 403 }
+      );
     }
 
     const { data: student } = await supabase
