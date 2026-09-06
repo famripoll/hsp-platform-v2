@@ -122,8 +122,8 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
     if (!userId) return;
     setVideoMsg(null);
 
-    if (file.size > 100 * 1024 * 1024) {
-      setVideoMsg({ text: "Video must be under 100MB.", error: true });
+    if (file.size > 250 * 1024 * 1024) {
+      setVideoMsg({ text: "Video must be under 250MB.", error: true });
       return;
     }
 
@@ -265,7 +265,7 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
               Upload Videos
             </p>
             <p className="text-xs" style={{ color: "#64748b" }}>
-              {isPaid ? `MP4, MOV up to 100MB (${videoCount}/3)` : "Paid plan required"}
+              {isPaid ? `MP4, MOV up to 250MB (${videoCount}/3)` : "Paid plan required"}
             </p>
           </button>
           {videoMsg && (
