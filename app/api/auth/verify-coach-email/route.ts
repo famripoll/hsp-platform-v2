@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
 
   const { data: profile, error: profileError } = await supabaseAdmin
     .from("profiles")
-    .select("email")
+    .select("email, full_name")
     .eq("id", verification.profile_id)
     .maybeSingle();
 
@@ -71,6 +72,22 @@ export async function POST(request: NextRequest) {
   if (!email || typeof email !== "string") {
     return NextResponse.json({ status: "success" });
   }
+
+  const firstName = (profile?.full_name ?? "").trim().split(/\s+/)[0] || "there";
+
+  const sendActivationEmail = () =>
+    sendEmail({
+      to: email,
+      subject: "Your coach account is active",
+      html: renderEmail({
+        preheader: "You now have access to the High School Prospect coach dashboard.",
+        firstName,
+        headline: "Your coach account is active",
+        subline: "You now have access to the High School Prospect coach dashboard, where you can search prospects and message student-athletes.",
+        ctaLabel: "Go to Dashboard",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+      }),
+    });
 
   const { data: staff, error: staffError } = await supabaseAdmin
     .from("program_staff")
@@ -92,6 +109,8 @@ export async function POST(request: NextRequest) {
       })
       .eq("profile_id", verification.profile_id);
 
+    await sendActivationEmail();
+
     return NextResponse.json({ status: "success" });
   }
 
@@ -103,6 +122,8 @@ export async function POST(request: NextRequest) {
         verification_method: "domain_match",
       })
       .eq("profile_id", verification.profile_id);
+
+    await sendActivationEmail();
 
     return NextResponse.json({ status: "success" });
   }
@@ -128,6 +149,8 @@ export async function POST(request: NextRequest) {
           verification_method: "domain_match",
         })
         .eq("profile_id", verification.profile_id);
+
+      await sendActivationEmail();
 
       return NextResponse.json({ status: "success" });
     }
