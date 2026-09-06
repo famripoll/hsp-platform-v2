@@ -212,7 +212,7 @@ export default function SignUpPage() {
         );
         setStep(3);
       } else if (accountType === "coach") {
-        setSuccessMessage("Your account is pending manual verification.");
+        setSuccessMessage("Check your email to verify your address and activate your account.");
         setStep(3);
       }
     } catch {
