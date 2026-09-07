@@ -6,6 +6,16 @@ import { Camera, Video, Loader2, Lock } from "lucide-react";
 
 const LOCKED_MSG = "Upgrade to a paid subscription to upload photos and videos. Please ask your Parent/Guardian to select a payment plan.";
 
+// Derive a safe, lowercase file extension. Falls back when the name has no
+// dot, or when the "extension" isn't a plausible alphanumeric ext (e.g. it
+// contains a space or is unreasonably long).
+function safeExt(name: string, fallback: string): string {
+  const dot = name.lastIndexOf(".");
+  if (dot < 0 || dot === name.length - 1) return fallback;
+  const ext = name.slice(dot + 1).toLowerCase();
+  return /^[a-z0-9]{1,5}$/.test(ext) ? ext : fallback;
+}
+
 export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus: string }) {
   const isPaid = subscriptionStatus === "paid";
   const supabase = createClient();
@@ -86,7 +96,7 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
 
     setPhotoUploading(true);
 
-    const filePath = `${userId}/${Date.now()}_${file.name}`;
+    const filePath = `${userId}/photo_${Date.now()}.${safeExt(file.name, "jpg")}`;
 
     const { error: uploadError } = await supabase.storage
       .from("student-photos")
@@ -146,7 +156,7 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
 
     setVideoUploading(true);
 
-    const filePath = `${userId}/${Date.now()}_${file.name}`;
+    const filePath = `${userId}/video_${Date.now()}.${safeExt(file.name, "mp4")}`;
 
     const { error: uploadError } = await supabase.storage
       .from("student-videos")

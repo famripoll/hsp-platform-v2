@@ -11,6 +11,16 @@ type Props = {
   size?: string;
 };
 
+// Derive a safe, lowercase file extension. Falls back when the name has no
+// dot, or when the "extension" isn't a plausible alphanumeric ext (e.g. it
+// contains a space or is unreasonably long).
+function safeExt(name: string, fallback: string): string {
+  const dot = name.lastIndexOf(".");
+  if (dot < 0 || dot === name.length - 1) return fallback;
+  const ext = name.slice(dot + 1).toLowerCase();
+  return /^[a-z0-9]{1,5}$/.test(ext) ? ext : fallback;
+}
+
 function createImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -159,7 +169,7 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
       await supabase.storage.from("profile-photos").remove([photoPath]);
     }
 
-    const ext = file.name.split(".").pop() ?? "jpg";
+    const ext = safeExt(file.name, "jpg");
     const newPath = `${user.id}/profile_${Date.now()}.${ext}`;
 
     const { error: uploadError } = await supabase.storage
