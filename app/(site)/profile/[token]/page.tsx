@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { after } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
@@ -171,6 +172,30 @@ export default async function PublicStudentProfilePage({
   if (student.subscription_status !== "paid") {
     return inactiveState;
   }
+
+  // Past every gate above, this request renders the real profile — so record a
+  // view against this college's contact row. The counter is bumped Postgres-side
+  // (col = col + 1) so two concurrent opens can't lose a count, and the whole
+  // thing runs in `after()` so it neither delays the render nor, if it fails,
+  // breaks the page. Requires this function on the database:
+  //   create or replace function increment_profile_view(contact_id uuid)
+  //   returns void language sql security definer as $$
+  //     update college_contacts
+  //        set profile_view_count      = profile_view_count + 1,
+  //            profile_last_viewed_at  = now(),
+  //            profile_first_viewed_at = coalesce(profile_first_viewed_at, now())
+  //      where id = contact_id;
+  //   $$;
+  const viewedContactId = contact.id;
+  after(async () => {
+    try {
+      await supabaseAdmin.rpc("increment_profile_view", {
+        contact_id: viewedContactId,
+      });
+    } catch {
+      // A failed counter is not a failed page.
+    }
+  });
 
   const profileId =
     typeof student.profile_id === "string" ? student.profile_id : null;
