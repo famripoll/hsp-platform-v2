@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
+import { computeCycleStart, PLAN_LIMITS } from "@/lib/collegeContactQuota";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,37 +10,8 @@ const supabaseAdmin = createClient(
 
 const MAX_BODY_LENGTH = 500;
 
-const PLAN_LIMITS: Record<string, number> = {
-  silver: 5,
-  gold: 20,
-};
-
 const CONTACT_INFO_MESSAGE =
   "Phone numbers and email addresses are not allowed in your message. The coach will reply to you through the platform.";
-
-// Returns midnight UTC of the current billing-cycle start, anchored to the
-// day-of-month the subscription was created on.
-function computeCycleStart(subscriptionCreatedAt: string): Date {
-  const created = new Date(subscriptionCreatedAt);
-  const anchorDay = created.getUTCDate();
-
-  const now = new Date();
-  let year = now.getUTCFullYear();
-  let month = now.getUTCMonth();
-
-  if (now.getUTCDate() < anchorDay) {
-    month -= 1;
-    if (month < 0) {
-      month = 11;
-      year -= 1;
-    }
-  }
-
-  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const day = Math.min(anchorDay, daysInMonth);
-
-  return new Date(Date.UTC(year, month, day));
-}
 
 export async function POST(request: NextRequest) {
   try {
