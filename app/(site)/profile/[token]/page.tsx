@@ -43,7 +43,7 @@ const UUID_RE =
 const DASH = "—";
 
 const STUDENT_SELECT =
-  "profile_id, subscription_status, primary_position, secondary_position, graduation_year, grade, high_school, city, state, bats, throws, height, weight, gpa, sat_score, act_score, intended_major, photo_url, stat_ab, stat_h, stat_2b, stat_3b, stat_r, stat_avg, stat_obp, stat_slg, stat_ops, stat_rbi, stat_hr, stat_sb, stat_fpd, stat_era, stat_whip, stat_ip, stat_k, stat_bb, stat_kbb, stat_velo";
+  "profile_id, subscription_status, primary_position, secondary_position, graduation_year, grade, high_school, city, state, bats, throws, height, weight, gpa, sat_score, act_score, intended_major, photo_url, stat_ab, stat_h, stat_2b, stat_3b, stat_r, stat_avg, stat_obp, stat_slg, stat_rbi, stat_hr, stat_sb, stat_era, stat_whip, stat_ip, stat_k, stat_bb, stat_kbb, stat_velo";
 
 type StateCardProps = {
   heading: string;
@@ -265,6 +265,14 @@ export default async function PublicStudentProfilePage({
     return raw === null || raw === undefined || raw === "" ? DASH : String(raw);
   };
 
+  // Batting rate stats follow baseball convention and drop the leading zero
+  // (.325, not 0.325). Only a "0" directly before the decimal point is stripped,
+  // so 1.000 and the em-dash placeholder are left untouched.
+  const rate = (key: string) => {
+    const value = v(key);
+    return value === DASH ? value : value.replace(/^0\./, ".");
+  };
+
   const position = student.primary_position
     ? student.secondary_position
       ? `${student.primary_position}, ${student.secondary_position}`
@@ -276,8 +284,11 @@ export default async function PublicStudentProfilePage({
       .filter(Boolean)
       .join(", ") || DASH;
 
+  // Hitting always renders. Pitching renders only when "P" is a primary or
+  // secondary position; when it does, primary_position "P" puts it first.
   const isPitcher =
     student.primary_position === "P" || student.secondary_position === "P";
+  const pitcherFirst = student.primary_position === "P";
 
   const hittingStats = [
     { label: "AB", value: v("stat_ab") },
@@ -288,11 +299,9 @@ export default async function PublicStudentProfilePage({
     { label: "R", value: v("stat_r") },
     { label: "RBI", value: v("stat_rbi") },
     { label: "SB", value: v("stat_sb") },
-    { label: "AVG", value: v("stat_avg") },
-    { label: "OBP", value: v("stat_obp") },
-    { label: "SLG", value: v("stat_slg") },
-    { label: "OPS", value: v("stat_ops") },
-    { label: "FPCT", value: v("stat_fpd") },
+    { label: "AVG", value: rate("stat_avg") },
+    { label: "OBP", value: rate("stat_obp") },
+    { label: "SLG", value: rate("stat_slg") },
   ];
 
   const pitchingStats = [
@@ -307,6 +316,42 @@ export default async function PublicStudentProfilePage({
 
   const morePhotos = Math.max(photoTotal - photoUrls.length, 0);
   const moreVideos = Math.max(videoTotal - (videoUrl ? 1 : 0), 0);
+
+  const hittingBlock = (
+    <>
+      <p
+        className="text-xs font-bold uppercase tracking-widest mb-3"
+        style={{ color: "#d93025" }}
+      >
+        Hitting
+      </p>
+      <StatGrid items={hittingStats} />
+    </>
+  );
+
+  const pitchingBlock = (
+    <>
+      <p
+        className="text-xs font-bold uppercase tracking-widest mb-3"
+        style={{ color: "#d93025" }}
+      >
+        Pitching
+      </p>
+      <StatGrid items={pitchingStats} />
+    </>
+  );
+
+  const statBlocks = !isPitcher
+    ? [{ key: "hitting", node: hittingBlock }]
+    : pitcherFirst
+    ? [
+        { key: "pitching", node: pitchingBlock },
+        { key: "hitting", node: hittingBlock },
+      ]
+    : [
+        { key: "hitting", node: hittingBlock },
+        { key: "pitching", node: pitchingBlock },
+      ];
 
   return (
     <div className="max-w-[900px] mx-auto pb-12">
@@ -435,24 +480,11 @@ export default async function PublicStudentProfilePage({
           <h2 className="text-xl font-bold mb-4" style={{ color: "#0f172a" }}>
             Stats
           </h2>
-          <p
-            className="text-xs font-bold uppercase tracking-widest mb-3"
-            style={{ color: "#d93025" }}
-          >
-            Hitting
-          </p>
-          <StatGrid items={hittingStats} />
-          {isPitcher && (
-            <>
-              <p
-                className="text-xs font-bold uppercase tracking-widest mb-3 mt-6"
-                style={{ color: "#d93025" }}
-              >
-                Pitching
-              </p>
-              <StatGrid items={pitchingStats} />
-            </>
-          )}
+          {statBlocks.map((block, i) => (
+            <div key={block.key} className={i === 0 ? "" : "mt-6"}>
+              {block.node}
+            </div>
+          ))}
         </div>
 
         {/* Media */}

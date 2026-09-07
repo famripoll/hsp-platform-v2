@@ -52,11 +52,9 @@ type Student = {
   stat_avg?: string | null;
   stat_obp?: string | null;
   stat_slg?: string | null;
-  stat_ops?: string | null;
   stat_rbi?: string | null;
   stat_hr?: string | null;
   stat_sb?: string | null;
-  stat_fpd?: string | null;
   stat_era?: string | null;
   stat_whip?: string | null;
   stat_ip?: string | null;

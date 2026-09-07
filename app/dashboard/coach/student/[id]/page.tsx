@@ -38,11 +38,9 @@ type Student = {
   stat_avg: string | null;
   stat_obp: string | null;
   stat_slg: string | null;
-  stat_ops: string | null;
   stat_rbi: string | null;
   stat_hr: string | null;
   stat_sb: string | null;
-  stat_fpd: string | null;
   stat_era: string | null;
   stat_whip: string | null;
   stat_ip: string | null;
@@ -68,7 +66,7 @@ type MediaItem = {
 };
 
 const STUDENT_SELECT =
-  "id, profile_id, full_name, high_school, city, state, grade, graduation_year, gpa, primary_position, secondary_position, bats, throws, height, weight, photo_url, subscription_status, stat_ab, stat_h, stat_2b, stat_3b, stat_r, stat_avg, stat_obp, stat_slg, stat_ops, stat_rbi, stat_hr, stat_sb, stat_fpd, stat_era, stat_whip, stat_ip, stat_k, stat_bb, stat_kbb, stat_velo, sat_score, act_score, intended_major, facebook_url, instagram_url, snapchat_url, tiktok_url, x_url";
+  "id, profile_id, full_name, high_school, city, state, grade, graduation_year, gpa, primary_position, secondary_position, bats, throws, height, weight, photo_url, subscription_status, stat_ab, stat_h, stat_2b, stat_3b, stat_r, stat_avg, stat_obp, stat_slg, stat_rbi, stat_hr, stat_sb, stat_era, stat_whip, stat_ip, stat_k, stat_bb, stat_kbb, stat_velo, sat_score, act_score, intended_major, facebook_url, instagram_url, snapchat_url, tiktok_url, x_url";
 
 const DASH = "—";
 

@@ -37,11 +37,9 @@ type StudentData = {
   stat_avg?: string | null;
   stat_obp?: string | null;
   stat_slg?: string | null;
-  stat_ops?: string | null;
   stat_rbi?: string | null;
   stat_hr?: string | null;
   stat_sb?: string | null;
-  stat_fpd?: string | null;
   stat_era?: string | null;
   stat_whip?: string | null;
   stat_ip?: string | null;
@@ -115,11 +113,9 @@ export default function EditProfileForm({
     stat_avg: initialData.stat_avg ?? "",
     stat_obp: initialData.stat_obp ?? "",
     stat_slg: initialData.stat_slg ?? "",
-    stat_ops: initialData.stat_ops ?? "",
     stat_rbi: initialData.stat_rbi ?? "",
     stat_hr: initialData.stat_hr ?? "",
     stat_sb: initialData.stat_sb ?? "",
-    stat_fpd: initialData.stat_fpd ?? "",
     stat_era: initialData.stat_era ?? "",
     stat_whip: initialData.stat_whip ?? "",
     stat_ip: initialData.stat_ip ?? "",
@@ -214,11 +210,9 @@ export default function EditProfileForm({
         stat_avg: form.stat_avg || null,
         stat_obp: form.stat_obp || null,
         stat_slg: form.stat_slg || null,
-        stat_ops: form.stat_ops || null,
         stat_rbi: form.stat_rbi || null,
         stat_hr: form.stat_hr || null,
         stat_sb: form.stat_sb || null,
-        stat_fpd: form.stat_fpd || null,
         stat_era: form.stat_era || null,
         stat_whip: form.stat_whip || null,
         stat_ip: form.stat_ip || null,
