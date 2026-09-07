@@ -6,6 +6,7 @@ import Link from "next/link";
 import MediaUpload from "./MediaUpload";
 import MediaGallery from "./MediaGallery";
 import StudentMessages from "./StudentMessages";
+import CollegeContactsList from "./CollegeContactsList";
 import NotificationsList from "@/app/components/dashboard/NotificationsList";
 import { useUnreadNotifications } from "@/app/hooks/useUnreadNotifications";
 import { createClient } from "@/lib/supabase-client";
@@ -112,6 +113,13 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
   const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
   const [canReply, setCanReply] = useState(false);
+  const [messagesView, setMessagesView] = useState<"messages" | "collegeContacts">("messages");
+
+  useEffect(() => {
+    if (searchParams.get("coach")) {
+      setMessagesView("messages");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -471,7 +479,38 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
 
       {/* ── MESSAGES TAB ── */}
       {activeSection === "messages" && (
-        <StudentMessages canReply={canReply} subscriptionStatus={student.subscription_status ?? "free"} />
+        <>
+          <div className="flex rounded-lg overflow-hidden border border-gray-200 text-xs font-semibold self-start">
+            <button
+              onClick={() => setMessagesView("messages")}
+              className="px-3 py-2 transition-colors whitespace-nowrap"
+              style={
+                messagesView === "messages"
+                  ? { backgroundColor: "#d93025", color: "#ffffff" }
+                  : { backgroundColor: "#F2F3F3", color: "#0f172a" }
+              }
+            >
+              Messages
+            </button>
+            <button
+              onClick={() => setMessagesView("collegeContacts")}
+              className="px-3 py-2 transition-colors whitespace-nowrap"
+              style={
+                messagesView === "collegeContacts"
+                  ? { backgroundColor: "#d93025", color: "#ffffff" }
+                  : { backgroundColor: "#F2F3F3", color: "#0f172a" }
+              }
+            >
+              College Contacts
+            </button>
+          </div>
+
+          {messagesView === "messages" ? (
+            <StudentMessages canReply={canReply} subscriptionStatus={student.subscription_status ?? "free"} />
+          ) : (
+            <CollegeContactsList />
+          )}
+        </>
       )}
 
       {/* ── NOTIFICATIONS TAB ── */}
