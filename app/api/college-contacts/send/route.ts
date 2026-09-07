@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase-server";
 import { computeCycleStart, PLAN_LIMITS } from "@/lib/collegeContactQuota";
+import { sendEmail, renderEmail } from "@/lib/sendEmail";
+import { renderCollegeContactEmail } from "@/lib/collegeContactEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,7 +66,9 @@ export async function POST(request: NextRequest) {
 
     const { data: student } = await supabase
       .from("students")
-      .select("id, profile_id, subscription_status, full_name")
+      .select(
+        "id, profile_id, subscription_status, full_name, graduation_year, primary_position, secondary_position, high_school, height, weight, gpa"
+      )
       .eq("profile_id", user.id)
       .maybeSingle();
 
@@ -217,7 +221,70 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Outreach emails to the coaching staff (or the support fallback) are sent here — built in a later step.
+    // Outreach emails are best-effort: the contact rows are already committed and
+    // the student's credit is consumed, so a delivery failure must not fail the request.
+    try {
+      const toStr = (value: unknown): string | null =>
+        value === null || value === undefined || value === "" ? null : String(value);
+
+      const studentName = student.full_name ?? "";
+      const profileUrl = `${process.env.NEXT_PUBLIC_APP_URL}/profile/${profileToken}`;
+
+      // Single point where the recipient address is chosen. When
+      // COLLEGE_CONTACT_TEST_EMAIL is set, every send (outreach and support
+      // fallback) is redirected there and the subject is prefixed, so a real
+      // coach address never reaches sendEmail.
+      const testEmail = process.env.COLLEGE_CONTACT_TEST_EMAIL;
+      const testMode = typeof testEmail === "string" && testEmail.length > 0;
+      const resolveTo = (realTo: string): string => (testMode ? testEmail! : realTo);
+      const subjectPrefix = testMode ? "[TEST] " : "";
+
+      if (recipients.length > 0) {
+        await Promise.all(
+          recipients.map((staff) => {
+            const coachName =
+              [staff.first_name, staff.last_name].filter(Boolean).join(" ").trim() || null;
+
+            return sendEmail({
+              to: resolveTo(staff.email),
+              subject: `${subjectPrefix}${
+                studentName || "A high school player"
+              } is reaching out through High School Prospect`,
+              html: renderCollegeContactEmail({
+                studentFullName: studentName,
+                graduationYear: toStr(student.graduation_year),
+                primaryPosition: toStr(student.primary_position),
+                secondaryPosition: toStr(student.secondary_position),
+                highSchool: toStr(student.high_school),
+                height: toStr(student.height),
+                weight: toStr(student.weight),
+                gpa: student.gpa ?? null,
+                message: trimmedBody,
+                profileUrl,
+                coachName,
+                institutionName: university.institution_name,
+              }),
+            });
+          })
+        );
+      } else {
+        await sendEmail({
+          to: resolveTo("support@highschoolprospect.com"),
+          subject: `${subjectPrefix}College contact with no coach email on file`,
+          html: renderEmail({
+            preheader: `${studentName || "A student"} contacted ${university.institution_name} but no coach email is on file.`,
+            firstName: "Team",
+            headline: `${studentName || "A student"} contacted ${university.institution_name}, but no coach email is on file for that program.`,
+            subline: "The outreach was recorded but could not be delivered. Follow up manually if appropriate.",
+            ctaLabel: "Open High School Prospect",
+            ctaUrl: process.env.NEXT_PUBLIC_APP_URL as string,
+            note: `Student's message: ${trimmedBody}`,
+          }),
+        });
+      }
+    } catch {
+      // Swallow: email dispatch is best-effort and must not affect the response.
+    }
 
     return NextResponse.json({
       success: true,
