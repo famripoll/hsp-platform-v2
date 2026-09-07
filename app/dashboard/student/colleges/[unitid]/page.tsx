@@ -5,6 +5,7 @@ import { Users } from "lucide-react";
 import CollegeHero from "./CollegeHero";
 import CollegeStatsCard from "./CollegeStatsCard";
 import BackToSearchLink from "./BackToSearchLink";
+import ContactCollegeButton from "./ContactCollegeButton";
 
 type ProgramStaffPublic = {
   id: string;
@@ -87,11 +88,6 @@ export default async function CollegeDetailPage({
             component — page.tsx is a Server Component for the auth guard). */}
         <CollegeStatsCard university={university} />
 
-        {/* Column 2: Coach contact — intentionally non-functional. Will be wired
-            to a future program_staff table join once that data is uploaded.
-            h-full + flex-col lets it stretch to match the taller sibling column
-            (grid align-items: stretch); no effect on the single-column mobile
-            stack. */}
         <div className="bg-white rounded-2xl shadow-sm p-6 h-full flex flex-col">
           <div className="flex items-center gap-2 mb-4">
             <Users className="w-5 h-5" style={{ color: "#d93025" }} />
@@ -105,14 +101,12 @@ export default async function CollegeDetailPage({
               <p className="text-sm text-center" style={{ color: "#64748b" }}>
                 Coach information coming soon
               </p>
-              <button
-                type="button"
-                disabled
-                className="rounded-lg px-4 py-2 text-sm font-semibold cursor-not-allowed"
-                style={{ backgroundColor: "#F2F3F3", color: "#64748b" }}
-              >
-                Contact Coach
-              </button>
+              <ContactCollegeButton
+                unitid={Number(unitid)}
+                institutionName={university.institution_name}
+                hasCoaches={coaches.length > 0}
+                isParentViewer={profile.role === "parent"}
+              />
             </div>
           ) : (
             <div className="flex-1 flex flex-col gap-4">
@@ -132,14 +126,12 @@ export default async function CollegeDetailPage({
                   );
                 })}
               </div>
-              <button
-                type="button"
-                disabled
-                className="rounded-lg px-4 py-2 text-sm font-semibold cursor-not-allowed"
-                style={{ backgroundColor: "#F2F3F3", color: "#64748b" }}
-              >
-                Contact Coach
-              </button>
+              <ContactCollegeButton
+                unitid={Number(unitid)}
+                institutionName={university.institution_name}
+                hasCoaches={coaches.length > 0}
+                isParentViewer={profile.role === "parent"}
+              />
             </div>
           )}
         </div>
