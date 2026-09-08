@@ -135,7 +135,7 @@ export default function SubscriptionCard({
                 : "Cancel anytime — no long-term commitment."}
             </p>
           )}
-          {isPaid ? (
+          {isPaid && viewerRole === "parent" ? (
             <div className="pt-1">
               <button
                 onClick={handleManageBilling}
@@ -145,7 +145,7 @@ export default function SubscriptionCard({
                 {loading ? "Loading…" : "Manage Billing"}
               </button>
             </div>
-          ) : viewerRole === "parent" ? (
+          ) : !isPaid && viewerRole === "parent" ? (
             <div className="pt-1">
               <Link
                 href="/dashboard/upgrade"

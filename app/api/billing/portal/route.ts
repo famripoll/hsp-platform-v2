@@ -23,25 +23,17 @@ export async function POST() {
     .eq("id", user.id)
     .single();
 
-  let studentId: string | null = null;
-
-  if (profile?.role === "parent") {
-    const { data: parentRow } = await supabase
-      .from("parents")
-      .select("student_id")
-      .eq("profile_id", user.id)
-      .single();
-
-    studentId = parentRow?.student_id ?? null;
-  } else if (profile?.role === "student") {
-    const { data: studentRow } = await supabase
-      .from("students")
-      .select("id")
-      .eq("profile_id", user.id)
-      .single();
-
-    studentId = studentRow?.id ?? null;
+  if (profile?.role !== "parent") {
+    return NextResponse.json({ error: "Not authorized." }, { status: 403 });
   }
+
+  const { data: parentRow } = await supabase
+    .from("parents")
+    .select("student_id")
+    .eq("profile_id", user.id)
+    .single();
+
+  const studentId: string | null = parentRow?.student_id ?? null;
 
   if (!studentId) {
     return NextResponse.json({ error: "Unable to resolve account." }, { status: 400 });
