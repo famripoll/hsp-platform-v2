@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import ProfilePhotoUpload from "./ProfilePhotoUpload";
 import StudentTabs from "./StudentTabs";
+import ActivationPendingBanner from "./ActivationPendingBanner";
 import EditProfileButton from "./EditProfileButton";
 import VerifyEmailBanner from "./VerifyEmailBanner";
 import CollapsibleContacts from "./CollapsibleContacts";
@@ -180,11 +181,15 @@ export default async function StudentDashboardPage({
     params.stats === "pitcher" ? "pitcher" :
     params.stats === "position" ? "position" :
     undefined;
+  const checkout = params.checkout;
+  const showActivationPending =
+    checkout === "success" && (student.subscription_status ?? "free") !== "paid";
 
   return (
     <>
       {/* Page Content */}
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6">
+        {showActivationPending && <ActivationPendingBanner />}
         {!isParentViewer && !student.email_verified_at && (
           <VerifyEmailBanner email={displayProfile.email ?? ""} />
         )}
