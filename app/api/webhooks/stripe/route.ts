@@ -168,6 +168,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
         stripe_customer_id: customerIdOf(subscription.customer),
         status: "active",
         current_period_end: currentPeriodEndOf(subscription),
+        cancel_at_period_end: subscription.cancel_at_period_end,
       },
       { onConflict: "provider_subscription_id" }
     );
@@ -213,6 +214,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       status: mappedStatus,
       stripe_customer_id: customerIdOf(subscription.customer),
       current_period_end: currentPeriodEndOf(subscription),
+      cancel_at_period_end: subscription.cancel_at_period_end,
     })
     .eq("id", subscriptionRow.id);
 
