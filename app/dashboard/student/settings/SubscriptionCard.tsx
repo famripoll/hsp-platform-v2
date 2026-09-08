@@ -98,13 +98,15 @@ export default function SubscriptionCard({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Calendar size={18} className="text-gray-500 shrink-0" />
-              <div>
-                <span className={LABEL}>Renews On</span>
-                <p className="text-[#0f172a] font-semibold">{renewsOn ?? "—"}</p>
+            {isPaid && (
+              <div className="flex items-center gap-3">
+                <Calendar size={18} className="text-gray-500 shrink-0" />
+                <div>
+                  <span className={LABEL}>Renews On</span>
+                  <p className="text-[#0f172a] font-semibold">{renewsOn ?? "—"}</p>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="border-t border-gray-100 my-5" />
 
@@ -126,15 +128,17 @@ export default function SubscriptionCard({
               Cancel anytime — no long-term commitment.
             </p>
           )}
-          <div className="pt-1">
-            <button
-              onClick={handleManageBilling}
-              disabled={loading}
-              className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
-            >
-              {loading ? "Loading…" : "Manage Billing"}
-            </button>
-          </div>
+          {isPaid && (
+            <div className="pt-1">
+              <button
+                onClick={handleManageBilling}
+                disabled={loading}
+                className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
+              >
+                {loading ? "Loading…" : "Manage Billing"}
+              </button>
+            </div>
+          )}
 
           {portalError && (
             <p className="mt-3 text-sm text-gray-500">{portalError}</p>
