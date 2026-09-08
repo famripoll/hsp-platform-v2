@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
@@ -55,26 +56,29 @@ export async function POST(request: NextRequest) {
     { onConflict: "email", ignoreDuplicates: true }
   );
 
-  // Let support know a coach opted out. Best-effort: a failed notification
-  // must never change the status code the coach's browser sees.
-  try {
-    await sendEmail({
-      to: "support@highschoolprospect.com",
-      subject: "A coach unsubscribed from College Contacts",
-      html: renderEmail({
-        preheader: "A coach has opted out of College Contact outreach.",
-        firstName: "Team",
-        headline: "A coach has unsubscribed from College Contacts.",
-        subline:
-          "They have been added to the suppression list and will no longer receive outreach from High School Prospect student athletes.",
-        ctaLabel: "Open High School Prospect",
-        ctaUrl: process.env.NEXT_PUBLIC_APP_URL as string,
-        note: `Unsubscribed address: ${email}`,
-      }),
-    });
-  } catch {
-    // Swallow: the notification is best-effort only.
-  }
+  // Let support know a coach opted out. Best-effort: it runs in `after()` so it
+  // neither delays the coach's confirmation nor, if it fails, changes the status
+  // code the coach's browser sees.
+  after(async () => {
+    try {
+      await sendEmail({
+        to: "support@highschoolprospect.com",
+        subject: "A coach unsubscribed from College Contacts",
+        html: renderEmail({
+          preheader: "A coach has opted out of College Contact outreach.",
+          firstName: "Team",
+          headline: "A coach has unsubscribed from College Contacts.",
+          subline:
+            "They have been added to the suppression list and will no longer receive outreach from High School Prospect student athletes.",
+          ctaLabel: "Open High School Prospect",
+          ctaUrl: process.env.NEXT_PUBLIC_APP_URL as string,
+          note: `Unsubscribed address: ${email}`,
+        }),
+      });
+    } catch {
+      // Swallow: the notification is best-effort only.
+    }
+  });
 
   return NextResponse.json(SUCCESS);
 }
