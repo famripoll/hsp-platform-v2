@@ -1,26 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createServerClient } from "@/lib/supabase-server";
+import { PRICE_MAP, type Plan, type Frequency } from "@/lib/stripePrices";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   httpClient: Stripe.createFetchHttpClient(),
 });
-
-type Plan = "silver" | "gold";
-type Frequency = "monthly" | "6months" | "annual";
-
-const PRICE_MAP: Record<Plan, Record<Frequency, string>> = {
-  silver: {
-    monthly: "price_1U4AEdEqzeZZAr9kMxuEopSX",
-    "6months": "price_1U4AG5EqzeZZAr9kvwRzIYqd",
-    annual: "price_1U4AGdEqzeZZAr9k6tUMetHP",
-  },
-  gold: {
-    monthly: "price_1U4AHZEqzeZZAr9ks4Xj8QOd",
-    "6months": "price_1U4AIEEqzeZZAr9kAGz6MaGb",
-    annual: "price_1U5ApbEqzeZZAr9koGOV6E9y",
-  },
-};
 
 function isPlan(value: unknown): value is Plan {
   return value === "silver" || value === "gold";
