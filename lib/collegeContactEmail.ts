@@ -28,10 +28,14 @@ export function renderCollegeContactEmail(params: {
   profileUrl: string;
   coachName: string | null;
   institutionName: string;
+  unsubscribeUrl: string;
 }): string {
   const studentFullName = escapeHtml(params.studentFullName);
   const institutionName = escapeHtml(params.institutionName);
   const profileUrl = escapeHtml(params.profileUrl);
+  // Escaped here, with every other value, BEFORE the newline-to-<br> pass that
+  // only `message` goes through — a URL must never be run through that pass.
+  const unsubscribeUrl = escapeHtml(params.unsubscribeUrl);
 
   const greeting = isPresent(params.coachName)
     ? `Hi ${escapeHtml(String(params.coachName))},`
@@ -143,6 +147,7 @@ export function renderCollegeContactEmail(params: {
                     <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #64748b; line-height: 1.6; margin: 0 0 3px; text-align: center;">High School Prospect</p>
                     <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #64748b; line-height: 1.6; margin: 0 0 3px; text-align: center;">Ripoll Services, LLC</p>
                     <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #64748b; line-height: 1.6; margin: 0; text-align: center;">261 N University Dr, Suite 500-1027, Plantation, FL 33324</p>
+                    <p style="font-family: ${FONT_STACK}; font-size: 12px; color: #64748b; line-height: 1.6; margin: 12px 0 0; text-align: center;"><a href="${unsubscribeUrl}" style="color: #64748b; text-decoration: underline;">Unsubscribe from these messages</a></p>
                   </td>
                 </tr>
               </table>

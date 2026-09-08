@@ -225,6 +225,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to send message." }, { status: 500 });
     }
 
+    let recipientRecords: Array<{
+      email: string;
+      coach_name: string | null;
+      unsubscribe_token: string;
+    }> = [];
+
     if (recipients.length > 0) {
       const recipientRows = recipients.map((staff) => ({
         contact_id: inserted.id,
@@ -234,13 +240,16 @@ export async function POST(request: NextRequest) {
           [staff.first_name, staff.last_name].filter(Boolean).join(" ").trim() || null,
       }));
 
-      const { error: recipientsError } = await supabaseAdmin
+      const { data: insertedRecipients, error: recipientsError } = await supabaseAdmin
         .from("college_contact_recipients")
-        .insert(recipientRows);
+        .insert(recipientRows)
+        .select("email, coach_name, unsubscribe_token");
 
-      if (recipientsError) {
+      if (recipientsError || !insertedRecipients) {
         return NextResponse.json({ error: "Failed to send message." }, { status: 500 });
       }
+
+      recipientRecords = insertedRecipients;
     }
 
     // Outreach emails are best-effort: the contact rows are already committed and
@@ -263,12 +272,13 @@ export async function POST(request: NextRequest) {
 
       if (recipients.length > 0) {
         await Promise.all(
-          recipients.map((staff) => {
-            const coachName =
-              [staff.first_name, staff.last_name].filter(Boolean).join(" ").trim() || null;
+          recipientRecords.map((recipient) => {
+            // Each coach gets HIS OWN unsubscribe token, so one opt-out never
+            // suppresses a colleague at the same program.
+            const unsubscribeUrl = `${process.env.NEXT_PUBLIC_APP_URL}/unsubscribe/${recipient.unsubscribe_token}`;
 
             return sendEmail({
-              to: resolveTo(staff.email),
+              to: resolveTo(recipient.email),
               subject: `${subjectPrefix}${
                 studentName || "A high school player"
               } is reaching out through High School Prospect`,
@@ -283,8 +293,9 @@ export async function POST(request: NextRequest) {
                 gpa: student.gpa ?? null,
                 message: trimmedBody,
                 profileUrl,
-                coachName,
+                coachName: recipient.coach_name,
                 institutionName: university.institution_name,
+                unsubscribeUrl,
               }),
             });
           })
