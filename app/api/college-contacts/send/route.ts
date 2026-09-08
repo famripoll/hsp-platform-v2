@@ -178,7 +178,29 @@ export async function POST(request: NextRequest) {
       .not("first_name", "is", null)
       .neq("first_name", "");
 
-    const recipients = staffRows ?? [];
+    const candidateStaff = staffRows ?? [];
+
+    // Drop any coach whose email is on the unsubscribe suppression list.
+    // Compare with exact lowercase equality (never LIKE/ilike — underscores
+    // are valid in email addresses). Fail closed: if the suppression lookup
+    // errors, send to nobody rather than risk mailing a suppressed address.
+    let recipients: typeof candidateStaff = [];
+    if (candidateStaff.length > 0) {
+      const candidateEmails = candidateStaff.map((staff) => staff.email.toLowerCase());
+      const { data: suppressedRows, error: suppressionError } = await supabaseAdmin
+        .from("college_contact_unsubscribes")
+        .select("email")
+        .in("email", candidateEmails);
+
+      if (!suppressionError) {
+        const suppressed = new Set(
+          (suppressedRows ?? []).map((row) => row.email.toLowerCase())
+        );
+        recipients = candidateStaff.filter(
+          (staff) => !suppressed.has(staff.email.toLowerCase())
+        );
+      }
+    }
 
     const profileToken = crypto.randomUUID();
     const profileTokenExpiresAt = new Date(
