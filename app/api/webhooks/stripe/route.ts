@@ -100,6 +100,44 @@ async function sendSubscriptionActiveEmail(parentProfileId: string, plan: string
   }
 }
 
+async function sendStudentActivatedEmail(studentId: string) {
+  try {
+    const { data: studentRow } = await supabaseAdmin
+      .from("students")
+      .select("profile_id, full_name")
+      .eq("id", studentId)
+      .single();
+
+    if (!studentRow?.profile_id) return;
+
+    const { data: studentProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", studentRow.profile_id)
+      .single();
+
+    if (!studentProfile?.email) return;
+
+    const fullName = studentProfile.full_name || studentRow.full_name;
+
+    await sendEmail({
+      to: studentProfile.email,
+      subject: "Your High School Prospect profile is active",
+      html: renderEmail({
+        preheader: "Your profile is now active.",
+        firstName: fullName?.split(" ")[0] || "there",
+        headline: "Your profile is now active.",
+        subline:
+          "Your parent or guardian has activated your account. You can now log in, complete your profile, and start contacting college programs.",
+        ctaLabel: "Log in",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+      }),
+    });
+  } catch {
+    // Activation email is best-effort; never let it affect the webhook response.
+  }
+}
+
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   const { studentId, parentProfileId, plan, frequency } = subscription.metadata;
 
@@ -148,6 +186,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   }
 
   await sendSubscriptionActiveEmail(parentProfileId, plan, frequency);
+  await sendStudentActivatedEmail(studentId);
 
   return NextResponse.json({ received: true });
 }
