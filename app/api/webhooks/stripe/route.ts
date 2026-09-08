@@ -157,6 +157,10 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     return NextResponse.json({ received: true, ignored: "parent not found" });
   }
 
+  // Stripe's newer API versions signal a portal cancellation via `cancel_at`
+  // rather than `cancel_at_period_end`; treat either as "ending".
+  const isEnding = subscription.cancel_at !== null || subscription.cancel_at_period_end === true;
+
   const { error: upsertError } = await supabaseAdmin
     .from("subscriptions")
     .upsert(
@@ -169,7 +173,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
         stripe_customer_id: customerIdOf(subscription.customer),
         status: "active",
         current_period_end: currentPeriodEndOf(subscription),
-        cancel_at_period_end: subscription.cancel_at_period_end,
+        cancel_at_period_end: isEnding,
       },
       { onConflict: "provider_subscription_id" }
     );
@@ -212,13 +216,17 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const currentPriceId = subscription.items.data[0]?.price?.id;
   const mappedPlan = currentPriceId ? PRICE_ID_TO_PLAN[currentPriceId] : undefined;
 
+  // Stripe's newer API versions signal a portal cancellation via `cancel_at`
+  // rather than `cancel_at_period_end`; treat either as "ending".
+  const isEnding = subscription.cancel_at !== null || subscription.cancel_at_period_end === true;
+
   const { error: updateError } = await supabaseAdmin
     .from("subscriptions")
     .update({
       status: mappedStatus,
       stripe_customer_id: customerIdOf(subscription.customer),
       current_period_end: currentPeriodEndOf(subscription),
-      cancel_at_period_end: subscription.cancel_at_period_end,
+      cancel_at_period_end: isEnding,
       ...(mappedPlan && {
         plan: mappedPlan.plan,
         billing_frequency: mappedPlan.frequency,
