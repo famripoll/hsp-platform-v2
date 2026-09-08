@@ -30,7 +30,7 @@ export default async function UnsubscribePage({
     <div>
       {/* Hero */}
       <section className="text-center mb-10 md:mb-14">
-        <h1 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+        <h1 className="text-lg md:text-xl font-bold mb-4 leading-tight">
           <span className="text-hsp-red">Unsubscribe</span>{" "}
           <span className="text-hsp-dark">from College Contacts</span>
         </h1>
