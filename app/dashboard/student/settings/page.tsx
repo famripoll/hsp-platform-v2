@@ -3,8 +3,18 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import SettingsTabs from "./SettingsTabs";
 
-export default async function StudentSettingsPage() {
+export default async function StudentSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const supabase = await createServerClient();
+
+  const params = await searchParams;
+  const initialTab =
+    params.tab === "subscription" ? "subscription" :
+    params.tab === "family" ? "family" :
+    "security";
 
   const {
     data: { user },
@@ -131,7 +141,7 @@ export default async function StudentSettingsPage() {
             </Link>
           </div>
 
-          <SettingsTabs viewerRole={profile.role} cancelAtPeriodEnd={cancelAtPeriodEnd} subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
+          <SettingsTabs initialTab={initialTab} viewerRole={profile.role} cancelAtPeriodEnd={cancelAtPeriodEnd} subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
         </div>
       </div>
     </>

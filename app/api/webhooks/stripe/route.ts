@@ -165,7 +165,7 @@ async function sendCancellationScheduledEmail(parentProfileId: string, accessEnd
         subline:
           "You'll keep full access to all features until then. If you change your mind, you can restart your subscription at any time before that date.",
         ctaLabel: "Manage Subscription",
-        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings`,
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings?tab=subscription`,
       }),
     });
   } catch {
@@ -193,7 +193,7 @@ async function sendPaymentFailedEmail(parentProfileId: string) {
         subline:
           "Access to your athlete's profile has been paused. Updating your payment method will restore it right away.",
         ctaLabel: "Update Payment Method",
-        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings`,
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings?tab=subscription`,
       }),
     });
   } catch {

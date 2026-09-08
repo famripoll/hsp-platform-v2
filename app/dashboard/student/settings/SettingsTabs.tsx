@@ -14,6 +14,7 @@ const TABS = [
 type TabValue = typeof TABS[number]["value"];
 
 export default function SettingsTabs({
+  initialTab = "security",
   viewerRole,
   cancelAtPeriodEnd,
   subscriptionStatus,
@@ -27,6 +28,7 @@ export default function SettingsTabs({
   familyMembers,
   studentId,
 }: {
+  initialTab?: string;
   viewerRole: string;
   cancelAtPeriodEnd: boolean;
   subscriptionStatus: string | null;
@@ -40,7 +42,9 @@ export default function SettingsTabs({
   familyMembers: { id: string; full_name: string; relationship: string; email: string | null; phone: string | null; show_on_profile: boolean }[];
   studentId: string | null;
 }) {
-  const [activeTab, setActiveTab] = useState<TabValue>("security");
+  const [activeTab, setActiveTab] = useState<TabValue>(
+    TABS.some((tab) => tab.value === initialTab) ? (initialTab as TabValue) : "security"
+  );
 
   return (
     <div className="flex flex-col gap-6">
