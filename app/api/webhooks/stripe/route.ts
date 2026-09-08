@@ -139,6 +139,68 @@ async function sendStudentActivatedEmail(studentId: string) {
   }
 }
 
+async function sendCancellationScheduledEmail(parentProfileId: string, accessEndsAt: string | null) {
+  try {
+    const { data: parentProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", parentProfileId)
+      .single();
+
+    if (!parentProfile?.email || !accessEndsAt) return;
+
+    const accessEndsLabel = new Date(accessEndsAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    await sendEmail({
+      to: parentProfile.email,
+      subject: "Your High School Prospect subscription is set to end",
+      html: renderEmail({
+        preheader: "Your subscription is set to end",
+        firstName: parentProfile.full_name?.split(" ")[0] || "there",
+        headline: `Your subscription will end on ${accessEndsLabel}.`,
+        subline:
+          "You'll keep full access to all features until then. If you change your mind, you can restart your subscription at any time before that date.",
+        ctaLabel: "Manage Subscription",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings`,
+      }),
+    });
+  } catch {
+    // Lifecycle email is best-effort; never let it affect the webhook response.
+  }
+}
+
+async function sendPaymentFailedEmail(parentProfileId: string) {
+  try {
+    const { data: parentProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", parentProfileId)
+      .single();
+
+    if (!parentProfile?.email) return;
+
+    await sendEmail({
+      to: parentProfile.email,
+      subject: "We couldn't process your High School Prospect payment",
+      html: renderEmail({
+        preheader: "We couldn't process your payment",
+        firstName: parentProfile.full_name?.split(" ")[0] || "there",
+        headline: "Your latest payment didn't go through.",
+        subline:
+          "Access to your athlete's profile has been paused. Updating your payment method will restore it right away.",
+        ctaLabel: "Update Payment Method",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student/settings`,
+      }),
+    });
+  } catch {
+    // Lifecycle email is best-effort; never let it affect the webhook response.
+  }
+}
+
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   const { studentId, parentProfileId, plan, frequency } = subscription.metadata;
 
@@ -205,7 +267,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
   const { data: subscriptionRow, error: findError } = await supabaseAdmin
     .from("subscriptions")
-    .select("id, student_id")
+    .select("id, student_id, status, cancel_at_period_end, parent_id")
     .eq("provider_subscription_id", subscription.id)
     .single();
 
@@ -247,6 +309,37 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
     if (studentError) {
       return NextResponse.json({ error: "Failed to update student status." }, { status: 500 });
+    }
+  }
+
+  // Stripe delivers these events in bursts, so only email on an actual
+  // state transition — never on a repeat event that carries the same state.
+  const cancellationJustScheduled =
+    subscriptionRow.cancel_at_period_end === false && isEnding === true;
+  const paymentJustFailed =
+    subscriptionRow.status !== "past_due" && mappedStatus === "past_due";
+
+  if ((cancellationJustScheduled || paymentJustFailed) && subscriptionRow.parent_id) {
+    try {
+      const { data: parentRow } = await supabaseAdmin
+        .from("parents")
+        .select("profile_id")
+        .eq("id", subscriptionRow.parent_id)
+        .single();
+
+      if (parentRow?.profile_id) {
+        if (cancellationJustScheduled) {
+          await sendCancellationScheduledEmail(
+            parentRow.profile_id,
+            currentPeriodEndOf(subscription)
+          );
+        }
+        if (paymentJustFailed) {
+          await sendPaymentFailedEmail(parentRow.profile_id);
+        }
+      }
+    } catch {
+      // Lifecycle emails are best-effort; never let them affect the webhook response.
     }
   }
 
