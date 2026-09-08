@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CreditCard, Gift, Calendar } from "lucide-react";
 
 const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
@@ -13,11 +14,13 @@ function formatFrequency(freq: "monthly" | "6months" | "annual" | null): string 
 }
 
 export default function SubscriptionCard({
+  viewerRole,
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
   renewsOn,
 }: {
+  viewerRole: string;
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
@@ -128,7 +131,7 @@ export default function SubscriptionCard({
               Cancel anytime — no long-term commitment.
             </p>
           )}
-          {isPaid && (
+          {isPaid ? (
             <div className="pt-1">
               <button
                 onClick={handleManageBilling}
@@ -138,7 +141,16 @@ export default function SubscriptionCard({
                 {loading ? "Loading…" : "Manage Billing"}
               </button>
             </div>
-          )}
+          ) : viewerRole === "parent" ? (
+            <div className="pt-1">
+              <Link
+                href="/dashboard/upgrade"
+                className="inline-block bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
+              >
+                Choose a plan
+              </Link>
+            </div>
+          ) : null}
 
           {portalError && (
             <p className="mt-3 text-sm text-gray-500">{portalError}</p>

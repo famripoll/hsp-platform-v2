@@ -14,6 +14,7 @@ const TABS = [
 type TabValue = typeof TABS[number]["value"];
 
 export default function SettingsTabs({
+  viewerRole,
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
@@ -25,6 +26,7 @@ export default function SettingsTabs({
   familyMembers,
   studentId,
 }: {
+  viewerRole: string;
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
@@ -61,6 +63,7 @@ export default function SettingsTabs({
       {activeTab === "security" && <ChangePasswordForm />}
       {activeTab === "subscription" && (
         <SubscriptionCard
+          viewerRole={viewerRole}
           subscriptionStatus={subscriptionStatus}
           subscriptionPlan={subscriptionPlan}
           billingFrequency={billingFrequency}

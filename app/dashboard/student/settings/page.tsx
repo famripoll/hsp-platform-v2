@@ -129,7 +129,7 @@ export default async function StudentSettingsPage() {
             </Link>
           </div>
 
-          <SettingsTabs subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
+          <SettingsTabs viewerRole={profile.role} subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
         </div>
       </div>
     </>
