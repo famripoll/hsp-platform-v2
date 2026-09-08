@@ -201,6 +201,72 @@ async function sendPaymentFailedEmail(parentProfileId: string) {
   }
 }
 
+async function sendSubscriptionEndedEmail(parentProfileId: string) {
+  try {
+    const { data: parentProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", parentProfileId)
+      .single();
+
+    if (!parentProfile?.email) return;
+
+    await sendEmail({
+      to: parentProfile.email,
+      subject: "Your High School Prospect subscription has ended",
+      html: renderEmail({
+        preheader: "Your subscription has ended",
+        firstName: parentProfile.full_name?.split(" ")[0] || "there",
+        headline: "Your subscription has ended.",
+        subline:
+          "Your athlete's profile is no longer visible to college coaches, and college outreach is paused. You can restart anytime — all profile information, photos and videos have been saved.",
+        ctaLabel: "Choose a Plan",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/upgrade`,
+      }),
+    });
+  } catch {
+    // Lifecycle email is best-effort; never let it affect the webhook response.
+  }
+}
+
+async function sendStudentAccessEndedEmail(studentId: string) {
+  try {
+    const { data: studentRow } = await supabaseAdmin
+      .from("students")
+      .select("profile_id, full_name")
+      .eq("id", studentId)
+      .single();
+
+    if (!studentRow?.profile_id) return;
+
+    const { data: studentProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", studentRow.profile_id)
+      .single();
+
+    if (!studentProfile?.email) return;
+
+    const fullName = studentProfile.full_name || studentRow.full_name;
+
+    await sendEmail({
+      to: studentProfile.email,
+      subject: "Your High School Prospect premium features are paused",
+      html: renderEmail({
+        preheader: "Your premium features are paused",
+        firstName: fullName?.split(" ")[0] || "there",
+        headline: "Your premium features are now paused.",
+        subline:
+          "You can still log in and your profile, photos and videos are all saved. Contacting college programs and messaging coaches are paused for now. Ask your parent or guardian if you'd like to continue.",
+        ctaLabel: "Log in",
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+      }),
+    });
+  } catch {
+    // Access-ended email is best-effort; never let it affect the webhook response.
+  }
+}
+
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   const { studentId, parentProfileId, plan, frequency } = subscription.metadata;
 
@@ -349,7 +415,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const { data: subscriptionRow, error: findError } = await supabaseAdmin
     .from("subscriptions")
-    .select("id, student_id")
+    .select("id, student_id, parent_id")
     .eq("provider_subscription_id", subscription.id)
     .single();
 
@@ -375,6 +441,26 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     if (studentError) {
       return NextResponse.json({ error: "Failed to update student status." }, { status: 500 });
     }
+  }
+
+  try {
+    if (subscriptionRow.parent_id) {
+      const { data: parentRow } = await supabaseAdmin
+        .from("parents")
+        .select("profile_id")
+        .eq("id", subscriptionRow.parent_id)
+        .single();
+
+      if (parentRow?.profile_id) {
+        await sendSubscriptionEndedEmail(parentRow.profile_id);
+      }
+    }
+
+    if (subscriptionRow.student_id) {
+      await sendStudentAccessEndedEmail(subscriptionRow.student_id);
+    }
+  } catch {
+    // Lifecycle emails are best-effort; never let them affect the webhook response.
   }
 
   return NextResponse.json({ received: true });
