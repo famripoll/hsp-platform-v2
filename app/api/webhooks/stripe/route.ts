@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { sendEmail, renderEmail } from "@/lib/sendEmail";
+import { PRICE_ID_TO_PLAN } from "@/lib/stripePrices";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   httpClient: Stripe.createFetchHttpClient(),
@@ -208,6 +209,9 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     return NextResponse.json({ received: true, ignored: "subscription not found" });
   }
 
+  const currentPriceId = subscription.items.data[0]?.price?.id;
+  const mappedPlan = currentPriceId ? PRICE_ID_TO_PLAN[currentPriceId] : undefined;
+
   const { error: updateError } = await supabaseAdmin
     .from("subscriptions")
     .update({
@@ -215,6 +219,10 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       stripe_customer_id: customerIdOf(subscription.customer),
       current_period_end: currentPeriodEndOf(subscription),
       cancel_at_period_end: subscription.cancel_at_period_end,
+      ...(mappedPlan && {
+        plan: mappedPlan.plan,
+        billing_frequency: mappedPlan.frequency,
+      }),
     })
     .eq("id", subscriptionRow.id);
 
