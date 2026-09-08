@@ -15,12 +15,14 @@ function formatFrequency(freq: "monthly" | "6months" | "annual" | null): string 
 
 export default function SubscriptionCard({
   viewerRole,
+  cancelAtPeriodEnd,
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
   renewsOn,
 }: {
   viewerRole: string;
+  cancelAtPeriodEnd: boolean;
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
@@ -105,7 +107,7 @@ export default function SubscriptionCard({
               <div className="flex items-center gap-3">
                 <Calendar size={18} className="text-gray-500 shrink-0" />
                 <div>
-                  <span className={LABEL}>Renews On</span>
+                  <span className={LABEL}>{cancelAtPeriodEnd ? "Access Ends On" : "Renews On"}</span>
                   <p className="text-[#0f172a] font-semibold">{renewsOn ?? "—"}</p>
                 </div>
               </div>
@@ -128,7 +130,9 @@ export default function SubscriptionCard({
         <div>
           {(subscriptionPlan === "gold" || subscriptionPlan === "silver") && (
             <p className="text-sm text-[#64748b] mb-3">
-              Cancel anytime — no long-term commitment.
+              {cancelAtPeriodEnd
+                ? "Your subscription is set to end on this date. You'll keep full access until then."
+                : "Cancel anytime — no long-term commitment."}
             </p>
           )}
           {isPaid ? (

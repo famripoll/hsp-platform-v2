@@ -15,6 +15,7 @@ type TabValue = typeof TABS[number]["value"];
 
 export default function SettingsTabs({
   viewerRole,
+  cancelAtPeriodEnd,
   subscriptionStatus,
   subscriptionPlan,
   billingFrequency,
@@ -27,6 +28,7 @@ export default function SettingsTabs({
   studentId,
 }: {
   viewerRole: string;
+  cancelAtPeriodEnd: boolean;
   subscriptionStatus: string | null;
   subscriptionPlan: "silver" | "gold" | null;
   billingFrequency: "monthly" | "6months" | "annual" | null;
@@ -64,6 +66,7 @@ export default function SettingsTabs({
       {activeTab === "subscription" && (
         <SubscriptionCard
           viewerRole={viewerRole}
+          cancelAtPeriodEnd={cancelAtPeriodEnd}
           subscriptionStatus={subscriptionStatus}
           subscriptionPlan={subscriptionPlan}
           billingFrequency={billingFrequency}

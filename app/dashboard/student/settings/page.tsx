@@ -70,11 +70,12 @@ export default async function StudentSettingsPage() {
   let subscriptionPlan: "silver" | "gold" | null = null;
   let billingFrequency: "monthly" | "6months" | "annual" | null = null;
   let renewsOn: string | null = null;
+  let cancelAtPeriodEnd = false;
 
   if (studentId) {
     const { data: subData } = await supabase
       .from("subscriptions")
-      .select("plan, billing_frequency, status, current_period_end")
+      .select("plan, billing_frequency, status, current_period_end, cancel_at_period_end")
       .eq("student_id", studentId)
       .eq("status", "active")
       .order("created_at", { ascending: false })
@@ -91,6 +92,7 @@ export default async function StudentSettingsPage() {
             day: "numeric",
           })
         : null;
+      cancelAtPeriodEnd = subData.cancel_at_period_end ?? false;
     }
 
     const { data: familyData } = await supabase
@@ -129,7 +131,7 @@ export default async function StudentSettingsPage() {
             </Link>
           </div>
 
-          <SettingsTabs viewerRole={profile.role} subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
+          <SettingsTabs viewerRole={profile.role} cancelAtPeriodEnd={cancelAtPeriodEnd} subscriptionStatus={subscriptionStatus} subscriptionPlan={subscriptionPlan} billingFrequency={billingFrequency} renewsOn={renewsOn} parentName={parentName} parentEmail={parentEmail} parentPhone={parentPhone} parentRelationship={parentRelationship} familyMembers={familyMembers} studentId={studentId} />
         </div>
       </div>
     </>
