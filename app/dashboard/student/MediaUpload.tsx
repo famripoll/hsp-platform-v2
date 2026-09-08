@@ -16,7 +16,7 @@ function safeExt(name: string, fallback: string): string {
   return /^[a-z0-9]{1,5}$/.test(ext) ? ext : fallback;
 }
 
-export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus: string }) {
+export default function MediaUpload({ subscriptionStatus, mediaVersion }: { subscriptionStatus: string; mediaVersion: number }) {
   const isPaid = subscriptionStatus === "paid";
   const supabase = createClient();
 
@@ -55,7 +55,7 @@ export default function MediaUpload({ subscriptionStatus }: { subscriptionStatus
     }
     init();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mediaVersion]);
 
   function getVideoDuration(file: File): Promise<number> {
     return new Promise((resolve) => {

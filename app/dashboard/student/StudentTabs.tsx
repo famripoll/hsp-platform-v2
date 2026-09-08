@@ -114,6 +114,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
   const [activityLoading, setActivityLoading] = useState(true);
   const [canReply, setCanReply] = useState(false);
   const [messagesView, setMessagesView] = useState<"messages" | "collegeContacts">("messages");
+  const [mediaVersion, setMediaVersion] = useState(0);
 
   useEffect(() => {
     if (searchParams.get("coach")) {
@@ -447,8 +448,8 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                 Media
               </h3>
             </div>
-            <MediaUpload subscriptionStatus={student.subscription_status ?? "free"} />
-            <MediaGallery />
+            <MediaUpload subscriptionStatus={student.subscription_status ?? "free"} mediaVersion={mediaVersion} />
+            <MediaGallery onMediaDeleted={() => setMediaVersion((v) => v + 1)} />
           </div>
 
           {/* Upgrade Banner — free users only */}
