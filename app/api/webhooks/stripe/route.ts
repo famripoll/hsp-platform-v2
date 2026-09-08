@@ -181,10 +181,11 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     return NextResponse.json({ error: "Failed to update subscription." }, { status: 500 });
   }
 
-  if (mappedStatus === "canceled" && subscriptionRow.student_id) {
+  if (subscriptionRow.student_id) {
+    const studentSubscriptionStatus = mappedStatus === "active" ? "paid" : "free";
     const { error: studentError } = await supabaseAdmin
       .from("students")
-      .update({ subscription_status: "free" })
+      .update({ subscription_status: studentSubscriptionStatus })
       .eq("id", subscriptionRow.student_id);
 
     if (studentError) {
