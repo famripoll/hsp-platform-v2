@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { X, Trash2, Loader2 } from "lucide-react";
 
@@ -19,6 +20,7 @@ type DeleteTarget = {
 
 export default function MediaGallery() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -121,6 +123,7 @@ export default function MediaGallery() {
     setConfirmDelete(null);
     setDeleting(false);
     setRefreshKey((k) => k + 1);
+    router.refresh();
   }
 
   return (
