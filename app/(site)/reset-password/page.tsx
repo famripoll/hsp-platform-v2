@@ -99,7 +99,7 @@ export default function ResetPasswordPage() {
           <span className="text-hsp-red">Reset</span>{" "}
           <span className="text-hsp-dark">Password</span>
         </h1>
-        <p className="text-[#64748b] text-base md:text-lg">
+        <p className="text-[#5A6779] text-base md:text-lg">
           Choose a new password for your account
         </p>
       </section>

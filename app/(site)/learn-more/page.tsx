@@ -99,7 +99,7 @@ export default function LearnMorePage() {
                 <Image src="/lm-step1.png" alt="The Data CV" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">THE DATA CV</h3>
-              <p className="text-sm" style={{ color: "#64748b" }}>
+              <p className="text-sm" style={{ color: "#5A6779" }}>
                 Your stats, academics, video, and profile. Verified. Organized. Recruit-ready.
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function LearnMorePage() {
                 <Image src="/lm-step2.png" alt="Target Radar" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">TARGET RADAR</h3>
-              <p className="text-sm" style={{ color: "#64748b" }}>
+              <p className="text-sm" style={{ color: "#5A6779" }}>
                 Discover programs that match your level, goals, location, and academic path.
               </p>
             </div>
@@ -143,7 +143,7 @@ export default function LearnMorePage() {
                 <Image src="/lm-step3.png" alt="Controlled Strike" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-hsp-dark text-base">CONTROLLED STRIKE</h3>
-              <p className="text-sm" style={{ color: "#64748b" }}>
+              <p className="text-sm" style={{ color: "#5A6779" }}>
                 Reach coaches with targeted messages, not random posts or lost videos.
               </p>
             </div>
@@ -165,7 +165,7 @@ export default function LearnMorePage() {
                 <Image src="/lm-step4.png" alt="The Verified Dugout" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-white text-base">VERIFIED DUGOUT</h3>
-              <p className="text-sm" style={{ color: "#64748b" }}>
+              <p className="text-sm" style={{ color: "#5A6779" }}>
                 Where verified coaches and serious players connect with confidence.
               </p>
             </div>

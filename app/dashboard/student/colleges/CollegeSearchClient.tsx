@@ -22,7 +22,7 @@ function getPageWindow(current: number, total: number): (number | "ellipsis")[] 
   return pages;
 }
 
-const LABEL_CLS = "text-[10px] font-semibold uppercase text-[#64748b] mb-1 block";
+const LABEL_CLS = "text-[10px] font-semibold uppercase text-[#5A6779] mb-1 block";
 const INPUT_CLS =
   "border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white";
 
@@ -237,7 +237,7 @@ function CollegeSearchClientInner() {
             type="button"
             onClick={() => setShowFilters((v) => !v)}
             aria-expanded={showFilters}
-            className="sm:hidden shrink-0 flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-[#64748b]"
+            className="sm:hidden shrink-0 flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-[#5A6779]"
           >
             <SlidersHorizontal className="w-4 h-4" />
             All filters
@@ -316,13 +316,13 @@ function CollegeSearchClientInner() {
             type="button"
             onClick={clearFilters}
             disabled={loading}
-            className="text-sm text-[#64748b] hover:text-[#d93025] transition-colors disabled:opacity-60"
+            className="text-sm text-[#5A6779] hover:text-[#d93025] transition-colors disabled:opacity-60"
           >
             Clear Filters
           </button>
         )}
         {searched && !loading && totalCount > 0 && (
-          <span className="text-xs ml-auto" style={{ color: "#64748b" }}>
+          <span className="text-xs ml-auto" style={{ color: "#5A6779" }}>
             Showing{" "}
             <span className="font-semibold" style={{ color: "#0f172a" }}>
               {(page - 1) * PAGE_SIZE + 1}&ndash;{(page - 1) * PAGE_SIZE + results.length}
@@ -343,7 +343,7 @@ function CollegeSearchClientInner() {
           <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : results.length === 0 ? (
-        <p className="text-sm text-center py-12" style={{ color: "#64748b" }}>
+        <p className="text-sm text-center py-12" style={{ color: "#5A6779" }}>
           No colleges found
         </p>
       ) : (
@@ -404,7 +404,7 @@ function CollegeSearchClientInner() {
             type="button"
             onClick={() => goToPage(page - 1)}
             disabled={page <= 1}
-            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#64748b] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#5A6779] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
           >
             Prev
           </button>
@@ -413,7 +413,7 @@ function CollegeSearchClientInner() {
               <span
                 key={`ellipsis-${i}`}
                 className="shrink-0 px-1.5 text-sm select-none"
-                style={{ color: "#64748b" }}
+                style={{ color: "#5A6779" }}
               >
                 &hellip;
               </span>
@@ -426,7 +426,7 @@ function CollegeSearchClientInner() {
                 className={`shrink-0 min-w-[36px] px-2.5 py-1.5 text-sm rounded-lg transition-colors ${
                   p === page
                     ? "text-white font-semibold"
-                    : "border border-gray-200 text-[#64748b] hover:bg-gray-50"
+                    : "border border-gray-200 text-[#5A6779] hover:bg-gray-50"
                 }`}
                 style={p === page ? { backgroundColor: "#d93025" } : undefined}
               >
@@ -438,7 +438,7 @@ function CollegeSearchClientInner() {
             type="button"
             onClick={() => goToPage(page + 1)}
             disabled={page >= totalPages}
-            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#64748b] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            className="shrink-0 px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-[#5A6779] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
           >
             Next
           </button>

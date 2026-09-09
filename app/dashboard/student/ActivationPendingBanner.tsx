@@ -68,7 +68,7 @@ export default function ActivationPendingBanner() {
               <p className="text-sm font-semibold text-[#0f172a]">
                 Activation is taking longer than usual
               </p>
-              <p className="text-sm text-[#64748b] mt-0.5 break-words">
+              <p className="text-sm text-[#5A6779] mt-0.5 break-words">
                 Your payment was received. Activation is taking longer than usual — please
                 refresh the page in a moment. If it persists, contact{" "}
                 <a
@@ -85,7 +85,7 @@ export default function ActivationPendingBanner() {
               <p className="text-sm font-semibold text-[#0f172a]">
                 Activating your subscription
               </p>
-              <p className="text-sm text-[#64748b] mt-0.5 break-words">
+              <p className="text-sm text-[#5A6779] mt-0.5 break-words">
                 Your payment was received. This usually takes just a few seconds.
               </p>
             </>

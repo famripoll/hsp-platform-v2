@@ -167,7 +167,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
           Notifications
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <p className="text-sm text-center animate-pulse" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center animate-pulse" style={{ color: "#5A6779" }}>
             Loading notifications...
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <Bell className="w-10 h-10" style={{ color: "#d1d5db" }} />
-          <p className="text-sm text-center" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center" style={{ color: "#5A6779" }}>
             No notifications yet.
           </p>
         </div>
@@ -246,11 +246,11 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
                       {titleText}
                     </span>
                   </div>
-                  <span className="text-[10px] shrink-0" style={{ color: "#64748b" }}>
+                  <span className="text-[10px] shrink-0" style={{ color: "#5A6779" }}>
                     {formatRelativeTime(group.latest.created_at)}
                   </span>
                 </div>
-                <p className="text-sm mt-0.5" style={{ color: "#64748b" }}>
+                <p className="text-sm mt-0.5" style={{ color: "#5A6779" }}>
                   {group.latest.body}
                 </p>
               </div>

@@ -176,7 +176,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
                       Photos
                     </h3>
                     {photos.length === 0 ? (
-                      <p className="text-sm" style={{ color: "#64748b" }}>
+                      <p className="text-sm" style={{ color: "#5A6779" }}>
                         No photos yet.
                       </p>
                     ) : (
@@ -222,7 +222,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
                       Videos
                     </h3>
                     {videos.length === 0 ? (
-                      <p className="text-sm" style={{ color: "#64748b" }}>
+                      <p className="text-sm" style={{ color: "#5A6779" }}>
                         No videos yet.
                       </p>
                     ) : (
@@ -298,7 +298,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
             <h3 className="text-lg font-bold mb-1.5" style={{ color: "#0f172a" }}>
               Delete this file?
             </h3>
-            <p className="text-sm mb-5" style={{ color: "#64748b" }}>
+            <p className="text-sm mb-5" style={{ color: "#5A6779" }}>
               This cannot be undone.
             </p>
             <div className="flex gap-3">

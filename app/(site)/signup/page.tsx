@@ -51,12 +51,15 @@ function InputField({
   showToggle?: boolean;
   onToggle?: () => void;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const fieldId = `signup-${props.name}`;
+
   if (showToggle === undefined) {
     return (
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-semibold text-hsp-dark">{label}</label>
+        <label htmlFor={fieldId} className="text-sm font-semibold text-hsp-dark">{label}</label>
         <input
           {...props}
+          id={fieldId}
           className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
         />
       </div>
@@ -65,10 +68,11 @@ function InputField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-semibold text-hsp-dark">{label}</label>
+      <label htmlFor={fieldId} className="text-sm font-semibold text-hsp-dark">{label}</label>
       <div className="relative">
         <input
           {...props}
+          id={fieldId}
           type={props.type === "password" ? (showToggle ? "text" : "password") : props.type}
           className="w-full bg-hsp-card rounded-lg px-4 py-3 pr-12 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
         />
@@ -93,11 +97,14 @@ function SelectField({
   label: string;
   options: string[];
 } & React.SelectHTMLAttributes<HTMLSelectElement>) {
+  const fieldId = `signup-${props.name}`;
+
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-semibold text-hsp-dark">{label}</label>
+      <label htmlFor={fieldId} className="text-sm font-semibold text-hsp-dark">{label}</label>
       <select
         {...props}
+        id={fieldId}
         className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark focus:outline-none focus:ring-2 focus:ring-hsp-red"
       >
         <option value="">Select…</option>
@@ -252,7 +259,7 @@ export default function SignUpPage() {
           <span className="text-hsp-red">Start</span>{" "}
           <span className="text-hsp-dark">Your Recruiting Journey</span>
         </h1>
-        <p className="text-[#64748b] text-base md:text-lg">
+        <p className="text-[#5A6779] text-base md:text-lg">
           Set up your profile in under 5 minutes!
         </p>
       </section>

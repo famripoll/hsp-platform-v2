@@ -220,12 +220,12 @@ export default function MediaUpload({ subscriptionStatus, mediaVersion }: { subs
             ) : isPaid ? (
               <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
             ) : (
-              <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
+              <Lock className="w-8 h-8" style={{ color: "#5A6779" }} />
             )}
             <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
               Upload Photos
             </p>
-            <p className="text-xs" style={{ color: "#64748b" }}>
+            <p className="text-xs" style={{ color: "#5A6779" }}>
               {isPaid ? `JPG, PNG up to 10MB (${photoCount}/5)` : "Paid plan required"}
             </p>
           </button>
@@ -269,12 +269,12 @@ export default function MediaUpload({ subscriptionStatus, mediaVersion }: { subs
             ) : isPaid ? (
               <Video className="w-8 h-8" style={{ color: "#d93025" }} />
             ) : (
-              <Lock className="w-8 h-8" style={{ color: "#64748b" }} />
+              <Lock className="w-8 h-8" style={{ color: "#5A6779" }} />
             )}
             <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
               Upload Videos
             </p>
-            <p className="text-xs" style={{ color: "#64748b" }}>
+            <p className="text-xs" style={{ color: "#5A6779" }}>
               {isPaid ? `MP4, MOV up to 250MB (${videoCount}/3)` : "Paid plan required"}
             </p>
           </button>

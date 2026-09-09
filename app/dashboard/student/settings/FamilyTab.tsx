@@ -16,12 +16,13 @@ type FamilyMember = {
   show_on_profile: boolean;
 };
 
-function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: () => void }) {
+function ToggleSwitch({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={label}
       onClick={onChange}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
         checked ? "bg-[#d93025]" : "bg-gray-300"
@@ -168,7 +169,7 @@ export default function FamilyTab({
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">Manage Family</h2>
-          <p className="text-sm text-[#64748b]">
+          <p className="text-sm text-[#5A6779]">
             Add contact information for family members you&apos;d like college coaches to be able to reach.
           </p>
         </div>
@@ -270,7 +271,7 @@ export default function FamilyTab({
 
       <p className="text-sm font-semibold text-[#0f172a] mb-2">Your Family Members</p>
 
-      <p className="text-sm text-[#64748b] mb-3">
+      <p className="text-sm text-[#5A6779] mb-3">
         The Parent/Guardian account above is always shown on your dashboard. For any additional family member, use the toggle to choose whether their name and contact info appear in the &apos;Family Contacts&apos; section of your dashboard profile.
       </p>
 
@@ -279,9 +280,9 @@ export default function FamilyTab({
           <div className="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
             <div>
               <p className="font-semibold text-[#0f172a]">{parentName}</p>
-              <p className="text-sm text-[#64748b]">{parentRelationship || "Parent/Guardian"}</p>
+              <p className="text-sm text-[#5A6779]">{parentRelationship || "Parent/Guardian"}</p>
             </div>
-            <div className="text-sm text-[#64748b] sm:text-right">
+            <div className="text-sm text-[#5A6779] sm:text-right">
               <p>{parentEmail || "—"}</p>
               <p>{parentPhone || "—"}</p>
             </div>
@@ -292,10 +293,10 @@ export default function FamilyTab({
           <div key={member.id} className="border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
             <div>
               <p className="font-semibold text-[#0f172a]">{member.full_name}</p>
-              <p className="text-sm text-[#64748b]">{member.relationship}</p>
+              <p className="text-sm text-[#5A6779]">{member.relationship}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-sm text-[#64748b] sm:text-right">
+              <div className="text-sm text-[#5A6779] sm:text-right">
                 <p>{member.email || "—"}</p>
                 <p>{member.phone || "—"}</p>
               </div>
@@ -303,6 +304,7 @@ export default function FamilyTab({
                 <ToggleSwitch
                   checked={member.show_on_profile}
                   onChange={() => handleToggleShowOnProfile(member.id, member.show_on_profile)}
+                  label={`Show ${member.full_name} on your public profile`}
                 />
                 <button
                   type="button"
@@ -318,7 +320,7 @@ export default function FamilyTab({
         ))}
 
         {members.length === 0 && (
-          <p className="text-sm text-[#64748b]">No additional family members added yet.</p>
+          <p className="text-sm text-[#5A6779]">No additional family members added yet.</p>
         )}
       </div>
     </div>

@@ -14,7 +14,7 @@ export default function BackToSearchLink() {
       type="button"
       onClick={() => router.back()}
       className="inline-flex items-center gap-1.5 text-sm font-medium mb-6 transition-colors"
-      style={{ color: "#64748b" }}
+      style={{ color: "#5A6779" }}
     >
       <ArrowLeft className="w-4 h-4" />
       Back to Search

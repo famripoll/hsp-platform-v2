@@ -82,7 +82,7 @@ export default function StatsToggleCard({ student }: { student: StatsStudent }) 
               <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
                 {s.value}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+              <p className="text-xs mt-0.5" style={{ color: "#5A6779" }}>
                 {s.label}
               </p>
             </div>
@@ -103,7 +103,7 @@ export default function StatsToggleCard({ student }: { student: StatsStudent }) 
               <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
                 {s.value}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+              <p className="text-xs mt-0.5" style={{ color: "#5A6779" }}>
                 {s.label}
               </p>
             </div>

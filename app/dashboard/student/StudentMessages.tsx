@@ -290,7 +290,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
           Messages
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <p className="text-sm text-center animate-pulse" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center animate-pulse" style={{ color: "#5A6779" }}>
             Loading conversations...
           </p>
         </div>
@@ -306,7 +306,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <MessageSquare className="w-10 h-10" style={{ color: "#d1d5db" }} />
-          <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center max-w-xs" style={{ color: "#5A6779" }}>
             No messages yet. Coaches who are interested in you will reach out here.
           </p>
         </div>
@@ -327,7 +327,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
             setReplyError("");
           }}
           className="inline-flex items-center gap-1.5 text-sm font-medium mb-4 self-start transition-colors"
-          style={{ color: "#64748b" }}
+          style={{ color: "#5A6779" }}
         >
           <ArrowLeft className="w-4 h-4" />
           Back to conversations
@@ -345,7 +345,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
               {activeConversation?.coachName ?? "Conversation"}
             </h3>
             {activeConversation?.university && (
-              <p className="text-xs truncate" style={{ color: "#64748b" }}>
+              <p className="text-xs truncate" style={{ color: "#5A6779" }}>
                 {activeConversation.university}
               </p>
             )}
@@ -368,7 +368,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                   }}
                 >
                   <p className="text-sm whitespace-pre-wrap break-words">{m.body}</p>
-                  <p className="text-[10px] mt-1" style={{ color: "#64748b" }}>
+                  <p className="text-[10px] mt-1" style={{ color: "#5A6779" }}>
                     {formatRelativeTime(m.created_at)}
                   </p>
                 </div>
@@ -393,7 +393,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
               />
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
-                <span className="text-xs" style={{ color: "#64748b" }}>
+                <span className="text-xs" style={{ color: "#5A6779" }}>
                   {replyText.length} / {MAX_REPLY_LENGTH}
                 </span>
 
@@ -415,7 +415,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
               )}
             </>
           ) : (
-            <p className="text-sm" style={{ color: "#64748b" }}>
+            <p className="text-sm" style={{ color: "#5A6779" }}>
               You are viewing as a parent. Only the student can reply.
             </p>
           )}
@@ -450,14 +450,14 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                 <span className="font-bold text-sm truncate" style={{ color: "#0f172a" }}>
                   {c.coachName}
                   {c.university && (
-                    <span className="font-normal" style={{ color: "#64748b" }}> · {c.university}</span>
+                    <span className="font-normal" style={{ color: "#5A6779" }}> · {c.university}</span>
                   )}
                 </span>
-                <span className="text-[10px] shrink-0" style={{ color: "#64748b" }}>
+                <span className="text-[10px] shrink-0" style={{ color: "#5A6779" }}>
                   {formatRelativeTime(c.lastCreatedAt)}
                 </span>
               </div>
-              <p className="text-xs truncate mt-0.5" style={{ color: "#64748b" }}>
+              <p className="text-xs truncate mt-0.5" style={{ color: "#5A6779" }}>
                 {truncate(c.lastBody, 60)}
               </p>
             </div>

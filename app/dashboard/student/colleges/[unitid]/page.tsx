@@ -98,7 +98,7 @@ export default async function CollegeDetailPage({
           {coaches.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-3">
               <Users className="w-10 h-10" style={{ color: "#d1d5db" }} />
-              <p className="text-sm text-center" style={{ color: "#64748b" }}>
+              <p className="text-sm text-center" style={{ color: "#5A6779" }}>
                 Coach information coming soon
               </p>
               <ContactCollegeButton
@@ -119,7 +119,7 @@ export default async function CollegeDetailPage({
                       <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>
                         {fullName}
                       </p>
-                      <p className="text-sm" style={{ color: "#64748b" }}>
+                      <p className="text-sm" style={{ color: "#5A6779" }}>
                         {title}
                       </p>
                     </div>

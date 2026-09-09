@@ -63,7 +63,7 @@ export default function PricingPage() {
           <Link href="/signup" className="w-full py-3 rounded-xl font-semibold text-sm border-2 border-hsp-red text-hsp-red bg-white hover:bg-hsp-red hover:text-white transition-colors duration-200 cursor-pointer text-center">
             Get Silver
           </Link>
-          <p className="text-sm text-[#64748b] text-center mt-3">
+          <p className="text-sm text-[#5A6779] text-center mt-3">
             Cancel anytime — no long-term commitment.
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function PricingPage() {
           <Link href="/signup" className="w-full py-3 rounded-xl font-semibold text-sm border-2 border-hsp-red bg-hsp-red text-white hover:bg-white hover:text-hsp-red transition-colors duration-200 cursor-pointer text-center">
             Get Gold
           </Link>
-          <p className="text-sm text-[#64748b] text-center mt-3">
+          <p className="text-sm text-[#5A6779] text-center mt-3">
             Cancel anytime — no long-term commitment.
           </p>
         </div>

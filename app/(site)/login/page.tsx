@@ -235,7 +235,7 @@ export default function LoginPage() {
           <span className="text-hsp-red">Welcome</span>{" "}
           <span className="text-hsp-dark">Back</span>
         </h1>
-        <p className="text-[#64748b] text-base md:text-lg">
+        <p className="text-[#5A6779] text-base md:text-lg">
           Log in to your HSP account
         </p>
       </section>

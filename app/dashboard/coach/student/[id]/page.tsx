@@ -187,7 +187,7 @@ export default async function CoachStudentProfilePage({
         <Link
           href="/dashboard/coach"
           className="inline-flex items-center gap-1.5 text-sm font-medium mb-6 transition-colors"
-          style={{ color: "#64748b" }}
+          style={{ color: "#5A6779" }}
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Search
@@ -237,8 +237,8 @@ export default async function CoachStudentProfilePage({
                     </div>
 
                     <div className="flex items-center gap-1 mt-1">
-                      <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
-                      <span className="text-sm text-[#64748b] whitespace-nowrap">
+                      <Calendar className="w-4 h-4 text-[#5A6779] shrink-0" />
+                      <span className="text-sm text-[#5A6779] whitespace-nowrap">
                         {student.graduation_year
                           ? `Class of ${student.graduation_year}`
                           : student.grade
@@ -251,8 +251,8 @@ export default async function CoachStudentProfilePage({
                   </div>
                 </div>
                 <div className="px-4 sm:px-6 pb-4 flex items-center justify-center gap-1 flex-wrap">
-                  <MapPin className="w-4 h-4 text-[#64748b] shrink-0" />
-                  <span className="text-sm text-[#64748b] break-words text-center">
+                  <MapPin className="w-4 h-4 text-[#5A6779] shrink-0" />
+                  <span className="text-sm text-[#5A6779] break-words text-center">
                     {[student.high_school, student.city, student.state].filter(Boolean).join(", ") || DASH}
                   </span>
                 </div>
@@ -289,7 +289,7 @@ export default async function CoachStudentProfilePage({
                   >
                     <p
                       className="text-[10px] font-semibold uppercase mb-1"
-                      style={{ color: "#64748b" }}
+                      style={{ color: "#5A6779" }}
                     >
                       {item.label}
                     </p>
@@ -297,7 +297,7 @@ export default async function CoachStudentProfilePage({
                       {item.icon && (
                         <MapPin
                           className="w-3 h-3 shrink-0 mt-0.5"
-                          style={{ color: "#64748b" }}
+                          style={{ color: "#5A6779" }}
                         />
                       )}
                       <span
@@ -332,7 +332,7 @@ export default async function CoachStudentProfilePage({
                     >
                       <p
                         className="text-[10px] font-semibold uppercase mb-0.5"
-                        style={{ color: "#64748b" }}
+                        style={{ color: "#5A6779" }}
                       >
                         {item.label}
                       </p>
@@ -344,7 +344,7 @@ export default async function CoachStudentProfilePage({
                 </div>
                 <p
                   className="text-xs font-semibold uppercase mb-1"
-                  style={{ color: "#64748b" }}
+                  style={{ color: "#5A6779" }}
                 >
                   Intended Major
                 </p>
@@ -408,7 +408,7 @@ export default async function CoachStudentProfilePage({
               {!hasMedia ? (
                 <div className="flex flex-col items-center justify-center py-16 gap-3">
                   <Camera className="w-10 h-10" style={{ color: "#d1d5db" }} />
-                  <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                  <p className="text-sm text-center" style={{ color: "#5A6779" }}>
                     No photos or videos yet.
                   </p>
                 </div>

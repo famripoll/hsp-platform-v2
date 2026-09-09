@@ -118,7 +118,7 @@ export default function ContactCollegeButton({
 
     if (isParentViewer) {
       return (
-        <p className="text-sm" style={{ color: "#64748b" }}>
+        <p className="text-sm" style={{ color: "#5A6779" }}>
           Only the student can send college contacts. {remaining} of {limit} contacts
           remaining this month.
         </p>
@@ -127,7 +127,7 @@ export default function ContactCollegeButton({
 
     if (!hasActiveSubscription) {
       return (
-        <p className="text-sm" style={{ color: "#64748b" }}>
+        <p className="text-sm" style={{ color: "#5A6779" }}>
           An active subscription is required to contact colleges.
         </p>
       );
@@ -135,7 +135,7 @@ export default function ContactCollegeButton({
 
     if (!hasPhoto || !hasVideo) {
       return (
-        <p className="text-sm" style={{ color: "#64748b" }}>
+        <p className="text-sm" style={{ color: "#5A6779" }}>
           Upload at least one photo and one video to your profile before contacting a
           college.
         </p>
@@ -151,7 +151,7 @@ export default function ContactCollegeButton({
           })
         : null;
       return (
-        <p className="text-sm" style={{ color: "#64748b" }}>
+        <p className="text-sm" style={{ color: "#5A6779" }}>
           You have used all {limit} contacts this month.
           {resetDate ? ` They reset on ${resetDate}.` : ""}
         </p>
@@ -177,13 +177,13 @@ export default function ContactCollegeButton({
           className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
         />
 
-        <p className="text-xs mt-1.5" style={{ color: "#64748b" }}>
+        <p className="text-xs mt-1.5" style={{ color: "#5A6779" }}>
           {text.length} / 500
         </p>
 
         <ul
           className="text-xs mt-2 space-y-1 list-disc pl-5"
-          style={{ color: "#64748b" }}
+          style={{ color: "#5A6779" }}
         >
           <li>Don&apos;t repeat your stats.</li>
           <li>Don&apos;t send the same message to every school.</li>
@@ -265,7 +265,7 @@ export default function ContactCollegeButton({
                   </div>
                 </div>
               ) : loading ? (
-                <p className="text-sm" style={{ color: "#64748b" }}>
+                <p className="text-sm" style={{ color: "#5A6779" }}>
                   Loading…
                 </p>
               ) : loadError ? (
@@ -275,14 +275,14 @@ export default function ContactCollegeButton({
               ) : (
                 <div className="space-y-4">
                   {/* Block 1 — recipients line */}
-                  <p className="text-sm" style={{ color: "#64748b" }}>
+                  <p className="text-sm" style={{ color: "#5A6779" }}>
                     {hasCoaches
                       ? `This message will be sent to the baseball coaching staff at ${institutionName}.`
                       : "We'll route your message to this college's baseball program."}
                   </p>
 
                   {/* Block 2 — what is sent automatically */}
-                  <p className="text-sm" style={{ color: "#64748b" }}>
+                  <p className="text-sm" style={{ color: "#5A6779" }}>
                     The coach will automatically receive your name, graduation year,
                     position, high school, height and weight, GPA, and a link to your
                     profile with photos and video. There&apos;s no need to repeat any of

@@ -85,7 +85,7 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
-        <span className="text-xs" style={{ color: "#64748b" }}>
+        <span className="text-xs" style={{ color: "#5A6779" }}>
           {text.length} / {MAX_LENGTH}
         </span>
 

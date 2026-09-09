@@ -129,7 +129,7 @@ export default async function StudentSettingsPage({
                   Back
                 </Link>
               </div>
-              <p className="mt-2 sm:mt-0 text-[#64748b] text-sm md:text-base">
+              <p className="mt-2 sm:mt-0 text-[#5A6779] text-sm md:text-base">
                 Manage your password and subscription preferences.
               </p>
             </div>

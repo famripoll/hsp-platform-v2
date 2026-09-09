@@ -197,7 +197,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                 activeSection === tab.value
                   ? "border-[#d93025] text-[#d93025] font-semibold"
-                  : "border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105"
+                  : "border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105"
               }`}
             >
               {tab.label}
@@ -230,7 +230,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               <div>
                 <p
                   className="text-xs uppercase tracking-wide mb-0.5"
-                  style={{ color: "#64748b" }}
+                  style={{ color: "#5A6779" }}
                 >
                   2026 Season
                 </p>
@@ -283,7 +283,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                     <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
                       {s.value}
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+                    <p className="text-xs mt-0.5" style={{ color: "#5A6779" }}>
                       {s.label}
                     </p>
                   </div>
@@ -304,7 +304,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                     <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
                       {s.value}
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+                    <p className="text-xs mt-0.5" style={{ color: "#5A6779" }}>
                       {s.label}
                     </p>
                   </div>
@@ -332,7 +332,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   className={`shrink-0 px-3 py-2 text-xs sm:text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                     activeFeedTab === tab.value
                       ? "border-[#d93025] text-[#d93025] font-semibold"
-                      : "border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105"
+                      : "border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105"
                   }`}
                 >
                   {tab.label}
@@ -347,7 +347,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                     className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                     style={{ backgroundColor: "#F2F3F3" }}
                   >
-                    <Lock className="w-5 h-5" style={{ color: "#64748b" }} />
+                    <Lock className="w-5 h-5" style={{ color: "#5A6779" }} />
                   </div>
                   <div className="flex-1 flex flex-col gap-1">
                     <p className="text-sm font-bold" style={{ color: "#0f172a" }}>
@@ -367,20 +367,20 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 gap-3">
-                  <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                  <p className="text-sm text-center" style={{ color: "#5A6779" }}>
                     Recommendations coming soon.
                   </p>
                 </div>
               )
             ) : activityLoading ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <p className="text-sm text-center" style={{ color: "#64748b" }}>
+                <p className="text-sm text-center" style={{ color: "#5A6779" }}>
                   Loading...
                 </p>
               </div>
             ) : activityItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
+                <p className="text-sm text-center max-w-xs" style={{ color: "#5A6779" }}>
                   No activity yet — actions like editing your profile or updating your family contacts will show up here.
                 </p>
               </div>
@@ -395,15 +395,15 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                       className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: "#F2F3F3" }}
                     >
-                      <Activity className="w-4 h-4" style={{ color: "#64748b" }} />
+                      <Activity className="w-4 h-4" style={{ color: "#5A6779" }} />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-semibold" style={{ color: "#0f172a" }}>{item.title}</p>
-                      <p className="text-xs mb-1" style={{ color: "#64748b" }}>
+                      <p className="text-xs mb-1" style={{ color: "#5A6779" }}>
                         {new Date(item.created_at).toLocaleString()}
                       </p>
                       {item.description ? (
-                        <p className="text-sm" style={{ color: "#64748b" }}>{item.description}</p>
+                        <p className="text-sm" style={{ color: "#5A6779" }}>{item.description}</p>
                       ) : null}
                     </div>
                   </div>
@@ -422,7 +422,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
           </h3>
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <Target className="w-10 h-10" style={{ color: "#d1d5db" }} />
-            <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
+            <p className="text-sm text-center max-w-xs" style={{ color: "#5A6779" }}>
               No target schools yet. Search colleges and save your favorites.
             </p>
             <Link
@@ -460,7 +460,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                   style={{ backgroundColor: "#F2F3F3" }}
                 >
-                  <Lock className="w-5 h-5" style={{ color: "#64748b" }} />
+                  <Lock className="w-5 h-5" style={{ color: "#5A6779" }} />
                 </div>
                 <p className="flex-1 text-sm font-medium" style={{ color: "#0f172a" }}>
                   Unlock full access — upgrade your plan to upload photos and videos.

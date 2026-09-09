@@ -86,7 +86,7 @@ export default async function UpgradePage() {
 
         {profile.role === "student" ? (
           <div className="flex flex-col items-center justify-center text-center py-16">
-            <p className="text-[#64748b] text-sm md:text-base max-w-md">
+            <p className="text-[#5A6779] text-sm md:text-base max-w-md">
               Please contact your Parent/Guardian to select a payment plan.
             </p>
           </div>

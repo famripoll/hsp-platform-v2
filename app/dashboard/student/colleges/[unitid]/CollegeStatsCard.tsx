@@ -42,7 +42,7 @@ function StatRow({ label, value, icon: Icon }: { label: string; value: string; i
         <Icon className="w-5 h-5" style={{ color: "#d93025" }} />
       </div>
       <div className="flex flex-col min-w-0">
-        <span className="text-xs" style={{ color: "#64748b" }}>
+        <span className="text-xs" style={{ color: "#5A6779" }}>
           {label}
         </span>
         <span className="text-sm font-semibold" style={{ color: "#0f172a" }}>

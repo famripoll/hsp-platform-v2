@@ -279,7 +279,7 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
             <div className="px-5 pt-4 pb-1">
               <label
                 className="block text-xs font-semibold uppercase tracking-wide mb-2"
-                style={{ color: "#64748b" }}
+                style={{ color: "#5A6779" }}
               >
                 Zoom
               </label>

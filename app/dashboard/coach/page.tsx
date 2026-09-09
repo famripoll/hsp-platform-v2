@@ -124,7 +124,7 @@ const EMPTY_ADVANCED: AdvancedFilters = {
 
 const FALLBACK = 'Not provided'
 
-const LABEL_CLS = 'text-[10px] font-semibold uppercase text-[#64748b] mb-1 block'
+const LABEL_CLS = 'text-[10px] font-semibold uppercase text-[#5A6779] mb-1 block'
 const INPUT_CLS =
   'border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white'
 
@@ -249,7 +249,7 @@ function ProspectCard({
         {isPaid ? (
           <p
             className="text-xs truncate mt-0.5"
-            style={{ color: '#64748b' }}
+            style={{ color: '#5A6779' }}
           >
             {[
               student.high_school,
@@ -262,7 +262,7 @@ function ProspectCard({
               .join(', ') || '—'}
           </p>
         ) : (
-          <p className="flex items-center gap-1 text-xs text-[#64748b] mt-0.5">
+          <p className="flex items-center gap-1 text-xs text-[#5A6779] mt-0.5">
             <Lock className="w-3 h-3 shrink-0" />
             School locked by student
           </p>
@@ -282,7 +282,7 @@ function ProspectCard({
           ) : (
             <span
               className="flex items-center gap-1 text-[10px] rounded-full px-2 py-0.5 font-medium"
-              style={{ backgroundColor: '#F2F3F3', color: '#64748b' }}
+              style={{ backgroundColor: '#F2F3F3', color: '#5A6779' }}
             >
               <Lock className="w-2.5 h-2.5" />
               Locked
@@ -308,14 +308,14 @@ function ProspectCard({
 
         {/* Stats row — hidden on mobile */}
         {!isPaid ? (
-          <p className="hidden sm:flex items-center gap-1 text-xs text-[#64748b] mt-1">
+          <p className="hidden sm:flex items-center gap-1 text-xs text-[#5A6779] mt-1">
             <Lock className="w-3 h-3 shrink-0" />
             Stats locked by student
           </p>
         ) : (
         <div
           className="hidden sm:flex items-center gap-0 mt-1 text-xs flex-wrap"
-          style={{ color: '#64748b' }}
+          style={{ color: '#5A6779' }}
         >
           {pitcher ? (
             <>
@@ -445,7 +445,7 @@ function ProspectCard({
           type="button"
           onClick={() => onToggleWatchlist(student.id)}
           title={isSaved ? 'Remove from watchlist' : 'Add to watchlist'}
-          className="p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
+          className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
         >
           <Heart
             className="w-4 h-4"
@@ -456,7 +456,7 @@ function ProspectCard({
           <Link
             href={`/dashboard/coach/student/${student.id}`}
             title="View profile"
-            className="p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
+            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
           >
             <Eye className="w-4 h-4" />
           </Link>
@@ -465,7 +465,7 @@ function ProspectCard({
             type="button"
             title="Upgrade required to view profile"
             disabled
-            className="p-1.5 rounded-lg text-[#64748b] opacity-40 cursor-not-allowed"
+            className="p-1.5 rounded-lg text-[#5A6779] opacity-40 cursor-not-allowed"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -475,7 +475,7 @@ function ProspectCard({
             type="button"
             onClick={() => onMessage(student)}
             title="Message"
-            className="p-1.5 rounded-lg transition-colors text-[#64748b] hover:text-[#d93025] hover:bg-red-50"
+            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
@@ -484,7 +484,7 @@ function ProspectCard({
             type="button"
             title="Upgrade required to message"
             disabled
-            className="p-1.5 rounded-lg text-[#64748b] opacity-40 cursor-not-allowed"
+            className="p-1.5 rounded-lg text-[#5A6779] opacity-40 cursor-not-allowed"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
@@ -755,14 +755,14 @@ function CoachDashboardContent() {
                 <div className="rounded-xl p-3" style={{ backgroundColor: '#F2F3F3' }}>
                   <p
                     className="text-[10px] font-semibold uppercase mb-1"
-                    style={{ color: '#64748b' }}
+                    style={{ color: '#5A6779' }}
                   >
                     University
                   </p>
                   <div className="flex items-start gap-2">
                     <GraduationCap
                       className="w-4 h-4 shrink-0 mt-0.5"
-                      style={{ color: '#64748b' }}
+                      style={{ color: '#5A6779' }}
                     />
                     <span
                       className="text-sm font-semibold leading-tight"
@@ -777,7 +777,7 @@ function CoachDashboardContent() {
                   <div className="rounded-xl p-3" style={{ backgroundColor: '#F2F3F3' }}>
                     <p
                       className="text-[10px] font-semibold uppercase mb-1"
-                      style={{ color: '#64748b' }}
+                      style={{ color: '#5A6779' }}
                     >
                       Division
                     </p>
@@ -791,14 +791,14 @@ function CoachDashboardContent() {
                   <div className="rounded-xl p-3" style={{ backgroundColor: '#F2F3F3' }}>
                     <p
                       className="text-[10px] font-semibold uppercase mb-1"
-                      style={{ color: '#64748b' }}
+                      style={{ color: '#5A6779' }}
                     >
                       State
                     </p>
                     <div className="flex items-start gap-1">
                       <MapPin
                         className="w-3 h-3 shrink-0 mt-0.5"
-                        style={{ color: '#64748b' }}
+                        style={{ color: '#5A6779' }}
                       />
                       <span
                         className="text-sm font-semibold leading-tight"
@@ -818,13 +818,13 @@ function CoachDashboardContent() {
                 >
                   Contact
                 </p>
-                <div className="flex items-center gap-2 text-sm" style={{ color: '#64748b' }}>
+                <div className="flex items-center gap-2 text-sm" style={{ color: '#5A6779' }}>
                   <Mail className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{profile?.email ?? FALLBACK}</span>
                 </div>
                 <div
                   className="flex items-center gap-2 text-sm mt-1"
-                  style={{ color: '#64748b' }}
+                  style={{ color: '#5A6779' }}
                 >
                   <Phone className="w-3.5 h-3.5 shrink-0" />
                   <span>{coach.phone || FALLBACK}</span>
@@ -852,7 +852,7 @@ function CoachDashboardContent() {
                     className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                       activeTab === tab.value
                         ? 'border-[#d93025] text-[#d93025] font-semibold'
-                        : 'border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105'
+                        : 'border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105'
                     }`}
                   >
                     {tab.label}
@@ -888,7 +888,7 @@ function CoachDashboardContent() {
                     </h2>
                   </div>
                   {searched && !searching && (
-                    <span className="text-xs" style={{ color: '#64748b' }}>
+                    <span className="text-xs" style={{ color: '#5A6779' }}>
                       Showing{' '}
                       <span className="font-semibold" style={{ color: '#0f172a' }}>
                         {students.length}
@@ -1032,7 +1032,7 @@ function CoachDashboardContent() {
                     type="button"
                     onClick={() => setShowAdvanced((v) => !v)}
                     className="text-xs font-medium transition-colors"
-                    style={{ color: '#64748b' }}
+                    style={{ color: '#5A6779' }}
                   >
                     Advanced Filters {showAdvanced ? '▲' : '▼'}
                   </button>
@@ -1189,7 +1189,7 @@ function CoachDashboardContent() {
                         />
                       </div>
                     ) : students.length === 0 ? (
-                      <p className="text-sm text-center py-6" style={{ color: '#64748b' }}>
+                      <p className="text-sm text-center py-6" style={{ color: '#5A6779' }}>
                         No prospects found.
                       </p>
                     ) : (
@@ -1219,13 +1219,13 @@ function CoachDashboardContent() {
                   Watchlist
                 </h3>
                 {watchlistLoading ? (
-                  <p className="text-sm text-center py-6" style={{ color: '#64748b' }}>
+                  <p className="text-sm text-center py-6" style={{ color: '#5A6779' }}>
                     Loading...
                   </p>
                 ) : watchlistStudents.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 gap-3">
                     <Star className="w-10 h-10" style={{ color: '#d1d5db' }} />
-                    <p className="text-sm text-center" style={{ color: '#64748b' }}>
+                    <p className="text-sm text-center" style={{ color: '#5A6779' }}>
                       No saved prospects yet — use the heart icon in Prospect Search to save students here.
                     </p>
                   </div>

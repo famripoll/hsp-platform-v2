@@ -57,7 +57,7 @@ export default function SettingsTabs({
               className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                 activeTab === tab.value
                   ? "border-[#d93025] text-[#d93025] font-semibold"
-                  : "border-transparent text-[#64748b] hover:text-[#d93025] hover:scale-105"
+                  : "border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105"
               }`}
             >
               {tab.label}

@@ -103,12 +103,12 @@ export default function VerifyEmailBanner({ email }: { email: string }) {
           <div className="min-w-0">
             <p className="text-sm font-semibold text-[#0f172a]">Confirm your email address.</p>
             {mode === "idle" ? (
-              <p className="text-sm text-[#64748b] mt-0.5 break-words">
+              <p className="text-sm text-[#5A6779] mt-0.5 break-words">
                 We sent a link to <span className="font-bold text-[#0f172a] break-words">{email}</span>.
                 Click it to confirm we can reach you.
               </p>
             ) : (
-              <p className="text-sm text-[#64748b] mt-0.5">
+              <p className="text-sm text-[#5A6779] mt-0.5">
                 Enter the correct email address below.
               </p>
             )}

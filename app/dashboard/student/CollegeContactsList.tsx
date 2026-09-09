@@ -99,7 +99,7 @@ export default function CollegeContactsList() {
           College Contacts
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <p className="text-sm text-center animate-pulse" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center animate-pulse" style={{ color: "#5A6779" }}>
             Loading college contacts...
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function CollegeContactsList() {
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <GraduationCap className="w-10 h-10" style={{ color: "#d1d5db" }} />
-          <p className="text-sm text-center max-w-xs" style={{ color: "#64748b" }}>
+          <p className="text-sm text-center max-w-xs" style={{ color: "#5A6779" }}>
             You haven&apos;t contacted any colleges yet. You can reach out to a school from its
             college page.
           </p>
@@ -141,13 +141,13 @@ export default function CollegeContactsList() {
                 {c.institution_name}
               </span>
               <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
-                <span className="text-[10px]" style={{ color: "#64748b" }}>
+                <span className="text-[10px]" style={{ color: "#5A6779" }}>
                   {formatDate(c.created_at)}
                 </span>
                 {isLong && (
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                    style={{ color: "#64748b" }}
+                    style={{ color: "#5A6779" }}
                   />
                 )}
               </div>
@@ -159,7 +159,7 @@ export default function CollegeContactsList() {
               className={`text-xs mt-0.5 break-words ${
                 isLong && !isExpanded ? "" : "whitespace-pre-wrap"
               }`}
-              style={{ color: "#64748b" }}
+              style={{ color: "#5A6779" }}
             >
               {isLong && !isExpanded
                 ? `${c.body.slice(0, PREVIEW_LENGTH).trimEnd()}…`

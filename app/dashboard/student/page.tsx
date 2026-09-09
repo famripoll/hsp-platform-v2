@@ -225,8 +225,8 @@ export default async function StudentDashboardPage({
                     </div>
 
                     <div className="flex items-center gap-1 mt-1 min-w-0">
-                      <Calendar className="w-4 h-4 text-[#64748b] shrink-0" />
-                      <span className="text-sm text-[#64748b] whitespace-nowrap truncate">
+                      <Calendar className="w-4 h-4 text-[#5A6779] shrink-0" />
+                      <span className="text-sm text-[#5A6779] whitespace-nowrap truncate">
                         {student.graduation_year
                           ? `Class of ${student.graduation_year}`
                           : student.grade
@@ -239,8 +239,8 @@ export default async function StudentDashboardPage({
                   </div>
                 </div>
                 <div className="px-4 sm:px-6 pb-4 flex items-center justify-center gap-1 flex-wrap">
-                  <MapPin className="w-4 h-4 text-[#64748b] shrink-0" />
-                  <span className="text-sm text-[#64748b] break-words text-center">
+                  <MapPin className="w-4 h-4 text-[#5A6779] shrink-0" />
+                  <span className="text-sm text-[#5A6779] break-words text-center">
                     {student.high_school ?? DASH}
                   </span>
                 </div>
@@ -277,7 +277,7 @@ export default async function StudentDashboardPage({
                   >
                     <p
                       className="text-[10px] font-semibold uppercase mb-1"
-                      style={{ color: "#64748b" }}
+                      style={{ color: "#5A6779" }}
                     >
                       {item.label}
                     </p>
@@ -285,7 +285,7 @@ export default async function StudentDashboardPage({
                       {item.icon && (
                         <MapPin
                           className="w-3 h-3 shrink-0 mt-0.5"
-                          style={{ color: "#64748b" }}
+                          style={{ color: "#5A6779" }}
                         />
                       )}
                       <span
@@ -323,7 +323,7 @@ export default async function StudentDashboardPage({
                       >
                         <p
                           className="text-[10px] font-semibold uppercase mb-0.5"
-                          style={{ color: "#64748b" }}
+                          style={{ color: "#5A6779" }}
                         >
                           {item.label}
                         </p>
@@ -335,7 +335,7 @@ export default async function StudentDashboardPage({
                   </div>
                   <p
                     className="text-xs font-semibold uppercase mb-1"
-                    style={{ color: "#64748b" }}
+                    style={{ color: "#5A6779" }}
                   >
                     Intended Major
                   </p>
@@ -357,7 +357,7 @@ export default async function StudentDashboardPage({
                     {displayProfile.full_name ?? DASH}
                   </p>
                   {displayProfile.email ? (
-                    <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: "#5A6779" }}>
                       <Mail className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">{displayProfile.email}</span>
                     </div>
@@ -370,7 +370,7 @@ export default async function StudentDashboardPage({
                     <a
                       href={`tel:${student.phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
-                      style={{ color: "#64748b" }}
+                      style={{ color: "#5A6779" }}
                     >
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.phone}
@@ -423,11 +423,11 @@ export default async function StudentDashboardPage({
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                     {student.parent_name || DASH}
                     {student.parent_name && student.parent_relationship ? (
-                      <span className="font-normal" style={{ color: "#64748b" }}> — {student.parent_relationship}</span>
+                      <span className="font-normal" style={{ color: "#5A6779" }}> — {student.parent_relationship}</span>
                     ) : null}
                   </p>
                   {student.parent_email ? (
-                    <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: "#5A6779" }}>
                       <Mail className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">{student.parent_email}</span>
                     </div>
@@ -440,7 +440,7 @@ export default async function StudentDashboardPage({
                     <a
                       href={`tel:${student.parent_phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
-                      style={{ color: "#64748b" }}
+                      style={{ color: "#5A6779" }}
                     >
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.parent_phone}
@@ -464,7 +464,7 @@ export default async function StudentDashboardPage({
                     {student.coach_name ? `Coach ${student.coach_name}` : DASH}
                   </p>
                   {student.coach_email ? (
-                    <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: "#5A6779" }}>
                       <Mail className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate">{student.coach_email}</span>
                     </div>
@@ -477,7 +477,7 @@ export default async function StudentDashboardPage({
                     <a
                       href={`tel:${student.coach_phone}`}
                       className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
-                      style={{ color: "#64748b" }}
+                      style={{ color: "#5A6779" }}
                     >
                       <Phone className="w-3.5 h-3.5 shrink-0" />
                       {student.coach_phone}
@@ -501,10 +501,10 @@ export default async function StudentDashboardPage({
                       <div key={idx} className={idx > 0 ? "mt-3" : ""}>
                         <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                           {contact.full_name}
-                          <span className="font-normal" style={{ color: "#64748b" }}> — {contact.relationship}</span>
+                          <span className="font-normal" style={{ color: "#5A6779" }}> — {contact.relationship}</span>
                         </p>
                         {contact.email ? (
-                          <div className="flex items-center gap-2 text-sm" style={{ color: "#64748b" }}>
+                          <div className="flex items-center gap-2 text-sm" style={{ color: "#5A6779" }}>
                             <Mail className="w-3.5 h-3.5 shrink-0" />
                             <span className="truncate">{contact.email}</span>
                           </div>
@@ -513,7 +513,7 @@ export default async function StudentDashboardPage({
                           <a
                             href={`tel:${contact.phone}`}
                             className="flex items-center gap-2 text-sm mt-1 hover:opacity-80"
-                            style={{ color: "#64748b" }}
+                            style={{ color: "#5A6779" }}
                           >
                             <Phone className="w-3.5 h-3.5 shrink-0" />
                             {contact.phone}

@@ -93,7 +93,7 @@ function StatGrid({ items }: { items: { label: string; value: string }[] }) {
           <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
             {s.value}
           </p>
-          <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+          <p className="text-xs mt-0.5" style={{ color: "#5A6779" }}>
             {s.label}
           </p>
         </div>
@@ -407,14 +407,14 @@ export default async function PublicStudentProfilePage({
               <p className="text-sm font-semibold text-[#d93025] mt-1">
                 {position}
               </p>
-              <p className="text-sm text-[#64748b] mt-1">
+              <p className="text-sm text-[#5A6779] mt-1">
                 {student.graduation_year
                   ? `Class of ${student.graduation_year}`
                   : student.grade
                   ? String(student.grade)
                   : DASH}
               </p>
-              <p className="text-sm text-[#64748b] mt-1 break-words">
+              <p className="text-sm text-[#5A6779] mt-1 break-words">
                 {location}
               </p>
             </div>
@@ -443,7 +443,7 @@ export default async function PublicStudentProfilePage({
               >
                 <p
                   className="text-[10px] font-semibold uppercase mb-1"
-                  style={{ color: "#64748b" }}
+                  style={{ color: "#5A6779" }}
                 >
                   {item.label}
                 </p>
@@ -479,7 +479,7 @@ export default async function PublicStudentProfilePage({
               >
                 <p
                   className="text-[10px] font-semibold uppercase mb-0.5"
-                  style={{ color: "#64748b" }}
+                  style={{ color: "#5A6779" }}
                 >
                   {item.label}
                 </p>
@@ -491,7 +491,7 @@ export default async function PublicStudentProfilePage({
           </div>
           <p
             className="text-xs font-semibold uppercase mb-1"
-            style={{ color: "#64748b" }}
+            style={{ color: "#5A6779" }}
           >
             Intended Major
           </p>
@@ -519,7 +519,7 @@ export default async function PublicStudentProfilePage({
           </h2>
 
           {photoUrls.length === 0 && !videoUrl ? (
-            <p className="text-sm" style={{ color: "#64748b" }}>
+            <p className="text-sm" style={{ color: "#5A6779" }}>
               No photos or videos have been shared yet.
             </p>
           ) : (
@@ -547,7 +547,7 @@ export default async function PublicStudentProfilePage({
                     ))}
                   </div>
                   {morePhotos > 0 && (
-                    <p className="text-xs mt-2" style={{ color: "#64748b" }}>
+                    <p className="text-xs mt-2" style={{ color: "#5A6779" }}>
                       +{morePhotos} more photo{morePhotos === 1 ? "" : "s"}
                     </p>
                   )}
@@ -571,7 +571,7 @@ export default async function PublicStudentProfilePage({
                     />
                   </div>
                   {moreVideos > 0 && (
-                    <p className="text-xs mt-2" style={{ color: "#64748b" }}>
+                    <p className="text-xs mt-2" style={{ color: "#5A6779" }}>
                       +{moreVideos} more video{moreVideos === 1 ? "" : "s"}
                     </p>
                   )}
@@ -586,7 +586,7 @@ export default async function PublicStudentProfilePage({
           <h2 className="text-lg font-bold mb-2" style={{ color: "#0f172a" }}>
             Want to reply to {fullName ? fullName.split(/\s+/)[0] : "this athlete"}?
           </h2>
-          <p className="text-sm mb-4" style={{ color: "#64748b" }}>
+          <p className="text-sm mb-4" style={{ color: "#5A6779" }}>
             {contact.institution_name
               ? `${contact.institution_name} received this athlete's message. `
               : ""}

@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
           <span className="text-hsp-red">Forgot</span>{" "}
           <span className="text-hsp-dark">Password</span>
         </h1>
-        <p className="text-[#64748b] text-base md:text-lg">
+        <p className="text-[#5A6779] text-base md:text-lg">
           Enter your email to reset your password
         </p>
       </section>

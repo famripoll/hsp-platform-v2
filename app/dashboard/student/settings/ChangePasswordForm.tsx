@@ -75,7 +75,7 @@ export default function ChangePasswordForm() {
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">Password</h2>
-          <p className="text-sm text-[#64748b]">Change your password to keep your account secure.</p>
+          <p className="text-sm text-[#5A6779]">Change your password to keep your account secure.</p>
         </div>
       </div>
 

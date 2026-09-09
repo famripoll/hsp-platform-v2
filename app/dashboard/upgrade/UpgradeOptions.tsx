@@ -168,7 +168,7 @@ export default function UpgradeOptions({
           >
             {loadingPlan === "silver" ? "Redirecting..." : "Get Silver"}
           </button>
-          <p className="text-sm text-[#64748b] text-center mt-3">
+          <p className="text-sm text-[#5A6779] text-center mt-3">
             Cancel anytime — no long-term commitment.
           </p>
         </div>
@@ -202,7 +202,7 @@ export default function UpgradeOptions({
           >
             {loadingPlan === "gold" ? "Redirecting..." : "Get Gold"}
           </button>
-          <p className="text-sm text-[#64748b] text-center mt-3">
+          <p className="text-sm text-[#5A6779] text-center mt-3">
             Cancel anytime — no long-term commitment.
           </p>
         </div>
@@ -240,13 +240,13 @@ export default function UpgradeOptions({
             <div className="px-6 py-4 overflow-y-auto">
               <dl className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-4">
-                  <dt className="text-sm" style={{ color: "#64748b" }}>Plan</dt>
+                  <dt className="text-sm" style={{ color: "#5A6779" }}>Plan</dt>
                   <dd className="text-sm font-semibold text-right" style={{ color: "#0f172a" }}>
                     {planLabels[pendingPlan]}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <dt className="text-sm" style={{ color: "#64748b" }}>Price</dt>
+                  <dt className="text-sm" style={{ color: "#5A6779" }}>Price</dt>
                   <dd className="text-sm font-semibold text-right" style={{ color: "#0f172a" }}>
                     ${prices[pendingPlan][frequency]}
                     {priceSuffix[frequency]}
@@ -254,7 +254,7 @@ export default function UpgradeOptions({
                 </div>
               </dl>
 
-              <p className="text-sm mt-4" style={{ color: "#64748b" }}>
+              <p className="text-sm mt-4" style={{ color: "#5A6779" }}>
                 This subscription renews automatically at ${prices[pendingPlan][frequency]}{" "}
                 {intervalPhrases[frequency]} until you cancel. You can cancel anytime in your
                 account settings.

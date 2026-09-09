@@ -63,7 +63,7 @@ export default function SubscriptionCard({
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">Subscription</h2>
-          <p className="text-sm text-[#64748b]">View your current plan and billing details.</p>
+          <p className="text-sm text-[#5A6779]">View your current plan and billing details.</p>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function SubscriptionCard({
                     <>
                       Gold
                       {billingFrequency && (
-                        <span className="block text-xs font-normal text-[#64748b] mt-0.5">
+                        <span className="block text-xs font-normal text-[#5A6779] mt-0.5">
                           {formatFrequency(billingFrequency)}
                         </span>
                       )}
@@ -89,7 +89,7 @@ export default function SubscriptionCard({
                     <>
                       Silver
                       {billingFrequency && (
-                        <span className="block text-xs font-normal text-[#64748b] mt-0.5">
+                        <span className="block text-xs font-normal text-[#5A6779] mt-0.5">
                           {formatFrequency(billingFrequency)}
                         </span>
                       )}
@@ -115,7 +115,7 @@ export default function SubscriptionCard({
 
             <div className="border-t border-gray-100 my-5" />
 
-            <p className="text-sm text-[#64748b]">
+            <p className="text-sm text-[#5A6779]">
               {subscriptionPlan === "gold"
                 ? "You're on the Gold plan — you have access to all features and benefits."
                 : subscriptionPlan === "silver"
@@ -129,7 +129,7 @@ export default function SubscriptionCard({
 
         <div>
           {(subscriptionPlan === "gold" || subscriptionPlan === "silver") && (
-            <p className="text-sm text-[#64748b] mb-3">
+            <p className="text-sm text-[#5A6779] mb-3">
               {cancelAtPeriodEnd
                 ? "Your subscription is set to end on this date. You'll keep full access until then."
                 : "Cancel anytime — no long-term commitment."}
