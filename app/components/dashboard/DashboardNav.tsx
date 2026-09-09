@@ -61,7 +61,7 @@ export default function DashboardNav() {
           <div className="flex items-center gap-2 sm:gap-2 shrink-0 ml-3 sm:ml-0">
             <Link
               href={isCoach ? "/dashboard/coach?tab=notifications" : "/dashboard/student?tab=notifications"}
-              className="relative flex items-center justify-center w-5 h-5 shrink-0 text-[#0f172a] hover:text-[#d93025] transition-colors"
+              className="relative flex items-center justify-center w-5 h-5 shrink-0 text-[#0f172a] hover:text-[#CE2C22] transition-colors"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -69,7 +69,7 @@ export default function DashboardNav() {
                 <span
                   className="absolute top-0.5 right-0.5 inline-flex items-center justify-center rounded-full text-white"
                   style={{
-                    backgroundColor: "#d93025",
+                    backgroundColor: "#CE2C22",
                     minWidth: "16px",
                     height: "16px",
                     fontSize: "10px",

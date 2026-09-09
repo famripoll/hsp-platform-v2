@@ -628,14 +628,14 @@ export default function EditProfileForm({
           <button
             type="submit"
             disabled={saving}
-            className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
+            className="bg-[#CE2C22] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>
           <button
             type="button"
             onClick={() => router.push("/dashboard/student")}
-            className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors transition-transform duration-200 hover:scale-105"
+            className="border border-[#CE2C22] text-[#CE2C22] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors transition-transform duration-200 hover:scale-105"
           >
             Cancel
           </button>

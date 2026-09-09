@@ -39,7 +39,7 @@ function StatRow({ label, value, icon: Icon }: { label: string; value: string; i
         className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center"
         style={{ backgroundColor: "rgba(217, 48, 37, 0.1)" }}
       >
-        <Icon className="w-5 h-5" style={{ color: "#d93025" }} />
+        <Icon className="w-5 h-5" style={{ color: "#CE2C22" }} />
       </div>
       <div className="flex flex-col min-w-0">
         <span className="text-xs" style={{ color: "#5A6779" }}>
@@ -69,7 +69,7 @@ function Subsection({
     <div className={first ? "" : "border-t border-gray-100 pt-4 mt-4"}>
       <h3
         className="text-xs font-bold uppercase tracking-wide mb-4"
-        style={{ color: "#d93025" }}
+        style={{ color: "#CE2C22" }}
       >
         {title}
       </h3>
@@ -122,12 +122,12 @@ export default function CollegeStatsCard({ university }: { university: Universit
         aria-expanded={open}
         className="sm:hidden w-full flex items-center justify-between"
       >
-        <span className="text-xs font-semibold uppercase" style={{ color: "#d93025" }}>
+        <span className="text-xs font-semibold uppercase" style={{ color: "#CE2C22" }}>
           View College Stats
         </span>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-          style={{ color: "#d93025" }}
+          style={{ color: "#CE2C22" }}
         />
       </button>
 

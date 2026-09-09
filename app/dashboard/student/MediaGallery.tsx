@@ -130,7 +130,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
       <button
         onClick={() => setOpen(true)}
         className="w-full bg-red-50 font-semibold rounded-xl py-3 transition-colors hover:bg-red-100"
-        style={{ color: "#d93025" }}
+        style={{ color: "#CE2C22" }}
       >
         View Media →
       </button>
@@ -163,7 +163,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
             <div className="overflow-y-auto flex-1 p-6 space-y-8">
               {loading ? (
                 <div className="flex items-center justify-center py-16">
-                  <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
+                  <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#CE2C22" }} />
                 </div>
               ) : (
                 <>
@@ -171,7 +171,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
                   <section>
                     <h3
                       className="text-xs font-bold uppercase tracking-widest mb-3"
-                      style={{ color: "#d93025" }}
+                      style={{ color: "#CE2C22" }}
                     >
                       Photos
                     </h3>
@@ -217,7 +217,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
                   <section>
                     <h3
                       className="text-xs font-bold uppercase tracking-widest mb-3"
-                      style={{ color: "#d93025" }}
+                      style={{ color: "#CE2C22" }}
                     >
                       Videos
                     </h3>
@@ -314,7 +314,7 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
                 onClick={handleDelete}
                 disabled={deleting}
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
-                style={{ backgroundColor: "#d93025" }}
+                style={{ backgroundColor: "#CE2C22" }}
               >
                 {deleting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Delete

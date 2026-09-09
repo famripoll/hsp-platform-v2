@@ -266,7 +266,7 @@ export default function UpgradeOptions({
                   checked={consentChecked}
                   onChange={(e) => setConsentChecked(e.target.checked)}
                   className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
-                  style={{ accentColor: "#d93025" }}
+                  style={{ accentColor: "#CE2C22" }}
                 />
                 <span className="text-sm" style={{ color: "#0f172a" }}>
                   I agree to these automatic renewal terms.
@@ -288,7 +288,7 @@ export default function UpgradeOptions({
                   onClick={() => handleCheckout(pendingPlan)}
                   disabled={!consentChecked || loadingPlan !== null}
                   className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: "#d93025" }}
+                  style={{ backgroundColor: "#CE2C22" }}
                 >
                   {loadingPlan === pendingPlan ? "Redirecting..." : "Continue to payment"}
                 </button>

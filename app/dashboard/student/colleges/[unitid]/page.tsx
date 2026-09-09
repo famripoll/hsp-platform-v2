@@ -90,7 +90,7 @@ export default async function CollegeDetailPage({
 
         <div className="bg-white rounded-2xl shadow-sm p-6 h-full flex flex-col">
           <div className="flex items-center gap-2 mb-4">
-            <Users className="w-5 h-5" style={{ color: "#d93025" }} />
+            <Users className="w-5 h-5" style={{ color: "#CE2C22" }} />
             <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
               Baseball Program Contact
             </h3>

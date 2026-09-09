@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
           </p>
         ) : !sessionValid ? (
           <div className="flex flex-col gap-4 items-center text-center">
-            <p className="text-sm rounded-lg px-4 py-3 bg-red-50 w-full" style={{ color: "#d93025" }}>
+            <p className="text-sm rounded-lg px-4 py-3 bg-red-50 w-full" style={{ color: "#CE2C22" }}>
               {INVALID_LINK_MSG}
             </p>
             <Link
@@ -182,7 +182,7 @@ export default function ResetPasswordPage() {
             </div>
 
             {error && (
-              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#d93025" }}>
+              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
                 {error}
               </p>
             )}

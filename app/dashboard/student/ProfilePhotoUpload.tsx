@@ -226,7 +226,7 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
           onClick={() => { if (!uploading) fileInputRef.current?.click(); }}
           disabled={uploading}
           className="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center shadow-sm disabled:opacity-70"
-          style={{ backgroundColor: "#d93025" }}
+          style={{ backgroundColor: "#CE2C22" }}
           aria-label="Upload photo"
         >
           <Camera className="w-3 h-3 text-white" />
@@ -290,7 +290,7 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
                 step={0.01}
                 value={zoom}
                 onChange={(e) => setZoom(Number(e.target.value))}
-                className="w-full accent-[#d93025]"
+                className="w-full accent-[#CE2C22]"
               />
             </div>
 
@@ -299,14 +299,14 @@ export default function ProfilePhotoUpload({ initialPhotoUrl, size = "w-24 h-24"
               <button
                 onClick={cancelCrop}
                 className="flex-1 py-2.5 rounded-xl border text-sm font-semibold transition-colors hover:bg-red-50"
-                style={{ borderColor: "#d93025", color: "#d93025" }}
+                style={{ borderColor: "#CE2C22", color: "#CE2C22" }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#d93025" }}
+                style={{ backgroundColor: "#CE2C22" }}
               >
                 Save
               </button>

@@ -210,7 +210,7 @@ function CollegeSearchClientInner() {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <div className="flex items-center gap-2 mb-5">
-        <Search className="w-5 h-5" style={{ color: "#d93025" }} />
+        <Search className="w-5 h-5" style={{ color: "#CE2C22" }} />
         <h1 className="text-xl font-bold" style={{ color: "#0f172a" }}>
           Search Colleges
         </h1>
@@ -224,9 +224,10 @@ function CollegeSearchClientInner() {
         }}
         className="mb-3"
       >
-        <label className={LABEL_CLS}>Search by name</label>
+        <label htmlFor="college-filter-term" className={LABEL_CLS}>Search by name</label>
         <div className="flex gap-2">
           <input
+            id="college-filter-term"
             type="text"
             className={INPUT_CLS}
             placeholder="e.g. Florida Gulf Coast University"
@@ -250,8 +251,9 @@ function CollegeSearchClientInner() {
         className={`${showFilters ? "grid" : "hidden"} sm:grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4`}
       >
         <div>
-          <label className={LABEL_CLS}>State</label>
+          <label htmlFor="college-filter-state" className={LABEL_CLS}>State</label>
           <select
+            id="college-filter-state"
             className={INPUT_CLS}
             value={stateFilter}
             onChange={(e) => setStateFilter(e.target.value)}
@@ -265,8 +267,9 @@ function CollegeSearchClientInner() {
           </select>
         </div>
         <div>
-          <label className={LABEL_CLS}>Level</label>
+          <label htmlFor="college-filter-level" className={LABEL_CLS}>Level</label>
           <select
+            id="college-filter-level"
             className={INPUT_CLS}
             value={levelFilter}
             onChange={(e) => setLevelFilter(e.target.value)}
@@ -280,8 +283,9 @@ function CollegeSearchClientInner() {
           </select>
         </div>
         <div>
-          <label className={LABEL_CLS}>Type</label>
+          <label htmlFor="college-filter-type" className={LABEL_CLS}>Type</label>
           <select
+            id="college-filter-type"
             className={INPUT_CLS}
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
@@ -302,7 +306,7 @@ function CollegeSearchClientInner() {
           onClick={() => runSearch()}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
-          style={{ backgroundColor: "#d93025" }}
+          style={{ backgroundColor: "#CE2C22" }}
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -316,7 +320,7 @@ function CollegeSearchClientInner() {
             type="button"
             onClick={clearFilters}
             disabled={loading}
-            className="text-sm text-[#5A6779] hover:text-[#d93025] transition-colors disabled:opacity-60"
+            className="text-sm text-[#5A6779] hover:text-[#CE2C22] transition-colors disabled:opacity-60"
           >
             Clear Filters
           </button>
@@ -340,7 +344,7 @@ function CollegeSearchClientInner() {
       <div ref={resultsTopRef} aria-hidden="true" />
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#CE2C22] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : results.length === 0 ? (
         <p className="text-sm text-center py-12" style={{ color: "#5A6779" }}>
@@ -428,7 +432,7 @@ function CollegeSearchClientInner() {
                     ? "text-white font-semibold"
                     : "border border-gray-200 text-[#5A6779] hover:bg-gray-50"
                 }`}
-                style={p === page ? { backgroundColor: "#d93025" } : undefined}
+                style={p === page ? { backgroundColor: "#CE2C22" } : undefined}
               >
                 {p}
               </button>
@@ -455,7 +459,7 @@ export default function CollegeSearchClient() {
     <Suspense
       fallback={
         <div className="bg-white rounded-2xl shadow-sm p-6 flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#CE2C22] border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

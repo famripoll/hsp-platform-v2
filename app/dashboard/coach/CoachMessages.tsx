@@ -387,7 +387,7 @@ export default function CoachMessages({
           ) : (
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-              style={{ backgroundColor: "#d93025" }}
+              style={{ backgroundColor: "#CE2C22" }}
             >
               {getInitials(headerName ?? null)}
             </div>
@@ -445,7 +445,7 @@ export default function CoachMessages({
               onClick={handleReply}
               disabled={sending || replyText.trim().length === 0}
               className="w-full sm:w-auto px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: "#d93025" }}
+              style={{ backgroundColor: "#CE2C22" }}
             >
               {sending ? "Sending..." : "Send Message"}
             </button>
@@ -484,7 +484,7 @@ export default function CoachMessages({
             ) : (
               <div
                 className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
-                style={{ backgroundColor: "#d93025" }}
+                style={{ backgroundColor: "#CE2C22" }}
               >
                 {getInitials(c.studentName)}
               </div>

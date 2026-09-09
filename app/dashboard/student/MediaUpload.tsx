@@ -216,9 +216,9 @@ export default function MediaUpload({ subscriptionStatus, mediaVersion }: { subs
             className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {photoUploading ? (
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#CE2C22" }} />
             ) : isPaid ? (
-              <Camera className="w-8 h-8" style={{ color: "#d93025" }} />
+              <Camera className="w-8 h-8" style={{ color: "#CE2C22" }} />
             ) : (
               <Lock className="w-8 h-8" style={{ color: "#5A6779" }} />
             )}
@@ -265,9 +265,9 @@ export default function MediaUpload({ subscriptionStatus, mediaVersion }: { subs
             className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center gap-2 text-center hover:border-red-300 hover:bg-red-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {videoUploading ? (
-              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d93025" }} />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#CE2C22" }} />
             ) : isPaid ? (
-              <Video className="w-8 h-8" style={{ color: "#d93025" }} />
+              <Video className="w-8 h-8" style={{ color: "#CE2C22" }} />
             ) : (
               <Lock className="w-8 h-8" style={{ color: "#5A6779" }} />
             )}

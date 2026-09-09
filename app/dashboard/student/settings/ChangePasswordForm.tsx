@@ -71,7 +71,7 @@ export default function ChangePasswordForm() {
       <div className="max-w-sm mx-auto w-full">
       <div className="flex items-start gap-3">
         <div className="bg-red-50 rounded-xl p-3 shrink-0">
-          <Lock size={22} color="#d93025" />
+          <Lock size={22} color="#CE2C22" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">Password</h2>
@@ -152,7 +152,7 @@ export default function ChangePasswordForm() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
+              className="bg-[#CE2C22] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
             >
               {saving ? "Updating…" : "Update Password"}
             </button>

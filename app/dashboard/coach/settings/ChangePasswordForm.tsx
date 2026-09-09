@@ -83,13 +83,13 @@ export default function ChangePasswordForm() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity disabled:opacity-60"
+            className="bg-[#CE2C22] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity disabled:opacity-60"
           >
             {saving ? "Updating..." : "Update Password"}
           </button>
           <Link
             href="/dashboard/coach"
-            className="border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
+            className="border border-[#CE2C22] text-[#CE2C22] font-semibold rounded-xl px-6 py-3 hover:bg-red-50 transition-colors"
           >
             Back
           </Link>

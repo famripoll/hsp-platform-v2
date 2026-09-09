@@ -57,9 +57,9 @@ export default function ActivationPendingBanner() {
       <div className="flex items-start gap-3 min-w-0">
         <div className="bg-red-100 rounded-xl p-2 shrink-0">
           {timedOut ? (
-            <Clock size={18} className="text-[#d93025]" />
+            <Clock size={18} className="text-[#CE2C22]" />
           ) : (
-            <Loader2 size={18} className="text-[#d93025] animate-spin" />
+            <Loader2 size={18} className="text-[#CE2C22] animate-spin" />
           )}
         </div>
         <div className="min-w-0">
@@ -73,7 +73,7 @@ export default function ActivationPendingBanner() {
                 refresh the page in a moment. If it persists, contact{" "}
                 <a
                   href="mailto:support@highschoolprospect.com"
-                  className="font-semibold text-[#d93025] break-words"
+                  className="font-semibold text-[#CE2C22] break-words"
                 >
                   support@highschoolprospect.com
                 </a>

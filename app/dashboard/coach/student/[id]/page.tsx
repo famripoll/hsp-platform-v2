@@ -212,7 +212,7 @@ export default async function CoachStudentProfilePage({
                     ) : (
                       <div
                         className="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl"
-                        style={{ backgroundColor: "#d93025" }}
+                        style={{ backgroundColor: "#CE2C22" }}
                       >
                         {initials}
                       </div>
@@ -225,8 +225,8 @@ export default async function CoachStudentProfilePage({
                     </h2>
 
                     <div className="flex items-center gap-1 mt-1 min-w-0">
-                      <User className="w-4 h-4 text-[#d93025] shrink-0" />
-                      <span className="text-sm font-semibold text-[#d93025] whitespace-nowrap">Position:</span>
+                      <User className="w-4 h-4 text-[#CE2C22] shrink-0" />
+                      <span className="text-sm font-semibold text-[#CE2C22] whitespace-nowrap">Position:</span>
                       <span className="text-sm text-[#0f172a] truncate">
                         {student.primary_position
                           ? student.secondary_position
@@ -315,7 +315,7 @@ export default async function CoachStudentProfilePage({
               <div className="border-t border-gray-100 pt-4">
                 <p
                   className="text-xs font-semibold uppercase mb-2"
-                  style={{ color: "#d93025" }}
+                  style={{ color: "#CE2C22" }}
                 >
                   Academics
                 </p>
@@ -358,7 +358,7 @@ export default async function CoachStudentProfilePage({
                 <div className="border-t border-gray-100 pt-4 mt-4">
                   <p
                     className="text-xs font-semibold uppercase mb-1.5"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Social
                   </p>
@@ -399,7 +399,7 @@ export default async function CoachStudentProfilePage({
             {/* Media Card */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Camera className="w-5 h-5" style={{ color: "#d93025" }} />
+                <Camera className="w-5 h-5" style={{ color: "#CE2C22" }} />
                 <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
                   Media
                 </h3>
@@ -418,7 +418,7 @@ export default async function CoachStudentProfilePage({
                     <section>
                       <h4
                         className="text-xs font-bold uppercase tracking-widest mb-3"
-                        style={{ color: "#d93025" }}
+                        style={{ color: "#CE2C22" }}
                       >
                         Photos
                       </h4>
@@ -443,7 +443,7 @@ export default async function CoachStudentProfilePage({
                     <section>
                       <h4
                         className="text-xs font-bold uppercase tracking-widest mb-3"
-                        style={{ color: "#d93025" }}
+                        style={{ color: "#CE2C22" }}
                       >
                         Videos
                       </h4>

@@ -196,8 +196,8 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               }}
               className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                 activeSection === tab.value
-                  ? "border-[#d93025] text-[#d93025] font-semibold"
-                  : "border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105"
+                  ? "border-[#CE2C22] text-[#CE2C22] font-semibold"
+                  : "border-transparent text-[#5A6779] hover:text-[#CE2C22] hover:scale-105"
               }`}
             >
               {tab.label}
@@ -205,7 +205,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                 <span
                   className="inline-flex items-center justify-center ml-2.5 rounded-full text-white align-middle shrink-0"
                   style={{
-                    backgroundColor: "#d93025",
+                    backgroundColor: "#CE2C22",
                     minWidth: "18px",
                     height: "18px",
                     fontSize: "11px",
@@ -331,8 +331,8 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   onClick={() => setActiveFeedTab(tab.value)}
                   className={`shrink-0 px-3 py-2 text-xs sm:text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                     activeFeedTab === tab.value
-                      ? "border-[#d93025] text-[#d93025] font-semibold"
-                      : "border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105"
+                      ? "border-[#CE2C22] text-[#CE2C22] font-semibold"
+                      : "border-transparent text-[#5A6779] hover:text-[#CE2C22] hover:scale-105"
                   }`}
                 >
                   {tab.label}
@@ -360,7 +360,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                   <Link
                     href="/dashboard/upgrade"
                     className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
-                    style={{ backgroundColor: "#d93025" }}
+                    style={{ backgroundColor: "#CE2C22" }}
                   >
                     Upgrade Now
                   </Link>
@@ -428,7 +428,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
             <Link
               href="/dashboard/student/colleges"
               className="inline-flex items-center gap-2 text-sm font-semibold text-white rounded-xl px-4 py-2 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
-              style={{ backgroundColor: "#d93025" }}
+              style={{ backgroundColor: "#CE2C22" }}
             >
               <Search className="w-4 h-4" />
               Search Colleges
@@ -443,7 +443,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
           {/* Media Card */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Play className="w-5 h-5" style={{ color: "#d93025" }} />
+              <Play className="w-5 h-5" style={{ color: "#CE2C22" }} />
               <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
                 Media
               </h3>
@@ -468,7 +468,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                 <Link
                   href="/dashboard/upgrade"
                   className="shrink-0 text-sm font-semibold text-white rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105"
-                  style={{ backgroundColor: "#d93025" }}
+                  style={{ backgroundColor: "#CE2C22" }}
                 >
                   Upgrade Now
                 </Link>
@@ -487,7 +487,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               className="px-3 py-2 transition-colors whitespace-nowrap"
               style={
                 messagesView === "messages"
-                  ? { backgroundColor: "#d93025", color: "#ffffff" }
+                  ? { backgroundColor: "#CE2C22", color: "#ffffff" }
                   : { backgroundColor: "#F2F3F3", color: "#0f172a" }
               }
             >
@@ -498,7 +498,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
               className="px-3 py-2 transition-colors whitespace-nowrap"
               style={
                 messagesView === "collegeContacts"
-                  ? { backgroundColor: "#d93025", color: "#ffffff" }
+                  ? { backgroundColor: "#CE2C22", color: "#ffffff" }
                   : { backgroundColor: "#F2F3F3", color: "#0f172a" }
               }
             >

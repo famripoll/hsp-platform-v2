@@ -213,8 +213,8 @@ export default async function StudentDashboardPage({
                     </h2>
 
                     <div className="flex items-center gap-1 mt-1 min-w-0">
-                      <User className="w-4 h-4 text-[#d93025] shrink-0" />
-                      <span className="text-sm font-semibold text-[#d93025] whitespace-nowrap">Position:</span>
+                      <User className="w-4 h-4 text-[#CE2C22] shrink-0" />
+                      <span className="text-sm font-semibold text-[#CE2C22] whitespace-nowrap">Position:</span>
                       <span className="text-sm text-[#0f172a] truncate">
                         {student.primary_position
                           ? student.secondary_position
@@ -306,7 +306,7 @@ export default async function StudentDashboardPage({
                 <div className="border-t border-gray-100 pt-4">
                   <p
                     className="text-xs font-semibold uppercase mb-2"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Academics
                   </p>
@@ -349,7 +349,7 @@ export default async function StudentDashboardPage({
                 <div className="border-t border-gray-100 pt-4">
                   <p
                     className="text-xs font-semibold uppercase mb-1.5"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Student
                   </p>
@@ -416,7 +416,7 @@ export default async function StudentDashboardPage({
                 <div className="border-t border-gray-100 pt-4">
                   <p
                     className="text-xs font-semibold uppercase mb-1.5"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Parent / Guardian
                   </p>
@@ -456,7 +456,7 @@ export default async function StudentDashboardPage({
                 <div className="border-t border-gray-100 pt-4">
                   <p
                     className="text-xs font-semibold uppercase mb-1.5"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Coach
                   </p>
@@ -493,7 +493,7 @@ export default async function StudentDashboardPage({
                   <div className="border-t border-gray-100 pt-4">
                     <p
                       className="text-xs font-semibold uppercase mb-1.5"
-                      style={{ color: "#d93025" }}
+                      style={{ color: "#CE2C22" }}
                     >
                       Family Contacts
                     </p>

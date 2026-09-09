@@ -346,7 +346,7 @@ export default async function PublicStudentProfilePage({
     <>
       <p
         className="text-xs font-bold uppercase tracking-widest mb-3"
-        style={{ color: "#d93025" }}
+        style={{ color: "#CE2C22" }}
       >
         Hitting
       </p>
@@ -358,7 +358,7 @@ export default async function PublicStudentProfilePage({
     <>
       <p
         className="text-xs font-bold uppercase tracking-widest mb-3"
-        style={{ color: "#d93025" }}
+        style={{ color: "#CE2C22" }}
       >
         Pitching
       </p>
@@ -394,7 +394,7 @@ export default async function PublicStudentProfilePage({
               ) : (
                 <div
                   className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl"
-                  style={{ backgroundColor: "#d93025" }}
+                  style={{ backgroundColor: "#CE2C22" }}
                 >
                   {initials(fullName)}
                 </div>
@@ -404,7 +404,7 @@ export default async function PublicStudentProfilePage({
               <h1 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-tight">
                 {fullName ?? DASH}
               </h1>
-              <p className="text-sm font-semibold text-[#d93025] mt-1">
+              <p className="text-sm font-semibold text-[#CE2C22] mt-1">
                 {position}
               </p>
               <p className="text-sm text-[#5A6779] mt-1">
@@ -425,7 +425,7 @@ export default async function PublicStudentProfilePage({
         <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
           <p
             className="text-xs font-semibold uppercase mb-3"
-            style={{ color: "#d93025" }}
+            style={{ color: "#CE2C22" }}
           >
             Player Info
           </p>
@@ -462,7 +462,7 @@ export default async function PublicStudentProfilePage({
         <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
           <p
             className="text-xs font-semibold uppercase mb-3"
-            style={{ color: "#d93025" }}
+            style={{ color: "#CE2C22" }}
           >
             Academics
           </p>
@@ -528,7 +528,7 @@ export default async function PublicStudentProfilePage({
                 <section>
                   <h3
                     className="text-xs font-bold uppercase tracking-widest mb-3"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Photos
                   </h3>
@@ -558,7 +558,7 @@ export default async function PublicStudentProfilePage({
                 <section>
                   <h3
                     className="text-xs font-bold uppercase tracking-widest mb-3"
-                    style={{ color: "#d93025" }}
+                    style={{ color: "#CE2C22" }}
                   >
                     Video
                   </h3>

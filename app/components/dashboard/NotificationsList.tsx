@@ -202,7 +202,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
             type="button"
             onClick={handleMarkAllAsRead}
             className="text-xs sm:text-sm font-semibold shrink-0 hover:underline"
-            style={{ color: "#d93025" }}
+            style={{ color: "#CE2C22" }}
           >
             Mark all as read
           </button>
@@ -230,7 +230,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
                 className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "#F2F3F3" }}
               >
-                <Icon className="w-4 h-4" style={{ color: "#d93025" }} />
+                <Icon className="w-4 h-4" style={{ color: "#CE2C22" }} />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -239,7 +239,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
                     {isUnread && (
                       <span
                         className="w-1.5 h-1.5 rounded-full shrink-0"
-                        style={{ backgroundColor: "#d93025" }}
+                        style={{ backgroundColor: "#CE2C22" }}
                       />
                     )}
                     <span className="font-bold text-sm truncate" style={{ color: "#0f172a" }}>

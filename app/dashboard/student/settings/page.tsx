@@ -124,7 +124,7 @@ export default async function StudentSettingsPage({
                 <h1 className="text-2xl font-bold text-[#0f172a]">Account Settings</h1>
                 <Link
                   href="/dashboard/student"
-                  className="sm:hidden border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
+                  className="sm:hidden border border-[#CE2C22] text-[#CE2C22] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
                 >
                   Back
                 </Link>
@@ -135,7 +135,7 @@ export default async function StudentSettingsPage({
             </div>
             <Link
               href="/dashboard/student"
-              className="hidden sm:block border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
+              className="hidden sm:block border border-[#CE2C22] text-[#CE2C22] font-semibold rounded-xl px-6 py-1.5 hover:bg-red-50 transition-colors shrink-0 w-fit"
             >
               Back
             </Link>

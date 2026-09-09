@@ -262,7 +262,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#d93025" }}>
+              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
                 {error}
               </p>
             )}
@@ -333,7 +333,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#d93025" }}>
+              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
                 {error}
               </p>
             )}
@@ -392,7 +392,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#d93025" }}>
+              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
                 {error}
               </p>
             )}

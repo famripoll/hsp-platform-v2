@@ -73,11 +73,11 @@ export default function LearnMorePage() {
 
         {/* Section title with decorative lines */}
         <div className="flex items-center gap-4 mb-12">
-          <div className="flex-1 h-[2px]" style={{ background: "#d93025" }} />
+          <div className="flex-1 h-[2px]" style={{ background: "#CE2C22" }} />
           <h2 className="text-2xl md:text-3xl font-bold text-hsp-dark whitespace-nowrap">
             RECRUITING PIPELINE
           </h2>
-          <div className="flex-1 h-[2px]" style={{ background: "#d93025" }} />
+          <div className="flex-1 h-[2px]" style={{ background: "#CE2C22" }} />
         </div>
 
         {/* Cards row */}
@@ -86,7 +86,7 @@ export default function LearnMorePage() {
           {/* Gradient connector line — desktop, sits behind cards */}
           <div
             className="hidden md:block absolute left-0 right-0 h-[3px] top-[40%] z-0 pointer-events-none"
-            style={{ background: "linear-gradient(to right, #0f172a, #d93025)" }}
+            style={{ background: "linear-gradient(to right, #0f172a, #CE2C22)" }}
           />
 
           {/* Step 1 */}
@@ -107,8 +107,8 @@ export default function LearnMorePage() {
 
           {/* Arrow desktop → / mobile ↓ */}
           <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
-            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
-            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#CE2C22" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#CE2C22" }}>↓</span>
           </div>
 
           {/* Step 2 */}
@@ -129,8 +129,8 @@ export default function LearnMorePage() {
 
           {/* Arrow */}
           <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
-            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
-            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#CE2C22" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#CE2C22" }}>↓</span>
           </div>
 
           {/* Step 3 */}
@@ -151,15 +151,15 @@ export default function LearnMorePage() {
 
           {/* Arrow */}
           <div className="relative z-10 flex items-center justify-center md:px-2 py-3 md:py-0">
-            <span className="hidden md:block text-2xl font-bold" style={{ color: "#d93025" }}>→</span>
-            <span className="md:hidden text-2xl font-bold" style={{ color: "#d93025" }}>↓</span>
+            <span className="hidden md:block text-2xl font-bold" style={{ color: "#CE2C22" }}>→</span>
+            <span className="md:hidden text-2xl font-bold" style={{ color: "#CE2C22" }}>↓</span>
           </div>
 
           {/* Step 4 — dark card */}
           <div className="relative z-10 flex flex-col items-center w-full md:flex-1 self-stretch">
             <div
               className="w-full h-full rounded-2xl p-6 flex flex-col items-center text-center gap-3 border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
-              style={{ background: "#0f172a", borderColor: "#d93025" }}
+              style={{ background: "#0f172a", borderColor: "#CE2C22" }}
             >
               <div>
                 <Image src="/lm-step4.png" alt="The Verified Dugout" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
@@ -178,7 +178,7 @@ export default function LearnMorePage() {
           <Link
             href="/signup"
             className="px-8 py-3 rounded-lg font-bold text-white text-sm uppercase tracking-wider hover:scale-105 transition-transform duration-200"
-            style={{ background: "#d93025" }}
+            style={{ background: "#CE2C22" }}
           >
             START YOUR JOURNEY NOW
           </Link>

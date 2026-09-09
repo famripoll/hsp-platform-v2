@@ -14,12 +14,12 @@ export default function CollapsibleContacts({ children }: { children: React.Reac
         aria-expanded={open}
         className="sm:hidden w-full flex items-center justify-between border-t border-gray-100 pt-4"
       >
-        <span className="text-xs font-semibold uppercase" style={{ color: "#d93025" }}>
+        <span className="text-xs font-semibold uppercase" style={{ color: "#CE2C22" }}>
           Contact Information
         </span>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-          style={{ color: "#d93025" }}
+          style={{ color: "#CE2C22" }}
         />
       </button>
       <div className={`${open ? "flex" : "hidden"} sm:flex flex-col gap-4`}>{children}</div>

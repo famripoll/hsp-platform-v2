@@ -9,8 +9,8 @@ type Mode = "idle" | "editing";
 
 const INPUT = "border border-gray-200 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent text-sm";
 const LABEL = "text-sm font-medium text-gray-600 mb-1 block";
-const PRIMARY_BTN = "bg-[#d93025] text-white font-semibold rounded-xl px-4 py-2.5 text-sm hover:opacity-90 transition-opacity disabled:opacity-60 w-full sm:w-auto";
-const SECONDARY_BTN = "border border-[#d93025] text-[#d93025] font-semibold rounded-xl px-4 py-2.5 text-sm hover:bg-red-50 transition-colors disabled:opacity-60 w-full sm:w-auto";
+const PRIMARY_BTN = "bg-[#CE2C22] text-white font-semibold rounded-xl px-4 py-2.5 text-sm hover:opacity-90 transition-opacity disabled:opacity-60 w-full sm:w-auto";
+const SECONDARY_BTN = "border border-[#CE2C22] text-[#CE2C22] font-semibold rounded-xl px-4 py-2.5 text-sm hover:bg-red-50 transition-colors disabled:opacity-60 w-full sm:w-auto";
 
 export default function VerifyEmailBanner({ email }: { email: string }) {
   const router = useRouter();

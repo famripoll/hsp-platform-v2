@@ -196,7 +196,7 @@ export default function ContactCollegeButton({
             onClick={handleSend}
             disabled={isDisabled}
             className="w-full sm:w-auto px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: "#d93025" }}
+            style={{ backgroundColor: "#CE2C22" }}
           >
             {sending ? "Sending..." : "Send Message"}
           </button>
@@ -217,7 +217,7 @@ export default function ContactCollegeButton({
         type="button"
         onClick={handleOpen}
         className="rounded-lg px-4 py-2 text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "#d93025" }}
+        style={{ backgroundColor: "#CE2C22" }}
       >
         {hasCoaches ? "Contact Coach" : "Contact College"}
       </button>
@@ -258,7 +258,7 @@ export default function ContactCollegeButton({
                       type="button"
                       onClick={handleClose}
                       className="px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity duration-200"
-                      style={{ backgroundColor: "#d93025" }}
+                      style={{ backgroundColor: "#CE2C22" }}
                     >
                       Close
                     </button>

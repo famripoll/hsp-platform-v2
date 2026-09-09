@@ -5,7 +5,7 @@
 // HSP red, navy, dark teal, plum, dark amber, dark forest green, charcoal,
 // deep indigo.
 const CARD_PALETTE = [
-  "#d93025", // HSP red
+  "#CE2C22", // HSP red
   "#1e3a5f", // navy
   "#0f4c4c", // dark teal
   "#5b2b47", // plum

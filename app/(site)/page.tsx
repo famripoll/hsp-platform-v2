@@ -44,7 +44,7 @@ export default function Home() {
               {/* Row 1 */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
-                  <LinkIcon className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                  <LinkIcon className="w-5 h-5" strokeWidth={3} style={{ color: "#CE2C22" }} />
                 </div>
                 <div className="flex-1 py-3 border-b border-gray-200">
                   <span className="text-sm font-medium text-hsp-dark">Share your social links</span>
@@ -53,7 +53,7 @@ export default function Home() {
               {/* Row 2 */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
-                  <BarChart3 className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                  <BarChart3 className="w-5 h-5" strokeWidth={3} style={{ color: "#CE2C22" }} />
                 </div>
                 <div className="flex-1 py-3 border-b border-gray-200">
                   <span className="text-sm font-medium text-hsp-dark">Highlight your stats and videos</span>
@@ -62,7 +62,7 @@ export default function Home() {
               {/* Row 3 — no bottom border on the last row */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: "#ffffff" }}>
-                  <CircleUserRound className="w-5 h-5" strokeWidth={3} style={{ color: "#d93025" }} />
+                  <CircleUserRound className="w-5 h-5" strokeWidth={3} style={{ color: "#CE2C22" }} />
                 </div>
                 <div className="flex-1 py-3">
                   <span className="text-sm font-medium text-hsp-dark">Present your full profile in one place</span>

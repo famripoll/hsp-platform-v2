@@ -219,7 +219,7 @@ function ProspectCard({
       ) : (
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
-          style={{ backgroundColor: '#d93025' }}
+          style={{ backgroundColor: '#CE2C22' }}
         >
           {initials}
         </div>
@@ -445,18 +445,18 @@ function ProspectCard({
           type="button"
           onClick={() => onToggleWatchlist(student.id)}
           title={isSaved ? 'Remove from watchlist' : 'Add to watchlist'}
-          className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
+          className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#CE2C22] hover:bg-red-50"
         >
           <Heart
             className="w-4 h-4"
-            {...(isSaved ? { fill: '#d93025', stroke: '#d93025' } : {})}
+            {...(isSaved ? { fill: '#CE2C22', stroke: '#CE2C22' } : {})}
           />
         </button>
         {isPaid ? (
           <Link
             href={`/dashboard/coach/student/${student.id}`}
             title="View profile"
-            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
+            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#CE2C22] hover:bg-red-50"
           >
             <Eye className="w-4 h-4" />
           </Link>
@@ -475,7 +475,7 @@ function ProspectCard({
             type="button"
             onClick={() => onMessage(student)}
             title="Message"
-            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#d93025] hover:bg-red-50"
+            className="p-1.5 rounded-lg transition-colors text-[#5A6779] hover:text-[#CE2C22] hover:bg-red-50"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
@@ -714,7 +714,7 @@ function CoachDashboardContent() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[#CE2C22] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -732,7 +732,7 @@ function CoachDashboardContent() {
                 <div>
                   <p
                     className="text-xs font-semibold uppercase mb-1.5"
-                    style={{ color: '#d93025' }}
+                    style={{ color: '#CE2C22' }}
                   >
                     Coach Profile
                   </p>
@@ -814,7 +814,7 @@ function CoachDashboardContent() {
               <div className="border-t border-gray-100 pt-4">
                 <p
                   className="text-xs font-semibold uppercase mb-1.5"
-                  style={{ color: '#d93025' }}
+                  style={{ color: '#CE2C22' }}
                 >
                   Contact
                 </p>
@@ -851,8 +851,8 @@ function CoachDashboardContent() {
                     }}
                     className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                       activeTab === tab.value
-                        ? 'border-[#d93025] text-[#d93025] font-semibold'
-                        : 'border-transparent text-[#5A6779] hover:text-[#d93025] hover:scale-105'
+                        ? 'border-[#CE2C22] text-[#CE2C22] font-semibold'
+                        : 'border-transparent text-[#5A6779] hover:text-[#CE2C22] hover:scale-105'
                     }`}
                   >
                     {tab.label}
@@ -860,7 +860,7 @@ function CoachDashboardContent() {
                       <span
                         className="inline-flex items-center justify-center ml-2.5 rounded-full text-white align-middle shrink-0"
                         style={{
-                          backgroundColor: '#d93025',
+                          backgroundColor: '#CE2C22',
                           minWidth: '18px',
                           height: '18px',
                           fontSize: '11px',
@@ -882,7 +882,7 @@ function CoachDashboardContent() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">
-                    <Search className="w-5 h-5" style={{ color: '#d93025' }} />
+                    <Search className="w-5 h-5" style={{ color: '#CE2C22' }} />
                     <h2 className="text-xl font-bold" style={{ color: '#0f172a' }}>
                       Prospect Search
                     </h2>
@@ -901,8 +901,9 @@ function CoachDashboardContent() {
                 {/* Filters Row 1: State, Grad Year, Position */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                   <div>
-                    <label className={LABEL_CLS}>State</label>
+                    <label htmlFor="filter-state" className={LABEL_CLS}>State</label>
                     <select
+                      id="filter-state"
                       className={INPUT_CLS}
                       value={filters.state}
                       onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
@@ -939,8 +940,9 @@ function CoachDashboardContent() {
                     </select>
                   </div>
                   <div>
-                    <label className={LABEL_CLS}>Graduation Year</label>
+                    <label htmlFor="filter-gradYear" className={LABEL_CLS}>Graduation Year</label>
                     <select
+                      id="filter-gradYear"
                       className={INPUT_CLS}
                       value={filters.gradYear}
                       onChange={(e) => setFilters((f) => ({ ...f, gradYear: e.target.value }))}
@@ -954,8 +956,9 @@ function CoachDashboardContent() {
                     </select>
                   </div>
                   <div>
-                    <label className={LABEL_CLS}>Position</label>
+                    <label htmlFor="filter-position" className={LABEL_CLS}>Position</label>
                     <select
+                      id="filter-position"
                       className={INPUT_CLS}
                       value={filters.position}
                       onChange={(e) => setFilters((f) => ({ ...f, position: e.target.value }))}
@@ -973,8 +976,9 @@ function CoachDashboardContent() {
                 {/* Filters Row 2: Min GPA, Bats, Throws, Video Available */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                   <div>
-                    <label className={LABEL_CLS}>Min GPA</label>
+                    <label htmlFor="filter-minGpa" className={LABEL_CLS}>Min GPA</label>
                     <select
+                      id="filter-minGpa"
                       className={INPUT_CLS}
                       value={filters.minGpa}
                       onChange={(e) => setFilters((f) => ({ ...f, minGpa: e.target.value }))}
@@ -987,8 +991,9 @@ function CoachDashboardContent() {
                     </select>
                   </div>
                   <div>
-                    <label className={LABEL_CLS}>Bats</label>
+                    <label htmlFor="filter-bats" className={LABEL_CLS}>Bats</label>
                     <select
+                      id="filter-bats"
                       className={INPUT_CLS}
                       value={filters.bats}
                       onChange={(e) => setFilters((f) => ({ ...f, bats: e.target.value }))}
@@ -1000,8 +1005,9 @@ function CoachDashboardContent() {
                     </select>
                   </div>
                   <div>
-                    <label className={LABEL_CLS}>Throws</label>
+                    <label htmlFor="filter-throws" className={LABEL_CLS}>Throws</label>
                     <select
+                      id="filter-throws"
                       className={INPUT_CLS}
                       value={filters.throws}
                       onChange={(e) => setFilters((f) => ({ ...f, throws: e.target.value }))}
@@ -1012,8 +1018,9 @@ function CoachDashboardContent() {
                     </select>
                   </div>
                   <div>
-                    <label className={LABEL_CLS}>Video Available</label>
+                    <label htmlFor="filter-videoAvailable" className={LABEL_CLS}>Video Available</label>
                     <select
+                      id="filter-videoAvailable"
                       className={INPUT_CLS}
                       value={filters.videoAvailable}
                       onChange={(e) =>
@@ -1164,11 +1171,11 @@ function CoachDashboardContent() {
                   onClick={() => runSearch(filters, advancedFilters)}
                   disabled={searching}
                   className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#d93025' }}
+                  style={{ backgroundColor: '#CE2C22' }}
                   onMouseEnter={(e) =>
                     !searching && ((e.currentTarget.style.backgroundColor = '#b91c1c'))
                   }
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#d93025')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#CE2C22')}
                 >
                   {searching ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1185,7 +1192,7 @@ function CoachDashboardContent() {
                       <div className="flex justify-center py-8">
                         <div
                           className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin"
-                          style={{ borderColor: '#d93025', borderTopColor: 'transparent' }}
+                          style={{ borderColor: '#CE2C22', borderTopColor: 'transparent' }}
                         />
                       </div>
                     ) : students.length === 0 ? (
@@ -1273,7 +1280,7 @@ export default function CoachDashboardPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="w-8 h-8 border-4 border-[#d93025] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#CE2C22] border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

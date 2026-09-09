@@ -25,7 +25,7 @@ function ToggleSwitch({ checked, onChange, label }: { checked: boolean; onChange
       aria-label={label}
       onClick={onChange}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
-        checked ? "bg-[#d93025]" : "bg-gray-300"
+        checked ? "bg-[#CE2C22]" : "bg-gray-300"
       }`}
     >
       <span
@@ -165,7 +165,7 @@ export default function FamilyTab({
     <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
       <div className="flex items-start gap-3">
         <div className="bg-red-50 rounded-xl p-3 shrink-0">
-          <Users size={22} color="#d93025" />
+          <Users size={22} color="#CE2C22" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-[#0f172a]">Manage Family</h2>
@@ -258,7 +258,7 @@ export default function FamilyTab({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="bg-[#d93025] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
+          className="bg-[#CE2C22] text-white font-semibold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity transition-transform duration-200 hover:scale-105 disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -310,7 +310,7 @@ export default function FamilyTab({
                   type="button"
                   onClick={() => handleDelete(member.id)}
                   aria-label="Remove family member"
-                  className="text-gray-400 hover:text-[#d93025] transition-colors"
+                  className="text-gray-400 hover:text-[#CE2C22] transition-colors"
                 >
                   <Trash2 size={18} />
                 </button>

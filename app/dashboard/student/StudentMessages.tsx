@@ -336,7 +336,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
         <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-            style={{ backgroundColor: "#d93025" }}
+            style={{ backgroundColor: "#CE2C22" }}
           >
             {getInitials(activeConversation?.coachName ?? null)}
           </div>
@@ -402,7 +402,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                   onClick={handleReply}
                   disabled={sending || replyText.trim().length === 0}
                   className="w-full sm:w-auto px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: "#d93025" }}
+                  style={{ backgroundColor: "#CE2C22" }}
                 >
                   {sending ? "Sending..." : "Send Message"}
                 </button>
@@ -440,7 +440,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
-              style={{ backgroundColor: "#d93025" }}
+              style={{ backgroundColor: "#CE2C22" }}
             >
               {getInitials(c.coachName)}
             </div>

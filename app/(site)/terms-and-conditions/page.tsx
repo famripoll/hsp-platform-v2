@@ -28,7 +28,7 @@ const CONTACT_CARD = (
     <p className="text-sm text-hsp-gray mb-2">United States</p>
     <p className="text-sm text-hsp-gray">
       Email:{" "}
-      <a href={`mailto:${SUPPORT_EMAIL}`} className="text-hsp-red hover:underline">
+      <a href={`mailto:${SUPPORT_EMAIL}`} className="text-hsp-red underline">
         {SUPPORT_EMAIL}
       </a>
     </p>
@@ -36,7 +36,7 @@ const CONTACT_CARD = (
       Website:{" "}
       <a
         href="https://www.highschoolprospect.com"
-        className="text-hsp-red hover:underline"
+        className="text-hsp-red underline"
       >
         https://www.highschoolprospect.com
       </a>
