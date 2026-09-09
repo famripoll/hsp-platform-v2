@@ -17,10 +17,18 @@ function isFrequency(value: unknown): value is Frequency {
 
 export async function POST(request: NextRequest) {
   try {
-    const { plan, frequency, studentId, parentProfileId, userEmail } = await request.json();
+    const { plan, frequency, studentId, parentProfileId, userEmail, autoRenewalConsent } =
+      await request.json();
 
     if (!isPlan(plan) || !isFrequency(frequency)) {
       return NextResponse.json({ error: "Invalid plan or frequency." }, { status: 400 });
+    }
+
+    if (autoRenewalConsent !== true) {
+      return NextResponse.json(
+        { error: "Automatic renewal consent is required." },
+        { status: 400 },
+      );
     }
 
     if (typeof studentId !== "string" || !studentId) {
@@ -86,6 +94,8 @@ export async function POST(request: NextRequest) {
           parentProfileId,
           plan,
           frequency,
+          autoRenewalConsent: "true",
+          autoRenewalConsentAt: new Date().toISOString(),
         },
       },
     });

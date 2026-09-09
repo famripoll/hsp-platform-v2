@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 
 type Plan = "silver" | "gold";
 type Frequency = "monthly" | "6months" | "annual";
@@ -39,6 +40,12 @@ const priceSuffix: Record<Frequency, string> = {
   "6months": "/6 months",
   annual: "/year",
 };
+const planLabels: Record<Plan, string> = { silver: "HSP Silver", gold: "HSP Gold" };
+const intervalPhrases: Record<Frequency, string> = {
+  monthly: "every month",
+  "6months": "every 6 months",
+  annual: "every year",
+};
 
 interface UpgradeOptionsProps {
   studentFirstName: string;
@@ -56,6 +63,19 @@ export default function UpgradeOptions({
   const [frequency, setFrequency] = useState<Frequency>("monthly");
   const [loadingPlan, setLoadingPlan] = useState<Plan | null>(null);
   const [checkoutError, setCheckoutError] = useState("");
+  const [pendingPlan, setPendingPlan] = useState<Plan | null>(null);
+  const [consentChecked, setConsentChecked] = useState(false);
+
+  const openConfirm = (plan: Plan) => {
+    setCheckoutError("");
+    setConsentChecked(false);
+    setPendingPlan(plan);
+  };
+
+  const closeConfirm = () => {
+    setPendingPlan(null);
+    setConsentChecked(false);
+  };
 
   const savings = (plan: Plan): number | null => {
     if (frequency === "monthly") return null;
@@ -69,7 +89,14 @@ export default function UpgradeOptions({
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, frequency, studentId, parentProfileId, userEmail }),
+        body: JSON.stringify({
+          plan,
+          frequency,
+          studentId,
+          parentProfileId,
+          userEmail,
+          autoRenewalConsent: true,
+        }),
       });
 
       if (!res.ok) {
@@ -136,7 +163,7 @@ export default function UpgradeOptions({
           <button
             type="button"
             disabled={loadingPlan !== null}
-            onClick={() => handleCheckout("silver")}
+            onClick={() => openConfirm("silver")}
             className="w-full text-sm font-semibold rounded-xl px-6 py-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed border-2 border-hsp-red text-hsp-red bg-white hover:bg-hsp-red hover:text-white transition-colors duration-200"
           >
             {loadingPlan === "silver" ? "Redirecting..." : "Get Silver"}
@@ -170,7 +197,7 @@ export default function UpgradeOptions({
           <button
             type="button"
             disabled={loadingPlan !== null}
-            onClick={() => handleCheckout("gold")}
+            onClick={() => openConfirm("gold")}
             className="w-full text-sm font-semibold rounded-xl px-6 py-3 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed border-2 border-hsp-red bg-hsp-red text-white hover:bg-white hover:text-hsp-red transition-colors duration-200"
           >
             {loadingPlan === "gold" ? "Redirecting..." : "Get Gold"}
@@ -183,6 +210,98 @@ export default function UpgradeOptions({
 
       {checkoutError && (
         <p className="text-xs text-hsp-red text-center mt-4">{checkoutError}</p>
+      )}
+
+      {pendingPlan && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.75)" }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeConfirm();
+          }}
+        >
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+              <h2 className="text-xl font-bold" style={{ color: "#0f172a" }}>
+                Confirm your subscription
+              </h2>
+              <button
+                type="button"
+                onClick={closeConfirm}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" style={{ color: "#0f172a" }} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-4 overflow-y-auto">
+              <dl className="flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-sm" style={{ color: "#64748b" }}>Plan</dt>
+                  <dd className="text-sm font-semibold text-right" style={{ color: "#0f172a" }}>
+                    {planLabels[pendingPlan]}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-sm" style={{ color: "#64748b" }}>Price</dt>
+                  <dd className="text-sm font-semibold text-right" style={{ color: "#0f172a" }}>
+                    ${prices[pendingPlan][frequency]}
+                    {priceSuffix[frequency]}
+                  </dd>
+                </div>
+              </dl>
+
+              <p className="text-sm mt-4" style={{ color: "#64748b" }}>
+                This subscription renews automatically at ${prices[pendingPlan][frequency]}{" "}
+                {intervalPhrases[frequency]} until you cancel. You can cancel anytime in your
+                account settings.
+              </p>
+
+              <label className="flex items-start gap-2 mt-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={consentChecked}
+                  onChange={(e) => setConsentChecked(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer"
+                  style={{ accentColor: "#d93025" }}
+                />
+                <span className="text-sm" style={{ color: "#0f172a" }}>
+                  I agree to these automatic renewal terms.
+                </span>
+              </label>
+
+              <div className="flex flex-col-reverse sm:flex-row gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={closeConfirm}
+                  disabled={loadingPlan !== null}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  style={{ color: "#0f172a" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCheckout(pendingPlan)}
+                  disabled={!consentChecked || loadingPlan !== null}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: "#d93025" }}
+                >
+                  {loadingPlan === pendingPlan ? "Redirecting..." : "Continue to payment"}
+                </button>
+              </div>
+
+              {checkoutError && (
+                <p className="text-sm mt-3" style={{ color: "#dc2626" }}>
+                  {checkoutError}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
