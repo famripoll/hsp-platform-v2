@@ -119,7 +119,7 @@ export default function SignUpPage() {
 
   const [formData, setFormData] = useState({
     full_name: "", email: "", password: "",
-    high_school: "", city: "", state: "", grade: "", parent_email: "", parent_name: "",
+    high_school: "", city: "", state: "", grade: "", date_of_birth: "", parent_email: "", parent_name: "",
     parent_phone: "", parent_relationship: "", parent_relationship_other: "",
     phone: "", university: "", division: "",
   });
@@ -156,6 +156,27 @@ export default function SignUpPage() {
       return;
     }
 
+    if (accountType === "student") {
+      const dob = new Date(formData.date_of_birth);
+      const today = new Date();
+
+      if (!formData.date_of_birth || Number.isNaN(dob.getTime()) || dob > today) {
+        setError("Please enter a valid date of birth.");
+        return;
+      }
+
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age -= 1;
+      }
+
+      if (age < 14) {
+        setError("You must be at least 14 years old to create an account.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     let graduationYear: string | undefined;
@@ -185,6 +206,7 @@ export default function SignUpPage() {
             state: formData.state,
             grade: formData.grade,
             graduation_year: graduationYear,
+            date_of_birth: formData.date_of_birth,
             parent_email: formData.parent_email,
             parent_name: formData.parent_name,
             parent_phone: formData.parent_phone,
@@ -339,6 +361,14 @@ export default function SignUpPage() {
                   required
                   name="grade"
                   value={formData.grade}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="Date of Birth"
+                  type="date"
+                  name="date_of_birth"
+                  required
+                  value={formData.date_of_birth}
                   onChange={handleChange}
                 />
                 <InputField

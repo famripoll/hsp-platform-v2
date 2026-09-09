@@ -13,7 +13,7 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { email, password, full_name, role, high_school, city, state, grade, graduation_year, parent_email, parent_name, parent_phone, parent_relationship, athlete_email, relationship, phone, university, division } = await request.json();
+  const { email, password, full_name, role, high_school, city, state, grade, graduation_year, date_of_birth, parent_email, parent_name, parent_phone, parent_relationship, athlete_email, relationship, phone, university, division } = await request.json();
 
   if (!email || !password || !full_name || !role) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
@@ -24,6 +24,31 @@ export async function POST(request: NextRequest) {
       { error: "Please use your official university email (.edu)" },
       { status: 400 }
     );
+  }
+
+  if (role === "student") {
+    const dob = new Date(date_of_birth);
+    const today = new Date();
+
+    if (!date_of_birth || Number.isNaN(dob.getTime()) || dob > today) {
+      return NextResponse.json(
+        { error: "Please enter a valid date of birth." },
+        { status: 400 }
+      );
+    }
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age -= 1;
+    }
+
+    if (age < 14) {
+      return NextResponse.json(
+        { error: "You must be at least 14 years old to create an account." },
+        { status: 400 }
+      );
+    }
   }
 
   let student: { id: string } | null = null;
@@ -93,6 +118,7 @@ export async function POST(request: NextRequest) {
       state,
       grade,
       graduation_year,
+      date_of_birth,
       parent_email,
       parent_name,
       parent_phone,
