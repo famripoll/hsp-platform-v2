@@ -497,7 +497,7 @@ This information is used solely for security and abuse-prevention purposes and i
         For more information about how Cloudflare processes this information, please review the{" "}
         <a
           href="https://www.cloudflare.com/application-services/terms/turnstile-privacy-addendum/"
-          className="text-hsp-red hover:underline"
+          className="text-hsp-red underline"
         >
           Cloudflare Turnstile Privacy Policy Addendum
         </a>

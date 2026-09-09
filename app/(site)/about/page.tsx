@@ -74,7 +74,7 @@ export default function AboutPage() {
 
       {/* Legal compliance box */}
       <div className="bg-hsp-card rounded-xl px-8 py-8 md:px-12 md:py-10">
-        <h2 className="text-xs font-bold text-slate-400 mb-4">
+        <h2 className="text-xs font-bold text-hsp-gray mb-4">
           Our Commitment to Student-Athletes
         </h2>
         <div className="flex flex-col gap-6">

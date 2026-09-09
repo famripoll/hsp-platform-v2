@@ -165,7 +165,7 @@ export default function LearnMorePage() {
                 <Image src="/lm-step4.png" alt="The Verified Dugout" width={80} height={80} className="object-contain bg-transparent" style={{ background: "transparent" }} />
               </div>
               <h3 className="font-bold text-white text-base">VERIFIED DUGOUT</h3>
-              <p className="text-sm" style={{ color: "#5A6779" }}>
+              <p className="text-sm" style={{ color: "#94a3b8" }}>
                 Where verified coaches and serious players connect with confidence.
               </p>
             </div>
