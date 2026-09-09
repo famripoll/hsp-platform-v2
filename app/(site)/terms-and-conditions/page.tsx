@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Read the High School Prospect Terms and Conditions governing use of the platform and its services.",
 };
 
-const EFFECTIVE_DATE = "July 20, 2026";
+const EFFECTIVE_DATE = "September 9, 2026";
 const SUPPORT_EMAIL = "support@highschoolprospect.com";
 
 type TermsSection = {
@@ -98,19 +98,19 @@ Nothing on the Platform guarantees athletic recruitment, scholarships, roster po
     title: "Definitions",
     body: `For purposes of these Terms:
 
-**Account** means any registered account created on the Platform.
+Account: means any registered account created on the Platform.
 
-**Athlete** means a student-athlete or recent graduate who creates or maintains a recruiting profile.
+Athlete: means a student-athlete or recent graduate who creates or maintains a recruiting profile.
 
-**Parent or Guardian** means the legal parent or legal guardian authorized to provide consent for a minor.
+Parent or Guardian: means the legal parent or legal guardian authorized to provide consent for a minor.
 
-**Coach** means a verified college coach approved by High School Prospect.
+Coach: means a verified college coach approved by High School Prospect.
 
-**Scout** means a verified professional scout approved by High School Prospect.
+Scout: means a verified professional scout approved by High School Prospect.
 
-**Content** includes all text, photographs, videos, graphics, statistics, rankings, comments, messages, documents, software, logos, trademarks, data, and other materials appearing on or submitted through the Platform.
+Content: includes all text, photographs, videos, graphics, statistics, rankings, comments, messages, documents, software, logos, trademarks, data, and other materials appearing on or submitted through the Platform.
 
-**Subscription** means any paid membership that provides additional Platform features.`,
+Subscription: means any paid membership that provides additional Platform features.`,
   },
   {
     number: 4,
@@ -134,13 +134,13 @@ We reserve the right to refuse registration or terminate any account at our sole
   {
     number: 5,
     title: "Minimum Age and Parental Consent",
-    body: `High School Prospect is **not intended for children under the age of 14.**
+    body: `High School Prospect is not intended for children under the age of 14.
 
-Student-athletes who are **14 years of age or older** may create and maintain a recruiting profile on the Platform.
+Student-athletes who are 14 years of age or older may create and maintain a recruiting profile on the Platform.
 
 Student-athletes who are under the age of 18 may use the Platform only with the permission and involvement of a parent or legal guardian.
 
-Student-athletes who are **18 years of age or older**, including individuals who remain enrolled in high school or who recently graduated and continue participating in the recruiting process, may manage their own accounts without parental consent unless otherwise required by applicable law.
+Student-athletes who are 18 years of age or older, including individuals who remain enrolled in high school or who recently graduated and continue participating in the recruiting process, may manage their own accounts without parental consent unless otherwise required by applicable law.
 
 By creating or maintaining an account for a minor, the parent or legal guardian represents that:
 
@@ -178,7 +178,7 @@ Verification may include, but is not limited to:
 - official email verification;
 - additional documentation requested by High School Prospect.
 
-Submitting a verification request does **not** guarantee approval.
+Submitting a verification request does not guarantee approval.
 
 High School Prospect reserves the exclusive right to approve, deny, suspend, revoke, or re-evaluate any verification request at any time and for any reason permitted by law.
 
@@ -501,9 +501,9 @@ Unless otherwise stated, subscriptions grant access only to premium Platform fea
   {
     number: 24,
     title: "Billing and Payment",
-    body: `Payments for subscriptions and other paid services are processed through one or more **authorized third-party payment providers** selected by High School Prospect.
+    body: `Payments for subscriptions and other paid services are processed through one or more authorized third-party payment providers selected by High School Prospect.
 
-High School Prospect does **not** store complete payment card information on its own servers. Payment transactions are securely processed by independent payment providers using industry-standard security measures.
+High School Prospect does not store complete payment card information on its own servers. Payment transactions are securely processed by independent payment providers using industry-standard security measures. Charges may appear on your card or bank statement under the name of our payment provider rather than under High School Prospect.
 
 By submitting payment information, you represent and warrant that:
 
@@ -521,7 +521,7 @@ High School Prospect is not responsible for payment processing errors, service i
     title: "Subscription Renewals",
     body: `Unless otherwise stated at the time of purchase, recurring subscriptions automatically renew at the end of each billing period until canceled.
 
-Users may cancel automatic renewal through their account settings or by following the cancellation instructions provided by High School Prospect.
+Subscriptions are purchased and managed by the parent or guardian who holds the subscription. That parent or guardian may cancel automatic renewal through their account settings or by following the cancellation instructions provided by High School Prospect.
 
 Cancellation prevents future renewals but does not automatically generate refunds for the current billing period unless required by applicable law.`,
   },
@@ -531,6 +531,8 @@ Cancellation prevents future renewals but does not automatically generate refund
     body: `Except where prohibited by law or specifically stated otherwise, subscription payments are non-refundable.
 
 High School Prospect may, at its sole discretion, issue full or partial refunds under exceptional circumstances.
+
+Our authorized payment providers may also issue refunds directly in accordance with their own policies and applicable payment network rules.
 
 Examples may include:
 
@@ -547,7 +549,7 @@ Nothing in this section limits any consumer rights that cannot legally be waived
     title: "No Recruiting Guarantee",
     body: `High School Prospect provides technology that facilitates exposure between student-athletes and verified coaches or scouts.
 
-We do **not** guarantee:
+We do not guarantee:
 
 - athletic scholarships;
 - college admissions;

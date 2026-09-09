@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Read the High School Prospect Privacy Policy to understand how we collect, use, and protect your personal information.",
 };
 
-const EFFECTIVE_DATE = "July 20, 2026";
+const EFFECTIVE_DATE = "September 9, 2026";
 const SUPPORT_EMAIL = "support@highschoolprospect.com";
 
 type PrivacySection = {
