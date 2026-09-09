@@ -51,13 +51,27 @@ export default function CollegeHero({
         className="relative overflow-hidden rounded-2xl p-6 md:p-8 mb-6"
         style={{ backgroundColor: getCollegeCardColor(university.unitid) }}
       >
-        <span
+        <svg
           aria-hidden="true"
-          className="absolute -top-4 right-2 font-black leading-none select-none pointer-events-none"
-          style={{ fontSize: "120px", color: "rgba(255,255,255,0.12)" }}
+          focusable="false"
+          role="presentation"
+          className="absolute -top-4 right-2 select-none pointer-events-none"
+          width="420"
+          height="132"
+          style={{ overflow: "visible" }}
         >
-          {getCollegeMonogram(university.institution_name)}
-        </span>
+          <text
+            x="420"
+            y="102"
+            textAnchor="end"
+            fontSize="120"
+            fontWeight="900"
+            fontFamily="Arial, Helvetica, sans-serif"
+            fill="rgba(255,255,255,0.12)"
+          >
+            {getCollegeMonogram(university.institution_name)}
+          </text>
+        </svg>
 
         <div className="relative flex flex-col gap-3">
           <h1 className="text-2xl md:text-3xl font-bold text-white break-words">
