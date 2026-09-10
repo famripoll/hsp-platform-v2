@@ -400,7 +400,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                 <button
                   type="button"
                   onClick={handleReply}
-                  disabled={sending || replyText.trim().length === 0}
+                  disabled={sending || replyText.trim().length === 0 || !isPaid}
                   className="w-full sm:w-auto px-5 py-2 rounded-lg text-sm font-semibold text-white transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ backgroundColor: "#CE2C22" }}
                 >
@@ -408,10 +408,16 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                 </button>
               </div>
 
-              {replyError && (
+              {!isPaid ? (
                 <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
-                  {replyError}
+                  {LOCKED_MSG}
                 </p>
+              ) : (
+                replyError && (
+                  <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
+                    {replyError}
+                  </p>
+                )
               )}
             </>
           ) : (
