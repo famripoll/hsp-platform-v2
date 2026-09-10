@@ -1049,8 +1049,9 @@ function CoachDashboardContent() {
                       {isPitcherFilter ? (
                         <>
                           <div>
-                            <label className={LABEL_CLS}>Min Fastball Velocity</label>
+                            <label htmlFor="filter-minVelo" className={LABEL_CLS}>Min Fastball Velocity</label>
                             <input
+                              id="filter-minVelo"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 80"
@@ -1061,8 +1062,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Max WHIP</label>
+                            <label htmlFor="filter-maxWhip" className={LABEL_CLS}>Max WHIP</label>
                             <input
+                              id="filter-maxWhip"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 1.50"
@@ -1073,8 +1075,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Max ERA</label>
+                            <label htmlFor="filter-maxEra" className={LABEL_CLS}>Max ERA</label>
                             <input
+                              id="filter-maxEra"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 3.00"
@@ -1085,8 +1088,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Min Strikeouts</label>
+                            <label htmlFor="filter-minK" className={LABEL_CLS}>Min Strikeouts</label>
                             <input
+                              id="filter-minK"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 20"
@@ -1100,8 +1104,9 @@ function CoachDashboardContent() {
                       ) : (
                         <>
                           <div>
-                            <label className={LABEL_CLS}>Min AVG</label>
+                            <label htmlFor="filter-minAvg" className={LABEL_CLS}>Min AVG</label>
                             <input
+                              id="filter-minAvg"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. .280"
@@ -1112,8 +1117,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Min OBP</label>
+                            <label htmlFor="filter-minObp" className={LABEL_CLS}>Min OBP</label>
                             <input
+                              id="filter-minObp"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. .350"
@@ -1124,8 +1130,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Min HR</label>
+                            <label htmlFor="filter-minHr" className={LABEL_CLS}>Min HR</label>
                             <input
+                              id="filter-minHr"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 5"
@@ -1136,8 +1143,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Min RBI</label>
+                            <label htmlFor="filter-minRbi" className={LABEL_CLS}>Min RBI</label>
                             <input
+                              id="filter-minRbi"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 15"
@@ -1148,8 +1156,9 @@ function CoachDashboardContent() {
                             />
                           </div>
                           <div>
-                            <label className={LABEL_CLS}>Min SB</label>
+                            <label htmlFor="filter-minSb" className={LABEL_CLS}>Min SB</label>
                             <input
+                              id="filter-minSb"
                               type="number"
                               className={INPUT_CLS}
                               placeholder="e.g. 5"
