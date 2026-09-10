@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 type Plan = "silver" | "gold";
@@ -66,7 +66,11 @@ export default function UpgradeOptions({
   const [pendingPlan, setPendingPlan] = useState<Plan | null>(null);
   const [consentChecked, setConsentChecked] = useState(false);
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
   const openConfirm = (plan: Plan) => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
     setCheckoutError("");
     setConsentChecked(false);
     setPendingPlan(plan);
@@ -75,7 +79,50 @@ export default function UpgradeOptions({
   const closeConfirm = () => {
     setPendingPlan(null);
     setConsentChecked(false);
+    triggerRef.current?.focus();
   };
+
+  const focusableSelector =
+    'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+
+  useEffect(() => {
+    if (!pendingPlan) return;
+
+    const dialog = dialogRef.current;
+    if (dialog) {
+      const focusable = dialog.querySelectorAll<HTMLElement>(focusableSelector);
+      focusable[0]?.focus();
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeConfirm();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector)
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingPlan]);
 
   const savings = (plan: Plan): number | null => {
     if (frequency === "monthly") return null;
@@ -220,10 +267,20 @@ export default function UpgradeOptions({
             if (e.target === e.currentTarget) closeConfirm();
           }}
         >
-          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="consent-modal-title"
+            className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+          >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-              <h2 className="text-xl font-bold" style={{ color: "#0f172a" }}>
+              <h2
+                id="consent-modal-title"
+                className="text-xl font-bold"
+                style={{ color: "#0f172a" }}
+              >
                 Confirm your subscription
               </h2>
               <button
