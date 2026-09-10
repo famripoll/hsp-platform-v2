@@ -135,6 +135,12 @@ export default function SignUpPage() {
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const maxDateOfBirth = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 14);
+    return d.toISOString().split("T")[0];
+  })();
+
   function selectAccount(type: AccountType) {
     setAccountType(type);
     setError(null);
@@ -375,6 +381,7 @@ export default function SignUpPage() {
                   type="date"
                   name="date_of_birth"
                   required
+                  max={maxDateOfBirth}
                   value={formData.date_of_birth}
                   onChange={handleChange}
                 />
