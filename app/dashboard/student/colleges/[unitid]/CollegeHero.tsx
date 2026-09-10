@@ -55,14 +55,14 @@ export default function CollegeHero({
           aria-hidden="true"
           focusable="false"
           role="presentation"
-          className="absolute -top-4 right-2 select-none pointer-events-none"
+          className="hidden md:block absolute bottom-0 right-6 select-none pointer-events-none"
           width="420"
           height="132"
           style={{ overflow: "visible" }}
         >
           <text
             x="420"
-            y="102"
+            y="108"
             textAnchor="end"
             fontSize="120"
             fontWeight="900"

@@ -372,14 +372,14 @@ function CollegeSearchClientInner() {
                 aria-hidden="true"
                 focusable="false"
                 role="presentation"
-                className="absolute -top-2 right-1 select-none pointer-events-none"
+                className="absolute bottom-0 right-4 select-none pointer-events-none"
                 width="240"
                 height="76"
                 style={{ overflow: "visible" }}
               >
                 <text
                   x="240"
-                  y="57"
+                  y="60"
                   textAnchor="end"
                   fontSize="68"
                   fontWeight="900"
