@@ -43,6 +43,7 @@ export async function POST() {
     .from("subscriptions")
     .select("stripe_customer_id")
     .eq("student_id", studentId)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
