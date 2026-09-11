@@ -102,17 +102,23 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
         </button>
       </div>
 
-      {status === "success" && (
-        <p className="text-sm mt-3" style={{ color: "#16a34a" }}>
-          Message sent.
-        </p>
-      )}
+      <p
+        role="status"
+        aria-live="polite"
+        className={`text-sm ${status === "success" ? "mt-3" : ""}`}
+        style={{ color: "#16a34a" }}
+      >
+        {status === "success" ? "Message sent." : ""}
+      </p>
 
-      {status === "error" && (
-        <p className="text-sm mt-3" style={{ color: "#dc2626" }}>
-          {errorMessage}
-        </p>
-      )}
+      <p
+        role="alert"
+        aria-live="assertive"
+        className={`text-sm ${status === "error" ? "mt-3" : ""}`}
+        style={{ color: "#dc2626" }}
+      >
+        {status === "error" ? errorMessage : ""}
+      </p>
     </div>
   );
 }

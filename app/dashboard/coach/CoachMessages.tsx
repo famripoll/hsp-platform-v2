@@ -455,11 +455,14 @@ export default function CoachMessages({
             </button>
           </div>
 
-          {replyError && (
-            <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
-              {replyError}
-            </p>
-          )}
+          <p
+            role="alert"
+            aria-live="assertive"
+            className={`text-sm ${replyError ? "mt-2" : ""}`}
+            style={{ color: "#dc2626" }}
+          >
+            {replyError ? replyError : ""}
+          </p>
         </div>
       </div>
     );
