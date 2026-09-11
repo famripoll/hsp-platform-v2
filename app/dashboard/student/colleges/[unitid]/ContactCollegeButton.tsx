@@ -40,6 +40,8 @@ export default function ContactCollegeButton({
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const counterId = `${useId()}-counter`;
+  const quotaId = `${useId()}-quota`;
+  const guidanceId = `${useId()}-guidance`;
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -223,7 +225,7 @@ export default function ContactCollegeButton({
 
     return (
       <div>
-        <p className="text-sm mb-3" style={{ color: "#0f172a" }}>
+        <p id={quotaId} className="text-sm mb-3" style={{ color: "#0f172a" }}>
           {remaining} of {limit} contacts remaining this month.
         </p>
 
@@ -238,7 +240,7 @@ export default function ContactCollegeButton({
           rows={6}
           placeholder={PLACEHOLDER}
           aria-label={`Message to the baseball coaching staff at ${institutionName}`}
-          aria-describedby={counterId}
+          aria-describedby={`${counterId} ${quotaId} ${guidanceId}`}
           className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
         />
 
@@ -247,6 +249,7 @@ export default function ContactCollegeButton({
         </p>
 
         <ul
+          id={guidanceId}
           className="text-xs mt-2 space-y-1 list-disc pl-5"
           style={{ color: "#5A6779" }}
         >
