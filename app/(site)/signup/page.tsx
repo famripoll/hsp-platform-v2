@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type AccountType = "student" | "coach";
 
@@ -43,11 +43,13 @@ function formatPhone(value: string) {
 
 function InputField({
   label,
+  inputRef,
   showToggle,
   onToggle,
   ...props
 }: {
   label: string;
+  inputRef?: React.Ref<HTMLInputElement>;
   showToggle?: boolean;
   onToggle?: () => void;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
@@ -59,6 +61,7 @@ function InputField({
         <label htmlFor={fieldId} className="text-sm font-semibold text-hsp-dark">{label}</label>
         <input
           {...props}
+          ref={inputRef}
           id={fieldId}
           className="bg-hsp-card rounded-lg px-4 py-3 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
         />
@@ -72,6 +75,7 @@ function InputField({
       <div className="relative">
         <input
           {...props}
+          ref={inputRef}
           id={fieldId}
           type={props.type === "password" ? (showToggle ? "text" : "password") : props.type}
           className="w-full bg-hsp-card rounded-lg px-4 py-3 pr-12 text-sm text-hsp-dark placeholder:text-hsp-gray focus:outline-none focus:ring-2 focus:ring-hsp-red"
@@ -134,6 +138,61 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const previousStepRef = useRef(step);
+  const fullNameRef = useRef<HTMLInputElement>(null);
+  const accountCardRefs = useRef<Record<AccountType, HTMLButtonElement | null>>({
+    student: null,
+    coach: null,
+  });
+  const completionRef = useRef<HTMLDivElement>(null);
+  const focusVisibilityFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const previousStep = previousStepRef.current;
+    previousStepRef.current = step;
+
+    if (previousStep === 1 && step === 2) {
+      fullNameRef.current?.focus();
+    } else if (previousStep === 2 && step === 1 && accountType) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      accountCardRefs.current[accountType]?.focus({ preventScroll: true });
+    } else if (previousStep === 2 && step === 3) {
+      completionRef.current?.focus();
+    }
+  }, [step, accountType]);
+
+  useEffect(() => {
+    return () => {
+      if (focusVisibilityFrameRef.current !== null) {
+        cancelAnimationFrame(focusVisibilityFrameRef.current);
+      }
+    };
+  }, []);
+
+  function keepFocusedControlVisible(e: React.FocusEvent<HTMLFormElement>) {
+    const control = e.target;
+    const form = e.currentTarget;
+
+    if (focusVisibilityFrameRef.current !== null) {
+      cancelAnimationFrame(focusVisibilityFrameRef.current);
+    }
+
+    // Measure after native focus scrolling; never move focus or intercept Tab.
+    focusVisibilityFrameRef.current = requestAnimationFrame(() => {
+      focusVisibilityFrameRef.current = null;
+      if (!form.isConnected || !form.contains(control) || document.activeElement !== control) return;
+
+      const header = document.querySelector("header");
+      if (!header || getComputedStyle(header).position !== "fixed") return;
+
+      const headerBottom = header.getBoundingClientRect().bottom;
+      const controlTop = control.getBoundingClientRect().top;
+      if (headerBottom > 0 && controlTop < headerBottom) {
+        window.scrollBy({ top: controlTop - headerBottom - 8, behavior: "instant" });
+      }
+    });
+  }
 
   const maxDateOfBirth = (() => {
     const d = new Date();
@@ -274,7 +333,10 @@ export default function SignUpPage() {
       <div className="flex items-start justify-center mb-10">
         {STEPS.map((label, i) => (
           <div key={label} className="flex items-start">
-            <div className="flex flex-col items-center w-20">
+            <div
+              className="flex flex-col items-center w-20"
+              aria-current={step === i + 1 ? "step" : undefined}
+            >
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300 ${
                   step >= i + 1
@@ -313,6 +375,7 @@ export default function SignUpPage() {
             {ACCOUNT_CARDS.map((card) => (
               <button
                 key={card.id}
+                ref={(element) => { accountCardRefs.current[card.id] = element; }}
                 onClick={() => selectAccount(card.id)}
                 className="flex-1 max-w-xs bg-hsp-card rounded-2xl p-6 flex flex-col items-center text-center gap-3 border-2 border-transparent hover:border-hsp-red hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
@@ -335,9 +398,10 @@ export default function SignUpPage() {
             {accountType === "coach" && "College Coach Details"}
           </h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form onSubmit={handleSubmit} onFocusCapture={keepFocusedControlVisible} className="flex flex-col gap-5">
             <InputField
               label="Full Name"
+              inputRef={fullNameRef}
               type="text"
               name="full_name"
               required
@@ -563,14 +627,20 @@ export default function SignUpPage() {
 
       {/* Step 3 — Verify */}
       {step === 3 && (
-        <div className="max-w-md mx-auto text-center py-8 flex flex-col items-center gap-5">
+        <div
+          ref={completionRef}
+          tabIndex={-1}
+          aria-labelledby="signup-completion-heading"
+          aria-describedby="signup-completion-message"
+          className="max-w-md mx-auto text-center py-8 flex flex-col items-center gap-5 outline-none"
+        >
           <div className="w-16 h-16 bg-hsp-card rounded-full flex items-center justify-center text-3xl">
             ✉
           </div>
-          <h2 className="text-2xl font-bold text-hsp-dark">
+          <h2 id="signup-completion-heading" className="text-2xl font-bold text-hsp-dark">
             {accountType === "coach" ? "Account Submitted" : "Account Created!"}
           </h2>
-          <p className="text-hsp-gray text-sm leading-relaxed">
+          <p id="signup-completion-message" role="status" aria-live="polite" className="text-hsp-gray text-sm leading-relaxed">
             {successMessage ??
               "We sent a verification link to your email. Click the link to activate your account and begin your recruiting journey."}
           </p>
