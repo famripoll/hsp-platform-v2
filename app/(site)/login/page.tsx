@@ -236,6 +236,8 @@ export default function LoginPage() {
 
       if (otpError) {
         setError(OTP_ERROR_MSG);
+      } else {
+        otpInputRef.current?.focus({ preventScroll: true });
       }
     } catch {
       setError(OTP_ERROR_MSG);
