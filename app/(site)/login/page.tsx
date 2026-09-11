@@ -26,11 +26,17 @@ export default function LoginPage() {
   const [resendTick, setResendTick] = useState(0);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const returnFocusToEmailRef = useRef(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (phase !== "email" || !returnFocusToEmailRef.current) return;
     emailInputRef.current?.focus({ preventScroll: true });
     returnFocusToEmailRef.current = false;
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "otp") return;
+    otpInputRef.current?.focus({ preventScroll: true });
   }, [phase]);
 
   useEffect(() => {
@@ -388,6 +394,7 @@ export default function LoginPage() {
                 6-Digit Code
               </label>
               <input
+                ref={otpInputRef}
                 id="otp"
                 type="text"
                 inputMode="numeric"
