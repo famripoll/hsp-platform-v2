@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 type StatusResponse = {
@@ -40,6 +40,9 @@ export default function ContactCollegeButton({
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
   async function loadStatus() {
     setLoading(true);
     setLoadError("");
@@ -60,6 +63,7 @@ export default function ContactCollegeButton({
   }
 
   function handleOpen() {
+    triggerRef.current = document.activeElement as HTMLElement | null;
     setOpen(true);
     setText("");
     setStatus("idle");
@@ -74,7 +78,49 @@ export default function ContactCollegeButton({
     setErrorMessage("");
     setStatusData(null);
     setLoadError("");
+    triggerRef.current?.focus();
   }
+
+  const focusableSelector =
+    'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+
+  useEffect(() => {
+    if (!open) return;
+
+    const dialog = dialogRef.current;
+    if (dialog) {
+      const focusable = dialog.querySelectorAll<HTMLElement>(focusableSelector);
+      focusable[0]?.focus();
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector)
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
 
   const trimmed = text.trim();
   const isDisabled = sending || trimmed.length === 0;
@@ -230,10 +276,20 @@ export default function ContactCollegeButton({
             if (e.target === e.currentTarget) handleClose();
           }}
         >
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-modal-title"
+            className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+          >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-              <h2 className="text-xl font-bold" style={{ color: "#0f172a" }}>
+              <h2
+                id="contact-modal-title"
+                className="text-xl font-bold"
+                style={{ color: "#0f172a" }}
+              >
                 {institutionName}
               </h2>
               <button
