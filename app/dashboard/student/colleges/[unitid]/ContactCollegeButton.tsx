@@ -43,6 +43,13 @@ export default function ContactCollegeButton({
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
+  // Mirrors `sending` so the document keydown listener, which is bound once
+  // per open, sees the current value instead of the one from when it opened.
+  const sendingRef = useRef(false);
+  useEffect(() => {
+    sendingRef.current = sending;
+  }, [sending]);
+
   async function loadStatus() {
     setLoading(true);
     setLoadError("");
@@ -72,6 +79,7 @@ export default function ContactCollegeButton({
   }
 
   function handleClose() {
+    if (sendingRef.current) return;
     setOpen(false);
     setText("");
     setStatus("idle");
@@ -217,6 +225,7 @@ export default function ContactCollegeButton({
             setStatus("idle");
           }}
           maxLength={500}
+          readOnly={sending}
           rows={6}
           placeholder={PLACEHOLDER}
           aria-label={`Message to the baseball coaching staff at ${institutionName}`}
@@ -294,7 +303,8 @@ export default function ContactCollegeButton({
               </h2>
               <button
                 onClick={handleClose}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                disabled={sending}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" style={{ color: "#0f172a" }} />
