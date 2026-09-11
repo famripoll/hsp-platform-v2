@@ -216,6 +216,7 @@ export default function ContactForm() {
             placeholder="John Smith"
             className={inputClass}
             value={fullName}
+            maxLength={100}
             onChange={(e) => setFullName(e.target.value)}
           />
         </div>
@@ -230,6 +231,7 @@ export default function ContactForm() {
             placeholder="john@example.com"
             className={inputClass}
             value={email}
+            maxLength={255}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
@@ -244,6 +246,7 @@ export default function ContactForm() {
             placeholder="Lincoln High School"
             className={inputClass}
             value={school}
+            maxLength={150}
             onChange={(e) => setSchool(e.target.value)}
           />
         </div>
@@ -258,6 +261,7 @@ export default function ContactForm() {
             placeholder="Tell us how we can help..."
             value={message}
             maxLength={MAX_CHARS}
+            readOnly={status === "submitting"}
             onChange={(e) => setMessage(e.target.value)}
             aria-describedby={counterId}
             className={`${inputClass} resize-none`}
