@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useId } from "react";
+import { useState, useId, useEffect, useRef } from "react";
 import { MessageSquare } from "lucide-react";
 
 const MAX_LENGTH = 2000;
@@ -21,6 +21,13 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const counterId = `${useId()}-counter`;
+  const successRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (status === "success") {
+      successRef.current?.focus({ preventScroll: true });
+    }
+  }, [status]);
 
   const trimmed = text.trim();
   const isDisabled = sending || trimmed.length === 0;
@@ -103,9 +110,11 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
       </div>
 
       <p
+        ref={successRef}
+        tabIndex={-1}
         role="status"
         aria-live="polite"
-        className={`text-sm ${status === "success" ? "mt-3" : ""}`}
+        className={`text-sm outline-none ${status === "success" ? "mt-3" : ""}`}
         style={{ color: "#16a34a" }}
       >
         {status === "success" ? "Message sent." : ""}
