@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const desktopLinks = [
   { label: "About Us", href: "/about" },
@@ -54,8 +54,68 @@ function useHeaderHeight() {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const close = () => setOpen(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const close = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus({ preventScroll: true });
+  }, []);
   const { headerRef, height } = useHeaderHeight();
+
+  useEffect(() => {
+    if (!open) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+
+    closeButtonRef.current?.focus({ preventScroll: true });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // The mobile drawer must not trap keyboard navigation on desktop.
+      if (drawer.getClientRects().length === 0) return;
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(drawer.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )).filter((element) =>
+        element.tabIndex >= 0 &&
+        !element.matches(":disabled") &&
+        !element.closest("[inert]") &&
+        element.getClientRects().length > 0 &&
+        getComputedStyle(element).visibility === "visible"
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (!first || !last) {
+        event.preventDefault();
+        return;
+      }
+      if (!focusable.some((element) => element === active) ||
+          (event.shiftKey ? active === first : active === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus({ preventScroll: true });
+      }
+    };
+
+    const handleResize = () => {
+      if (drawer.getClientRects().length === 0) setOpen(false);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [open, close]);
 
   return (
     <>
@@ -73,8 +133,11 @@ export default function Header() {
               <span className="text-hsp-dark">Prospect</span>
             </Link>
             <button
+              ref={triggerRef}
               onClick={() => setOpen(true)}
               aria-label="Open menu"
+              aria-expanded={open}
+              aria-controls="mobile-navigation-drawer"
               className="md:hidden p-1 text-2xl text-hsp-dark"
             >
               ☰
@@ -135,6 +198,9 @@ export default function Header() {
 
       {/* Drawer */}
       <div
+        id="mobile-navigation-drawer"
+        ref={drawerRef}
+        inert={!open}
         className={`fixed top-0 right-0 h-full w-64 bg-white z-50 flex flex-col shadow-xl md:hidden transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
@@ -143,6 +209,7 @@ export default function Header() {
         <div className="h-16 flex items-center justify-between px-5 border-b border-gray-200 shrink-0">
           <span className="font-bold text-sm text-hsp-dark">Menu</span>
           <button
+            ref={closeButtonRef}
             onClick={close}
             aria-label="Close menu"
             className="text-hsp-gray hover:text-hsp-dark text-lg p-1 transition-colors duration-150"
@@ -157,7 +224,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              onClick={close}
+              onClick={() => setOpen(false)}
               className="text-sm font-medium text-hsp-dark px-3 py-3 rounded-lg hover:bg-hsp-card transition-colors duration-150"
             >
               {link.label}
@@ -165,7 +232,7 @@ export default function Header() {
           ))}
           <Link
             href="/login"
-            onClick={close}
+            onClick={() => setOpen(false)}
             className="mt-2 text-center bg-hsp-red text-white text-sm font-semibold px-3 py-3 rounded-lg hover:opacity-90 transition-opacity duration-150 hover:scale-105 transition-transform duration-200"
           >
             Login
