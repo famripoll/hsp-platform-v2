@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase-client";
 
 const UNAUTHORIZED_MSG =
@@ -24,6 +24,14 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [canResend, setCanResend] = useState(false);
   const [resendTick, setResendTick] = useState(0);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const returnFocusToEmailRef = useRef(false);
+
+  useEffect(() => {
+    if (phase !== "email" || !returnFocusToEmailRef.current) return;
+    emailInputRef.current?.focus({ preventScroll: true });
+    returnFocusToEmailRef.current = false;
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "otp") return;
@@ -33,6 +41,7 @@ export default function LoginPage() {
   }, [phase, resendTick]);
 
   function handleChangeEmail() {
+    returnFocusToEmailRef.current = true;
     setPhase("email");
     setPassword("");
     setOtp("");
@@ -251,6 +260,7 @@ export default function LoginPage() {
                 Email Address
               </label>
               <input
+                ref={emailInputRef}
                 id="email"
                 type="email"
                 required
