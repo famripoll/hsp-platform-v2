@@ -95,12 +95,6 @@ export default function ContactCollegeButton({
   useEffect(() => {
     if (!open) return;
 
-    const dialog = dialogRef.current;
-    if (dialog) {
-      const focusable = dialog.querySelectorAll<HTMLElement>(focusableSelector);
-      focusable[0]?.focus();
-    }
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         handleClose();
@@ -129,6 +123,20 @@ export default function ContactCollegeButton({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open]);
+
+  // Moves focus into the dialog on open, and again whenever a state change
+  // leaves focus outside it or on an element that is no longer focusable
+  // (the Send button once disabled or unmounted).
+  useEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const focusable = dialog.querySelectorAll<HTMLElement>(focusableSelector);
+    const active = document.activeElement;
+    if (!active || !dialog.contains(active) || !active.matches(focusableSelector)) {
+      focusable[0]?.focus();
+    }
+  }, [open, status, sending]);
 
   const trimmed = text.trim();
   const isDisabled = sending || trimmed.length === 0;
