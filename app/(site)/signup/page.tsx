@@ -31,7 +31,7 @@ const ACCOUNT_CARDS: {
 ];
 
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
-const DIVISIONS = ["NCAA D1", "NCAA D2", "NCAA D3", "NAIA", "NJCAA"];
+const DIVISIONS = ["NCAA D1", "NCAA D2", "NCAA D3", "NAIA", "NJCAA", "CCCAA", "NCCAA", "USCAA", "NWAC", "LAI"];
 const PARENT_RELATIONSHIPS = ["Mother", "Father", "Grandparent", "Guardian", "Sibling", "Other"];
 
 function formatPhone(value: string) {
