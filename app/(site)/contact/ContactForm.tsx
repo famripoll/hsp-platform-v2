@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import Script from "next/script";
 
 const MAX_CHARS = 300;
@@ -33,6 +33,7 @@ export default function ContactForm() {
 
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const counterId = `${useId()}-counter`;
 
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | undefined>(undefined);
@@ -258,9 +259,10 @@ export default function ContactForm() {
             value={message}
             maxLength={MAX_CHARS}
             onChange={(e) => setMessage(e.target.value)}
+            aria-describedby={counterId}
             className={`${inputClass} resize-none`}
           />
-          <p className="text-xs text-hsp-gray text-right">
+          <p id={counterId} className="text-xs text-hsp-gray text-right">
             {message.length} / {MAX_CHARS} characters
           </p>
         </div>

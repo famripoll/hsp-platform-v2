@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { MessageSquare } from "lucide-react";
 
 const MAX_LENGTH = 2000;
@@ -20,6 +20,7 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const counterId = `${useId()}-counter`;
 
   const trimmed = text.trim();
   const isDisabled = sending || trimmed.length === 0;
@@ -81,11 +82,12 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
         rows={4}
         placeholder="Write your message..."
         aria-label={`Message to ${studentName}`}
+        aria-describedby={counterId}
         className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
-        <span className="text-xs" style={{ color: "#5A6779" }}>
+        <span id={counterId} className="text-xs" style={{ color: "#5A6779" }}>
           {text.length} / {MAX_LENGTH}
         </span>
 

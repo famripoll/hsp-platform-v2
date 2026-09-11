@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 type StatusResponse = {
@@ -39,6 +39,7 @@ export default function ContactCollegeButton({
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const counterId = `${useId()}-counter`;
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -237,10 +238,11 @@ export default function ContactCollegeButton({
           rows={6}
           placeholder={PLACEHOLDER}
           aria-label={`Message to the baseball coaching staff at ${institutionName}`}
+          aria-describedby={counterId}
           className="border border-gray-200 rounded-lg px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
         />
 
-        <p className="text-xs mt-1.5" style={{ color: "#5A6779" }}>
+        <p id={counterId} className="text-xs mt-1.5" style={{ color: "#5A6779" }}>
           {text.length} / 500
         </p>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, useId } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { setThreadOpen } from "@/app/hooks/useActiveThread";
@@ -80,6 +80,9 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
   const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const autoOpenedCoachRef = useRef<string | null>(null);
+  const baseId = useId();
+  const counterId = `${baseId}-counter`;
+  const lockedId = `${baseId}-locked`;
 
   const fetchData = useCallback(async () => {
     const supabase = createClient();
@@ -316,6 +319,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
 
   if (selectedCoachId) {
     const activeConversation = conversations.find((c) => c.coachId === selectedCoachId);
+    const replyName = activeConversation?.coachName?.trim();
 
     return (
       <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col scroll-mt-20 sm:scroll-mt-24">
@@ -389,11 +393,13 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                 maxLength={MAX_REPLY_LENGTH}
                 rows={3}
                 placeholder="Write your message..."
+                aria-label={replyName ? `Reply to ${replyName}` : "Reply message"}
+                aria-describedby={isPaid ? counterId : `${counterId} ${lockedId}`}
                 className="border border-gray-200 rounded-lg px-3 py-2 w-full text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-transparent bg-white resize-none"
               />
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
-                <span className="text-xs" style={{ color: "#5A6779" }}>
+                <span id={counterId} className="text-xs" style={{ color: "#5A6779" }}>
                   {replyText.length} / {MAX_REPLY_LENGTH}
                 </span>
 
@@ -409,7 +415,7 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
               </div>
 
               {!isPaid && (
-                <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
+                <p id={lockedId} className="text-sm mt-2" style={{ color: "#dc2626" }}>
                   {LOCKED_MSG}
                 </p>
               )}
