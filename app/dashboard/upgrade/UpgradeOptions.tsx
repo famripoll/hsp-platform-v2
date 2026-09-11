@@ -351,11 +351,14 @@ export default function UpgradeOptions({
                 </button>
               </div>
 
-              {checkoutError && (
-                <p className="text-sm mt-3" style={{ color: "#dc2626" }}>
-                  {checkoutError}
-                </p>
-              )}
+              <p
+                role="alert"
+                aria-live="assertive"
+                className={`text-sm ${checkoutError ? "mt-3" : ""}`}
+                style={{ color: "#dc2626" }}
+              >
+                {checkoutError ? checkoutError : ""}
+              </p>
             </div>
           </div>
         </div>

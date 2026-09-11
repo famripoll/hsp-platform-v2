@@ -408,17 +408,20 @@ export default function StudentMessages({ canReply, subscriptionStatus }: Props)
                 </button>
               </div>
 
-              {!isPaid ? (
+              {!isPaid && (
                 <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
                   {LOCKED_MSG}
                 </p>
-              ) : (
-                replyError && (
-                  <p className="text-sm mt-2" style={{ color: "#dc2626" }}>
-                    {replyError}
-                  </p>
-                )
               )}
+
+              <p
+                role="alert"
+                aria-live="assertive"
+                className={`text-sm ${isPaid && replyError ? "mt-2" : ""}`}
+                style={{ color: "#dc2626" }}
+              >
+                {isPaid && replyError ? replyError : ""}
+              </p>
             </>
           ) : (
             <p className="text-sm" style={{ color: "#5A6779" }}>
