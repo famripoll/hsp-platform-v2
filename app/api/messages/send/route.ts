@@ -59,11 +59,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { data: student } = await supabase
+    const { data: student, error: studentError } = await supabaseAdmin
       .from("students")
       .select("subscription_status")
       .eq("id", studentId)
-      .single();
+      .maybeSingle();
+
+    if (studentError) {
+      return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+    }
 
     if (!student || student.subscription_status !== "paid") {
       return NextResponse.json(
