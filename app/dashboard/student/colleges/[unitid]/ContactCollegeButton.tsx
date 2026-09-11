@@ -265,11 +265,14 @@ export default function ContactCollegeButton({
           </button>
         </div>
 
-        {status === "error" && (
-          <p className="text-sm mt-3" style={{ color: "#dc2626" }}>
-            {errorMessage}
-          </p>
-        )}
+        <p
+          role="alert"
+          aria-live="assertive"
+          className={`text-sm ${status === "error" ? "mt-3" : ""}`}
+          style={{ color: "#dc2626" }}
+        >
+          {status === "error" ? errorMessage : ""}
+        </p>
       </div>
     );
   }
@@ -323,7 +326,12 @@ export default function ContactCollegeButton({
             <div className="px-6 py-4 overflow-y-auto">
               {status === "success" ? (
                 <div>
-                  <p className="text-sm" style={{ color: "#0f172a" }}>
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    className="text-sm"
+                    style={{ color: "#0f172a" }}
+                  >
                     Message sent to {institutionName}. You&apos;ll find this conversation
                     under College Contacts in Messages.
                   </p>
@@ -342,11 +350,7 @@ export default function ContactCollegeButton({
                 <p className="text-sm" style={{ color: "#5A6779" }}>
                   Loading…
                 </p>
-              ) : loadError ? (
-                <p className="text-sm" style={{ color: "#dc2626" }}>
-                  {loadError}
-                </p>
-              ) : (
+              ) : loadError ? null : (
                 <div className="space-y-4">
                   {/* Block 1 — recipients line */}
                   <p className="text-sm" style={{ color: "#5A6779" }}>
@@ -367,6 +371,15 @@ export default function ContactCollegeButton({
                   {renderStateBlock()}
                 </div>
               )}
+
+              <p
+                role="alert"
+                aria-live="assertive"
+                className="text-sm"
+                style={{ color: "#dc2626" }}
+              >
+                {loadError ? loadError : ""}
+              </p>
             </div>
           </div>
         </div>

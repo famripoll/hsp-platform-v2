@@ -37,6 +37,7 @@ export default function ContactForm() {
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | undefined>(undefined);
   const tokenResolveRef = useRef<((token: string) => void) | null>(null);
+  const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status !== "success") return;
@@ -45,6 +46,7 @@ export default function ContactForm() {
     const rafId1 = requestAnimationFrame(() => {
       rafId2 = requestAnimationFrame(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
+        successRef.current?.focus({ preventScroll: true });
       });
     });
 
@@ -169,8 +171,16 @@ export default function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="flex flex-col gap-5 scroll-mt-20 sm:scroll-mt-24 w-full min-w-0">
-        <p className="text-sm text-hsp-dark break-words">
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        className="flex flex-col gap-5 scroll-mt-20 sm:scroll-mt-24 w-full min-w-0 outline-none"
+      >
+        <p
+          role="status"
+          aria-live="polite"
+          className="text-sm text-hsp-dark break-words"
+        >
           Thanks for reaching out! We&apos;ve received your message and someone from our team
           will get back to you shortly.
         </p>
@@ -261,9 +271,11 @@ export default function ContactForm() {
 
         <div ref={turnstileContainerRef} />
 
-        {status === "error" && (
-          <p className="text-xs text-hsp-red">{errorMessage}</p>
-        )}
+        <div aria-live="assertive" role="alert" className="contents">
+          {status === "error" && (
+            <p className="text-xs text-hsp-red">{errorMessage}</p>
+          )}
+        </div>
 
         <button
           type="submit"
