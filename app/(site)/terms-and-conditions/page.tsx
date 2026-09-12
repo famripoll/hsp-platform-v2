@@ -961,7 +961,7 @@ export default function TermsAndConditionsPage() {
               id={sectionId(section.number)}
               className="flex flex-col gap-3 scroll-mt-36 md:scroll-mt-24"
             >
-              <h2 className="text-lg md:text-xl font-bold text-hsp-dark">
+              <h2 tabIndex={-1} className="text-lg md:text-xl font-bold text-hsp-dark">
                 {section.number}. {section.title}
               </h2>
               {renderRichText(section.body)}

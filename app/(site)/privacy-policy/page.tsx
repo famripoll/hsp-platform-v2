@@ -496,7 +496,7 @@ This information is used solely for security and abuse-prevention purposes and i
       <p className="text-hsp-gray text-sm md:text-base leading-relaxed">
         For more information about how Cloudflare processes this information, please review the{" "}
         <a
-          href="https://www.cloudflare.com/application-services/terms/turnstile-privacy-addendum/"
+          href="https://www.cloudflare.com/turnstile-privacy-policy/"
           className="text-hsp-red underline"
         >
           Cloudflare Turnstile Privacy Policy Addendum
@@ -612,7 +612,7 @@ export default function PrivacyPolicyPage() {
               id={sectionId(section.number)}
               className="flex flex-col gap-3 scroll-mt-36 md:scroll-mt-24"
             >
-              <h2 className="text-lg md:text-xl font-bold text-hsp-dark">
+              <h2 tabIndex={-1} className="text-lg md:text-xl font-bold text-hsp-dark">
                 {section.number}. {section.title}
               </h2>
               {renderRichText(section.body)}

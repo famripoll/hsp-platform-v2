@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { ChevronDown } from "lucide-react";
 
 export type TermsSectionRef = {
@@ -14,8 +14,19 @@ const BOTTOM_GAP = 24; // px — breathing room before the sidebar's column ends
 const MOBILE_HEADER_GAP = 8; // px — breathing room below the measured mobile header height
 const MOBILE_FALLBACK_HEADER_HEIGHT = 88; // px — used only until the header height can be measured
 
+function getMobileHeaderOffset() {
+  const header = document.querySelector("header");
+  const headerHeight = header?.getBoundingClientRect().height ?? MOBILE_FALLBACK_HEADER_HEIGHT;
+  return headerHeight + MOBILE_HEADER_GAP;
+}
+
 function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const section = document.getElementById(id);
+  if (!section) return;
+
+  // Move focus before mobile selection closes the accordion and removes its link.
+  section.querySelector<HTMLHeadingElement>("h2")?.focus({ preventScroll: true });
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function useActiveSection(sections: TermsSectionRef[]) {
@@ -91,9 +102,7 @@ function usePinnedSidebar() {
     // fixed h-16 like desktop) and the accordion's collapsed height, so the
     // placeholder can hold its space once the panel is pinned.
     const measureMobile = () => {
-      const header = document.querySelector("header");
-      const headerHeight = header?.getBoundingClientRect().height ?? MOBILE_FALLBACK_HEADER_HEIGHT;
-      mobileHeaderOffset = headerHeight + MOBILE_HEADER_GAP;
+      mobileHeaderOffset = getMobileHeaderOffset();
       setMobileNaturalHeight(mobilePanel.getBoundingClientRect().height);
     };
 
@@ -203,6 +212,8 @@ export default function TermsTableOfContents({
 }) {
   const activeId = useActiveSection(sections);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const pendingMobileSectionRef = useRef<HTMLElement | null>(null);
   const {
     columnRef,
     panelRef,
@@ -214,9 +225,27 @@ export default function TermsTableOfContents({
   } = usePinnedSidebar();
 
   const handleSelect = (id: string) => {
-    scrollToSection(id);
+    const section = document.getElementById(id);
+    pendingMobileSectionRef.current = section;
+    section?.querySelector<HTMLHeadingElement>("h2")?.focus({ preventScroll: true });
     setMobileOpen(false);
   };
+
+  useLayoutEffect(() => {
+    if (mobileOpen) return;
+
+    const section = pendingMobileSectionRef.current;
+    pendingMobileSectionRef.current = null;
+    const trigger = mobileTriggerRef.current;
+    if (!section || !trigger || window.innerWidth >= 768) return;
+
+    // Measure after collapse so an in-flow accordion cannot shift the destination.
+    const collapsedButtonHeight = trigger.getBoundingClientRect().height;
+    // Reuse the Header gap as visual spacing below the collapsed button.
+    const clearance = getMobileHeaderOffset() + collapsedButtonHeight + MOBILE_HEADER_GAP;
+    const targetY = window.scrollY + section.getBoundingClientRect().top - clearance;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+  }, [mobileOpen]);
 
   const panelStyle: CSSProperties =
     mode.type === "fixed"
@@ -240,6 +269,7 @@ export default function TermsTableOfContents({
       >
         <div ref={mobilePanelRef} style={mobilePanelStyle}>
           <button
+            ref={mobileTriggerRef}
             type="button"
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
@@ -262,7 +292,7 @@ export default function TermsTableOfContents({
                         e.preventDefault();
                         handleSelect(section.id);
                       }}
-                      className={`block px-4 py-2 text-sm leading-snug transition-colors ${
+                      className={`block px-4 py-2 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 ${
                         activeId === section.id
                           ? "text-hsp-red font-semibold"
                           : "text-hsp-gray hover:text-hsp-dark"
@@ -293,7 +323,7 @@ export default function TermsTableOfContents({
                         e.preventDefault();
                         scrollToSection(section.id);
                       }}
-                      className={`block border-l-2 pl-3 pr-2 py-1.5 text-sm leading-snug transition-colors ${
+                      className={`block border-l-2 pl-3 pr-2 py-1.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 ${
                         isActive
                           ? "border-hsp-red text-hsp-red font-semibold"
                           : "border-transparent text-hsp-gray hover:text-hsp-dark hover:border-gray-300"
