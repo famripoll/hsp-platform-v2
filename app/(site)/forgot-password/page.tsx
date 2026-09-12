@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase-client";
 
 const SUCCESS_MSG =
@@ -13,9 +13,12 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const submittingRef = useRef(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setError(null);
     setMessage(null);
     setLoading(true);
@@ -31,6 +34,7 @@ export default function ForgotPasswordPage() {
     } catch {
       setError(ERROR_MSG);
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   }
@@ -68,23 +72,27 @@ export default function ForgotPasswordPage() {
             />
           </div>
 
-          {message && (
-            <p className="text-sm rounded-lg px-4 py-3 bg-green-50" style={{ color: "#15803d" }}>
-              {message}
-            </p>
-          )}
+          <div role="status" aria-live="polite" className="contents">
+            {message && (
+              <p className="text-sm rounded-lg px-4 py-3 bg-green-50" style={{ color: "#15803d" }}>
+                {message}
+              </p>
+            )}
+          </div>
 
-          {error && (
-            <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
-              {error}
-            </p>
-          )}
+          <div role="alert" aria-live="assertive" className="contents">
+            {error && (
+              <p className="text-sm rounded-lg px-4 py-3 bg-red-50" style={{ color: "#CE2C22" }}>
+                {error}
+              </p>
+            )}
+          </div>
 
           {/* Submit */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 hover:scale-105 transition-transform duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+            aria-disabled={loading}
+            className="w-full py-3 rounded-lg bg-hsp-red text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity duration-200 hover:scale-105 transition-transform duration-200 aria-disabled:opacity-60 aria-disabled:cursor-not-allowed aria-disabled:hover:scale-100"
           >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>

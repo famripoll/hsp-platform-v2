@@ -40,25 +40,28 @@ function useBackToTop() {
 export default function BackToTopButton() {
   const backToTopVisible = useBackToTop();
   const threadOpen = useActiveThread();
+  const [focused, setFocused] = useState(false);
 
   // The button only overlaps the message thread's reply bar on mobile, so
   // the thread-open condition is applied to the base (mobile) classes only;
-  // sm: and above always mirror backToTopVisible, restoring desktop behavior.
-  const visible = backToTopVisible && !threadOpen;
+  // sm: and above ignore threadOpen. Focus keeps the button visible at every breakpoint.
+  const visible = focused || (backToTopVisible && !threadOpen);
 
   return (
     <button
       type="button"
       onClick={scrollToTop}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       aria-label="Back to top"
       className={`fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-hsp-red text-white shadow-lg transition-all duration-300 hover:opacity-90 ${
         visible
-          ? "opacity-100 translate-y-0 pointer-events-auto"
-          : "opacity-0 translate-y-2 pointer-events-none"
+          ? "visible opacity-100 translate-y-0 pointer-events-auto"
+          : "invisible opacity-0 translate-y-2 pointer-events-none"
       } ${
-        backToTopVisible
-          ? "sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
-          : "sm:opacity-0 sm:translate-y-2 sm:pointer-events-none"
+        focused || backToTopVisible
+          ? "sm:visible sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
+          : "sm:invisible sm:opacity-0 sm:translate-y-2 sm:pointer-events-none"
       }`}
     >
       <ArrowUp className="h-5 w-5" />

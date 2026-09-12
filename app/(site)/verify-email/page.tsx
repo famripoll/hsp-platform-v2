@@ -68,68 +68,72 @@ function VerifyEmailContent() {
 
       {/* Card */}
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-        {status === "loading" && (
-          <p className="text-sm text-hsp-gray text-center py-4">
-            Verifying your email...
-          </p>
-        )}
-
-        {status === "success" && (
-          <div className="flex flex-col gap-5 items-center text-center">
-            <h2 className="text-xl font-bold text-hsp-dark">Email verified</h2>
-            <p className="text-sm text-hsp-gray">
-              Your email address has been confirmed. You&apos;re all set.
+        <div role="status" aria-live="polite" className="contents">
+          {status === "loading" && (
+            <p className="text-sm text-hsp-gray text-center py-4">
+              Verifying your email...
             </p>
-            <LoginButton />
-          </div>
-        )}
+          )}
 
-        {status === "already" && (
-          <div className="flex flex-col gap-5 items-center text-center">
-            <h2 className="text-xl font-bold text-hsp-dark">Already verified</h2>
-            <p className="text-sm text-hsp-gray">
-              This email address has already been confirmed.
-            </p>
-            <LoginButton />
-          </div>
-        )}
+          {status === "success" && (
+            <div className="flex flex-col gap-5 items-center text-center">
+              <h2 className="text-xl font-bold text-hsp-dark">Email verified</h2>
+              <p className="text-sm text-hsp-gray">
+                Your email address has been confirmed. You&apos;re all set.
+              </p>
+              <LoginButton />
+            </div>
+          )}
 
-        {status === "expired" && (
-          <div className="flex flex-col gap-5 items-center text-center">
-            <h2 className="text-xl font-bold text-hsp-dark">
-              This link has expired
-            </h2>
-            <p className="text-sm text-hsp-gray">
-              Verification links expire after 7 days. You can request a new
-              link from your dashboard.
-            </p>
-            <LoginButton />
-          </div>
-        )}
+          {status === "already" && (
+            <div className="flex flex-col gap-5 items-center text-center">
+              <h2 className="text-xl font-bold text-hsp-dark">Already verified</h2>
+              <p className="text-sm text-hsp-gray">
+                This email address has already been confirmed.
+              </p>
+              <LoginButton />
+            </div>
+          )}
+        </div>
 
-        {status === "invalid" && (
-          <div className="flex flex-col gap-5 items-center text-center">
-            <h2 className="text-xl font-bold text-hsp-dark">
-              This link is not valid
-            </h2>
-            <p className="text-sm text-hsp-gray">
-              The link may be incomplete or may have already been used.
-            </p>
-            <LoginButton />
-          </div>
-        )}
+        <div role="alert" aria-live="assertive" className="contents">
+          {status === "expired" && (
+            <div className="flex flex-col gap-5 items-center text-center">
+              <h2 className="text-xl font-bold text-hsp-dark">
+                This link has expired
+              </h2>
+              <p className="text-sm text-hsp-gray">
+                Verification links expire after 7 days. You can request a new
+                link from your dashboard.
+              </p>
+              <LoginButton />
+            </div>
+          )}
 
-        {status === "error" && (
-          <div className="flex flex-col gap-5 items-center text-center">
-            <h2 className="text-xl font-bold text-hsp-dark">
-              Something went wrong
-            </h2>
-            <p className="text-sm text-hsp-gray">
-              Please try again later.
-            </p>
-            <LoginButton />
-          </div>
-        )}
+          {status === "invalid" && (
+            <div className="flex flex-col gap-5 items-center text-center">
+              <h2 className="text-xl font-bold text-hsp-dark">
+                This link is not valid
+              </h2>
+              <p className="text-sm text-hsp-gray">
+                The link may be incomplete or may have already been used.
+              </p>
+              <LoginButton />
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="flex flex-col gap-5 items-center text-center">
+              <h2 className="text-xl font-bold text-hsp-dark">
+                Something went wrong
+              </h2>
+              <p className="text-sm text-hsp-gray">
+                Please try again later.
+              </p>
+              <LoginButton />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -140,7 +144,7 @@ export default function VerifyEmailPage() {
     <Suspense
       fallback={
         <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-10">
-          <p className="text-sm text-hsp-gray text-center py-4">
+          <p role="status" aria-live="polite" className="text-sm text-hsp-gray text-center py-4">
             Verifying your email...
           </p>
         </div>
