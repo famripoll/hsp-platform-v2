@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { after } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import PublicPhotoLightboxController from "./PublicPhotoLightboxController";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -534,16 +535,20 @@ export default async function PublicStudentProfilePage({
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {photoUrls.map((url, i) => (
-                      <div
+                      <button
                         key={i}
-                        className="aspect-square rounded-xl overflow-hidden bg-gray-100"
+                        type="button"
+                        data-public-photo-lightbox-trigger
+                        aria-label={`Enlarge ${fullName ?? "student"} photo ${i + 1}`}
+                        aria-haspopup="dialog"
+                        className="aspect-square w-full rounded-xl overflow-hidden bg-gray-100 cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CE2C22]"
                       >
                         <img
                           src={url}
-                          alt=""
+                          alt={`${fullName ?? "Student"} photo ${i + 1}`}
                           className="w-full h-full object-cover"
                         />
-                      </div>
+                      </button>
                     ))}
                   </div>
                   {morePhotos > 0 && (
@@ -551,6 +556,7 @@ export default async function PublicStudentProfilePage({
                       +{morePhotos} more photo{morePhotos === 1 ? "" : "s"}
                     </p>
                   )}
+                  <PublicPhotoLightboxController />
                 </section>
               )}
 
