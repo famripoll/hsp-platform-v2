@@ -114,7 +114,7 @@ export default function SendMessageCard({ studentId, studentName, subscriptionSt
         tabIndex={-1}
         role="status"
         aria-live="polite"
-        className={`text-sm outline-none ${status === "success" ? "mt-3" : ""}`}
+        className={`text-sm focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22] ${status === "success" ? "mt-3" : ""}`}
         style={{ color: "#16a34a" }}
       >
         {status === "success" ? "Message sent." : ""}

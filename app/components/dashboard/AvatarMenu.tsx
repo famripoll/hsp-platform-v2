@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LogOut, Settings, User } from "lucide-react";
 import { createClient } from "@/lib/supabase-client";
 import { useCurrentUserAvatar } from "@/app/hooks/useCurrentUserAvatar";
@@ -11,12 +11,19 @@ export default function AvatarMenu({ isCoach }: { isCoach: boolean }) {
   const router = useRouter();
   const { photoUrl, initials, loading } = useCurrentUserAvatar();
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape — same pattern as MediaGallery's keydown handler.
   useEffect(() => {
     if (!open) return;
     function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        if (popupRef.current?.contains(document.activeElement)) {
+          triggerRef.current?.focus();
+        }
+        setOpen(false);
+      }
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -38,6 +45,7 @@ export default function AvatarMenu({ isCoach }: { isCoach: boolean }) {
   return (
     <div className="relative shrink-0">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
@@ -63,7 +71,7 @@ export default function AvatarMenu({ isCoach }: { isCoach: boolean }) {
             aria-hidden="true"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 z-50 bg-white rounded-xl shadow-lg border border-gray-100 py-1">
+          <div ref={popupRef} className="absolute right-0 mt-2 w-48 z-50 bg-white rounded-xl shadow-lg border border-gray-100 py-1">
             {!isCoach && (
               <Link
                 href="/dashboard/student"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { Bell, MessageSquare } from "lucide-react";
@@ -47,13 +47,17 @@ function iconForType(type: string) {
 
 type Props = {
   onReadChange?: () => void;
+  onNavigate?: (href: string, source: HTMLButtonElement) => void;
 };
 
-export default function NotificationsList({ onReadChange }: Props = {}) {
+export default function NotificationsList({ onReadChange, onNavigate }: Props = {}) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const markAllRef = useRef<HTMLButtonElement>(null);
+  const pendingMarkAllFocusRef = useRef<HTMLButtonElement | null>(null);
 
   const fetchNotifications = useCallback(async () => {
     const supabase = createClient();
@@ -85,6 +89,16 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
   }, [fetchNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.read_at).length;
+
+  useLayoutEffect(() => {
+    const trigger = pendingMarkAllFocusRef.current;
+    if (unreadCount !== 0 || !trigger) return;
+    pendingMarkAllFocusRef.current = null;
+    // A normal blur cancels this request; removal itself leaves focus on body.
+    if (!trigger.isConnected && document.activeElement === document.body) {
+      headingRef.current?.focus();
+    }
+  }, [notifications, unreadCount]);
 
   const groups = useMemo<NotificationGroup[]>(() => {
     const map = new Map<string, Notification[]>();
@@ -122,7 +136,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
     return result;
   }, [notifications]);
 
-  async function handleRowClick(group: NotificationGroup) {
+  async function handleRowClick(group: NotificationGroup, trigger: HTMLButtonElement) {
     const unreadIds = group.items.filter((n) => !n.read_at).map((n) => n.id);
 
     if (unreadIds.length > 0) {
@@ -142,12 +156,18 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
     }
 
     if (group.latest.link_url) {
+      if (trigger.isConnected && document.activeElement === trigger) {
+        onNavigate?.(group.latest.link_url, trigger);
+      }
       router.push(group.latest.link_url);
     }
   }
 
   async function handleMarkAllAsRead() {
     if (!userId) return;
+    pendingMarkAllFocusRef.current = document.activeElement === markAllRef.current
+      ? markAllRef.current
+      : null;
 
     const supabase = createClient();
     await supabase
@@ -163,7 +183,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
+        <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold mb-5 scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
           Notifications
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -178,7 +198,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
   if (notifications.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
+        <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold mb-5 scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
           Notifications
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -194,11 +214,13 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-5 gap-3">
-        <h3 className="text-xl font-bold" style={{ color: "#0f172a" }}>
+        <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
           Notifications
         </h3>
         {unreadCount > 0 && (
           <button
+            ref={markAllRef}
+            onBlur={() => { pendingMarkAllFocusRef.current = null; }}
             type="button"
             onClick={handleMarkAllAsRead}
             className="text-xs sm:text-sm font-semibold shrink-0 hover:underline"
@@ -222,7 +244,7 @@ export default function NotificationsList({ onReadChange }: Props = {}) {
             <button
               key={group.key}
               type="button"
-              onClick={() => handleRowClick(group)}
+              onClick={(event) => handleRowClick(group, event.currentTarget)}
               className="flex items-start gap-3 py-3 px-2 -mx-2 rounded-lg text-left border-b border-gray-100 last:border-0 transition-colors hover:bg-gray-50"
               style={{ backgroundColor: isUnread ? "#fef2f2" : "transparent" }}
             >

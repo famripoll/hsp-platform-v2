@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback, Suspense } from 'react'
+import { useState, useEffect, useLayoutEffect, useMemo, useCallback, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
@@ -508,6 +508,8 @@ function CoachDashboardContent() {
   const [students, setStudents] = useState<ProspectStudent[]>([])
   const [videoProfileIds, setVideoProfileIds] = useState<Set<string>>(new Set())
   const [searching, setSearching] = useState(false)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
+  const pendingSearchFocusRef = useRef<HTMLButtonElement | null>(null)
   const [searched, setSearched] = useState(false)
   const [activeTab, setActiveTab] = useState<CoachTabValue>(() => {
     const tab = searchParams.get('tab')
@@ -518,12 +520,50 @@ function CoachDashboardContent() {
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set())
   const [watchlistStudents, setWatchlistStudents] = useState<ProspectStudent[]>([])
   const [watchlistLoading, setWatchlistLoading] = useState(false)
+  const watchlistTabRef = useRef<HTMLButtonElement>(null)
+  const watchlistListRef = useRef<HTMLDivElement>(null)
+  const [messageFocusRequest, setMessageFocusRequest] = useState<{
+    studentId: string | null
+    source: Element | null
+  } | null>(null)
+  const clearMessageFocusRequest = useCallback(() => setMessageFocusRequest(null), [])
   const [selectedMessageStudent, setSelectedMessageStudent] = useState<{
     id: string
     full_name: string | null
     photo_url: string | null
   } | null>(null)
   const { unreadCount, refresh: refreshUnreadCount } = useUnreadNotifications()
+
+  useEffect(() => {
+    const cancelSearchFocus = () => { pendingSearchFocusRef.current = null }
+    const handleFocusIn = (event: FocusEvent) => {
+      if (event.target !== pendingSearchFocusRef.current && event.target !== document.body) {
+        cancelSearchFocus()
+      }
+    }
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!searchButtonRef.current?.contains(event.target as Node)) cancelSearchFocus()
+    }
+    document.addEventListener('focusin', handleFocusIn)
+    document.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('blur', cancelSearchFocus)
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn)
+      document.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('blur', cancelSearchFocus)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    if (searching) return
+    const button = pendingSearchFocusRef.current
+    pendingSearchFocusRef.current = null
+    // Disabling may leave focus on body; deliberate focus changes cancel the request.
+    if (button?.isConnected && !button.disabled && document.hasFocus() &&
+      (document.activeElement === button || document.activeElement === document.body)) {
+      button.focus()
+    }
+  }, [searching])
 
   useEffect(() => {
     const tab = searchParams.get('tab')
@@ -535,6 +575,9 @@ function CoachDashboardContent() {
 
   const runSearch = useCallback(
     async (activeFilters: Filters, activeAdvanced: AdvancedFilters) => {
+      pendingSearchFocusRef.current = document.activeElement === searchButtonRef.current
+        ? searchButtonRef.current
+        : null
       setSearching(true)
 
       // Video filter: pre-fetch profile_ids that have at least one media record
@@ -603,7 +646,14 @@ function CoachDashboardContent() {
     if (!coach.id) return
     const isSaved = watchlistIds.has(studentId)
     if (isSaved) {
+      const focusedItem = watchlistListRef.current?.contains(document.activeElement)
+        ? document.activeElement
+        : null
       await supabase.from('coach_watchlist').delete().eq('coach_id', coach.id).eq('student_id', studentId)
+      // The refetch replaces the entire list. Hand off only if focus stayed there.
+      if (focusedItem?.isConnected && document.activeElement === focusedItem) {
+        watchlistTabRef.current?.focus()
+      }
       setWatchlistIds((prev) => {
         const next = new Set(prev)
         next.delete(studentId)
@@ -617,6 +667,7 @@ function CoachDashboardContent() {
 
   const openMessagesFor = useCallback(
     (student: ProspectStudent) => {
+      setMessageFocusRequest({ studentId: student.id, source: document.activeElement })
       setSelectedMessageStudent({
         id: student.id,
         full_name: student.full_name,
@@ -630,6 +681,17 @@ function CoachDashboardContent() {
     },
     [photoUrls, router, searchParams]
   )
+
+  const prepareNotificationMessageFocus = useCallback((href: string, source: HTMLButtonElement) => {
+    const destination = new URL(href, window.location.href)
+    if (
+      destination.origin === window.location.origin &&
+      destination.pathname === '/dashboard/coach' &&
+      destination.searchParams.get('tab') === 'messages'
+    ) {
+      setMessageFocusRequest({ studentId: destination.searchParams.get('student'), source })
+    }
+  }, [])
 
   const fetchWatchlistStudents = useCallback(async () => {
     if (watchlistIds.size === 0) {
@@ -842,14 +904,16 @@ function CoachDashboardContent() {
                 {COACH_TABS.map((tab) => (
                   <button
                     key={tab.value}
+                    ref={tab.value === 'watchlist' ? watchlistTabRef : undefined}
                     onClick={() => {
+                      setMessageFocusRequest(null)
                       setActiveTab(tab.value)
                       const params = new URLSearchParams(searchParams.toString())
                       params.set('tab', tab.value)
                       params.delete('student')
                       router.replace(`?${params.toString()}`, { scroll: false })
                     }}
-                    className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
+                    className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${tab.value === 'watchlist' ? 'scroll-mt-20 sm:scroll-mt-24' : ''} ${
                       activeTab === tab.value
                         ? 'border-[#CE2C22] text-[#CE2C22] font-semibold'
                         : 'border-transparent text-[#5A6779] hover:text-[#CE2C22] hover:scale-105'
@@ -1176,6 +1240,7 @@ function CoachDashboardContent() {
 
                 {/* Search Button */}
                 <button
+                  ref={searchButtonRef}
                   type="button"
                   onClick={() => runSearch(filters, advancedFilters)}
                   disabled={searching}
@@ -1246,7 +1311,7 @@ function CoachDashboardContent() {
                     </p>
                   </div>
                 ) : (
-                  <div className="max-h-[520px] overflow-y-auto -mx-1 px-1">
+                  <div ref={watchlistListRef} className="max-h-[520px] overflow-y-auto -mx-1 px-1">
                     {watchlistStudents.map((student) => (
                       <ProspectCard
                         key={student.id}
@@ -1266,6 +1331,8 @@ function CoachDashboardContent() {
             {/* ── MESSAGES TAB ── */}
             {activeTab === 'messages' && (
               <CoachMessages
+                focusRequest={messageFocusRequest}
+                onFocusRequestHandled={clearMessageFocusRequest}
                 initialStudentId={selectedMessageStudent?.id}
                 initialStudentName={selectedMessageStudent?.full_name ?? null}
                 initialPhotoUrl={selectedMessageStudent?.photo_url ?? null}
@@ -1274,7 +1341,7 @@ function CoachDashboardContent() {
 
             {/* ── NOTIFICATIONS TAB ── */}
             {activeTab === 'notifications' && (
-              <NotificationsList onReadChange={refreshUnreadCount} />
+              <NotificationsList onReadChange={refreshUnreadCount} onNavigate={prepareNotificationMessageFocus} />
             )}
 
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef, useId } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef, useId } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { setThreadOpen } from "@/app/hooks/useActiveThread";
@@ -68,12 +68,16 @@ type Props = {
   initialStudentId?: string;
   initialStudentName?: string | null;
   initialPhotoUrl?: string | null;
+  focusRequest?: { studentId: string | null; source: Element | null } | null;
+  onFocusRequestHandled?: () => void;
 };
 
 export default function CoachMessages({
   initialStudentId,
   initialStudentName,
   initialPhotoUrl,
+  focusRequest,
+  onFocusRequestHandled,
 }: Props = {}) {
   const searchParams = useSearchParams();
   const { refresh: refreshUnreadNotifications } = useUnreadNotifications();
@@ -91,7 +95,25 @@ export default function CoachMessages({
   const [sentCount, setSentCount] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const replyTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const replyButtonRef = useRef<HTMLButtonElement>(null);
+  const pendingReplyFocusRef = useRef<{
+    button: HTMLButtonElement;
+    textarea: HTMLTextAreaElement;
+    studentId: string;
+    succeeded: boolean;
+  } | null>(null);
   const autoOpenedStudentRef = useRef<string | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const backRef = useRef<HTMLButtonElement>(null);
+  const conversationRefs = useRef(new Map<string, HTMLButtonElement>());
+  const originConversationRef = useRef<string | null>(null);
+  const handledFocusRequestRef = useRef<Props["focusRequest"]>(null);
+  const pendingFocusRef = useRef<{
+    target: "thread" | "list";
+    studentId: string | null;
+    source: Element | null;
+  } | null>(null);
   const counterId = `${useId()}-counter`;
 
   const fetchData = useCallback(async () => {
@@ -201,6 +223,57 @@ export default function CoachMessages({
   }, [messages, studentNames, studentPhotos, studentSubscriptions]);
 
   useEffect(() => {
+    function cancelMovedFocus(event: FocusEvent) {
+      const pending = pendingFocusRef.current;
+      if (pending && event.target !== pending.source) pendingFocusRef.current = null;
+    }
+    document.addEventListener("focusin", cancelMovedFocus);
+    return () => document.removeEventListener("focusin", cancelMovedFocus);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (focusRequest && focusRequest !== handledFocusRequestRef.current) {
+      handledFocusRequestRef.current = focusRequest;
+      pendingFocusRef.current = { ...focusRequest, target: "thread" };
+      onFocusRequestHandled?.();
+    }
+    const pending = pendingFocusRef.current;
+    if (!pending) return;
+    const active = document.activeElement;
+    if (active !== pending.source && (pending.source?.isConnected || active !== document.body)) {
+      pendingFocusRef.current = null;
+      return;
+    }
+
+    const focusDestination = (destination: HTMLElement | null) => {
+      if (!destination) return;
+      // Update ownership before focusin fires so our own handoff is not cancelled.
+      pending.source = destination;
+      destination.focus();
+    };
+
+    if (pending.target === "list") {
+      if (loading || selectedStudentId) return;
+      const row = pending.studentId ? conversationRefs.current.get(pending.studentId) : null;
+      focusDestination(row ?? headingRef.current);
+      pendingFocusRef.current = null;
+    } else if (!loading && selectedStudentId && (
+      !pending.studentId || pending.studentId === selectedStudentId
+    )) {
+      focusDestination(backRef.current ?? headingRef.current);
+      pendingFocusRef.current = null;
+    } else {
+      // The existing loading/list heading bridges entry until the thread renders.
+      focusDestination(headingRef.current);
+      const awaitingSelection = pending.studentId && (
+        pending.studentId === initialStudentId ||
+        conversations.some((conversation) => conversation.studentId === pending.studentId)
+      );
+      if (!loading && !awaitingSelection) pendingFocusRef.current = null;
+    }
+  }, [focusRequest, onFocusRequestHandled, loading, selectedStudentId, initialStudentId, conversations]);
+
+  useEffect(() => {
     setThreadOpen(!!selectedStudentId);
     return () => {
       setThreadOpen(false);
@@ -282,6 +355,42 @@ export default function CoachMessages({
     };
   }, [selectedStudentId, loading, sentCount]);
 
+  useEffect(() => {
+    const cancelReplyFocus = () => { pendingReplyFocusRef.current = null; };
+    const handleFocusIn = (event: FocusEvent) => {
+      if (event.target !== pendingReplyFocusRef.current?.button && event.target !== document.body) {
+        cancelReplyFocus();
+      }
+    };
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!replyButtonRef.current?.contains(event.target as Node)) cancelReplyFocus();
+    };
+    document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("blur", cancelReplyFocus);
+    return () => {
+      document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("blur", cancelReplyFocus);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const request = pendingReplyFocusRef.current;
+    if (!request) return;
+    if (request.studentId !== selectedStudentId) {
+      pendingReplyFocusRef.current = null;
+      return;
+    }
+    if (sending) return;
+    pendingReplyFocusRef.current = null;
+    if (request.succeeded && request.textarea === replyTextareaRef.current &&
+      request.textarea.isConnected && !request.textarea.disabled && document.hasFocus() &&
+      (document.activeElement === request.button || document.activeElement === document.body)) {
+      request.textarea.focus({ preventScroll: true });
+    }
+  }, [sending, sentCount, selectedStudentId]);
+
   async function handleReply() {
     const trimmed = replyText.trim();
     if (!trimmed || !selectedStudentId || sending) return;
@@ -295,6 +404,12 @@ export default function CoachMessages({
       return;
     }
 
+    const button = replyButtonRef.current;
+    const textarea = replyTextareaRef.current;
+    const focusRequest = button && textarea && document.activeElement === button
+      ? { button, textarea, studentId: selectedStudentId, succeeded: false }
+      : null;
+    pendingReplyFocusRef.current = focusRequest;
     setSending(true);
     setReplyError("");
 
@@ -314,6 +429,10 @@ export default function CoachMessages({
 
       setReplyText("");
       await fetchData();
+      // Only this successful send may restore focus after its state updates commit.
+      if (focusRequest && pendingReplyFocusRef.current === focusRequest) {
+        focusRequest.succeeded = true;
+      }
       setSentCount((c) => c + 1);
     } catch {
       setReplyError("Failed to send message.");
@@ -325,7 +444,7 @@ export default function CoachMessages({
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
+        <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold mb-5 scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
           Messages
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -340,7 +459,7 @@ export default function CoachMessages({
   if (!coachId || (conversations.length === 0 && !selectedStudentId)) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-6">
-        <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
+        <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold mb-5 scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
           Messages
         </h3>
         <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -366,13 +485,19 @@ export default function CoachMessages({
     return (
       <div ref={cardRef} className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col scroll-mt-20 sm:scroll-mt-24">
         <button
+          ref={backRef}
           type="button"
           onClick={() => {
+            pendingFocusRef.current = {
+              target: "list",
+              studentId: originConversationRef.current,
+              source: document.activeElement,
+            };
             setSelectedStudentId(null);
             setReplyText("");
             setReplyError("");
           }}
-          className="inline-flex items-center gap-1.5 text-sm font-medium mb-4 self-start transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium mb-4 self-start transition-colors scroll-mt-20 sm:scroll-mt-24"
           style={{ color: "#5A6779" }}
         >
           <ArrowLeft className="w-4 h-4" />
@@ -426,6 +551,7 @@ export default function CoachMessages({
 
         <div className="sticky bottom-0 bg-white mt-4 pt-4 border-t border-gray-100">
           <textarea
+            ref={replyTextareaRef}
             value={replyText}
             onChange={(e) => {
               setReplyText(e.target.value);
@@ -445,6 +571,7 @@ export default function CoachMessages({
             </span>
 
             <button
+              ref={replyButtonRef}
               type="button"
               onClick={handleReply}
               disabled={sending || replyText.trim().length === 0}
@@ -470,7 +597,7 @@ export default function CoachMessages({
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
-      <h3 className="text-xl font-bold mb-5" style={{ color: "#0f172a" }}>
+      <h3 ref={headingRef} tabIndex={-1} className="text-xl font-bold mb-5 scroll-mt-20 sm:scroll-mt-24 focus:outline-2 focus:outline-offset-2 focus:outline-[#CE2C22]" style={{ color: "#0f172a" }}>
         Messages
       </h3>
 
@@ -478,9 +605,21 @@ export default function CoachMessages({
         {conversations.map((c) => (
           <button
             key={c.studentId}
+            ref={(element) => {
+              if (element) conversationRefs.current.set(c.studentId, element);
+              else conversationRefs.current.delete(c.studentId);
+            }}
             type="button"
-            onClick={() => setSelectedStudentId(c.studentId)}
-            className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 text-left hover:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors"
+            onClick={() => {
+              originConversationRef.current = c.studentId;
+              pendingFocusRef.current = {
+                target: "thread",
+                studentId: c.studentId,
+                source: document.activeElement,
+              };
+              setSelectedStudentId(c.studentId);
+            }}
+            className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 text-left hover:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors scroll-mt-20 sm:scroll-mt-24"
           >
             {c.photoUrl ? (
               <img
