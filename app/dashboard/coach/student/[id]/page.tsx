@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
+import CoachPhotoPreview from "../../CoachPhotoPreview";
 import StatsToggleCard from "./StatsToggleCard";
 import SendMessageCard from "./SendMessageCard";
 import {
@@ -424,16 +425,11 @@ export default async function CoachStudentProfilePage({
                       </h4>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {photos.map((p) => (
-                          <div
+                          <CoachPhotoPreview
                             key={p.id}
-                            className="aspect-square rounded-xl overflow-hidden bg-gray-100"
-                          >
-                            <img
-                              src={p.signedUrl}
-                              alt={p.file_name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
+                            src={p.signedUrl}
+                            alt={p.file_name || "Prospect photo"}
+                          />
                         ))}
                       </div>
                     </section>
