@@ -280,9 +280,16 @@ export default function MediaGallery({ onMediaDeleted }: { onMediaDeleted: () =>
             <X className="w-5 h-5 text-white" />
           </button>
           <img
+            key={lightboxPhoto.signedUrl}
             src={lightboxPhoto.signedUrl}
             alt={lightboxPhoto.file_name}
-            className="max-w-full max-h-[85vh] object-contain rounded-xl"
+            className="h-auto max-w-full max-h-[85vh] object-contain rounded-xl"
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (!img.naturalWidth || !img.naturalHeight) return;
+              const aspectRatio = img.naturalWidth / img.naturalHeight;
+              img.style.width = `min(90vw, ${85 * aspectRatio}vh)`;
+            }}
             onClick={(e) => e.stopPropagation()}
           />
         </div>
