@@ -194,7 +194,7 @@ export default function StudentTabs({ student, initialTab = "overview", initialS
                 params.delete("coach");
                 router.replace(`?${params.toString()}`, { scroll: false });
               }}
-              className={`shrink-0 px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
+              className={`shrink-0 px-2 sm:px-4 py-4 text-sm border-b-2 transition-all duration-200 whitespace-nowrap ${
                 activeSection === tab.value
                   ? "border-[#CE2C22] text-[#CE2C22] font-semibold"
                   : "border-transparent text-[#5A6779] hover:text-[#CE2C22] hover:scale-105"

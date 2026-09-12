@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-import { after } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendEmail, renderEmail } from "@/lib/sendEmail";
 
