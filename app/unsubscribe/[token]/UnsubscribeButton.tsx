@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type State = "idle" | "submitting" | "done" | "error";
 
@@ -8,6 +8,13 @@ type State = "idle" | "submitting" | "done" | "error";
 // the opaque token string — never any recipient row, never the email address.
 export default function UnsubscribeButton({ token }: { token: string }) {
   const [state, setState] = useState<State>("idle");
+  const successRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (state === "done") {
+      successRef.current?.focus();
+    }
+  }, [state]);
 
   async function confirm() {
     setState("submitting");
@@ -27,7 +34,11 @@ export default function UnsubscribeButton({ token }: { token: string }) {
   if (state === "done") {
     return (
       <div className="flex flex-col gap-4 items-center text-center">
-        <h2 className="text-xl font-bold text-hsp-dark">
+        <h2
+          ref={successRef}
+          tabIndex={-1}
+          className="text-xl font-bold text-hsp-dark focus:outline-2 focus:outline-offset-4 focus:outline-hsp-red"
+        >
           You&apos;ve been unsubscribed
         </h2>
         <p className="text-sm text-hsp-gray">
